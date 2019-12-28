@@ -1,0 +1,12 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true
+  },
+  "extends": ["@thoughtbot/eslint-config"],
+  "parser": "babel-eslint",
+  "rules": {
+    "no-undef": "error",
+    "array-bracket-spacing": ["error", "never"]
+  }
+}

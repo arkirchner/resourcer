@@ -1,0 +1,11 @@
+---
+
+inherit_from:
+  - https://raw.githubusercontent.com/thoughtbot/guides/master/style/ruby/.rubocop.yml
+require:
+  - rubocop-rspec
+  - rubocop-rails
+  - rubocop-performance
+Metrics/LineLength:
+  Exclude:
+    - config/routes.rb
