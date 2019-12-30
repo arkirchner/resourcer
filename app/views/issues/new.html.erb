@@ -1,0 +1,7 @@
+<%= form_with model: @issue do |f| %>
+  <%= f.label :subject %>
+  <%= f.text_field :subject %>
+  <%= f.label :due_at %>
+  <%= f.date_select :due_at %>
+  <%= f.submit %>
+<% end %>

@@ -1,0 +1,11 @@
+<% if flash.any? %>
+  <div class="container">
+    <% user_facing_flashes.each do |type, message| -%>
+      <div class="alert <%= bootstrap_class_for_flash(type) %> alert-dismissable fade show"
+           data-controller="flash" role="alert">
+        <%= message %>
+        <button class="close" data-action="flash#close">x</button>
+      </div>
+    <% end -%>
+  </div>
+<% end %>
