@@ -15,6 +15,7 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "byebug", platforms: %i[mri mingw x64_mingw]
+  gem "factory_bot_rails"
 end
 
 group :development do
@@ -27,6 +28,5 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
-  gem "shoulda"
   gem "webdrivers"
 end
