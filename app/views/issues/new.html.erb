@@ -1,4 +1,4 @@
-<%= form_with model: @issue do |f| %>
+<%= form_with model: @issue, url: project_issues_path(@issue.project) do |f| %>
   <%= f.label :subject %>
   <%= f.text_field :subject %>
   <%= f.label :due_at %>

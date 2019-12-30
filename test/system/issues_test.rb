@@ -2,6 +2,8 @@ require "application_system_test_case"
 
 class IssuesTest < ApplicationSystemTestCase
   test "creating a new issue form the top page" do
+    FactoryBot.create(:project)
+
     visit root_url
 
     click_on "Add issue"

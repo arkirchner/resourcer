@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   def new
-    @issue = Issue.new
+    @issue = Issue.new(project: Project.find(params[:project_id]))
   end
 
   def show
@@ -8,10 +8,9 @@ class IssuesController < ApplicationController
   end
 
   def create
-    @issue = Issue.new(issue_params)
+    @issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
     if @issue.save
-      redirect_to issue_url(@issue),
-        notice: "New issue created."
+      redirect_to issue_url(@issue), notice: "New issue created."
     else
       render :new
     end
