@@ -9,8 +9,41 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="navbar-brand">
+        <%= image_tag "logo.png", width: 30, height: 30, alt: "Resourcer" %>
+      </div>
+      <button class="navbar-toggler" type="button" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav">
+          <%= link_to "Dashboard", root_path, class: "nav-item nav-link" %>
+          <%= link_to "Projects", root_path, class: "nav-item nav-link" %>
+          <%= link_to "Recently Viewed", root_path, class: "nav-item nav-link" %>
+        </div>
+      </div>
+    </nav>
+
     <%= render "flashes" %>
-    <%= yield %>
+    <main class="container">
+      <%= yield %>
+    </main>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+      <p class="mb-1">© 2019-2020 Company Name</p>
+      <ul class="list-inline">
+        <li class="list-inline-item">
+          <a href="#">Privacy</a>
+        </li>
+        <li class="list-inline-item">
+          <a href="#">Terms</a>
+        </li>
+        <li class="list-inline-item">
+          <a href="#">Support</a>
+        </li>
+      </ul>
+    </footer>
   </body>
 </html>

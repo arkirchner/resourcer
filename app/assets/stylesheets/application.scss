@@ -1,3 +1,23 @@
-body {
-  background-color: "red";
-}
+@charset "utf-8";
+
+// base
+@import "bootstrap/scss/bootstrap-reboot";
+@import "bootstrap/scss/bootstrap-grid";
+@import "bootstrap/scss/root";
+
+// utilities
+@import "bootstrap/scss/utilities/background";
+@import "bootstrap/scss/utilities/text";
+@import "bootstrap/scss/utilities/shadows";
+
+// bootstrap components
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/media";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/list-group";

@@ -1,5 +1,88 @@
-<%= link_to 'Add project', new_project_path %>
+<div class="row">
+  <div class="col-12 col-lg-6">
+    <div class="d-flex align-items-end">
+      <h3 class="flex-grow-1">Projects</h3>
+      <%= link_to 'Add project', new_project_path, class: "btn btn-link" %>
+    </div>
 
-<% @projects.each do |project| %>
-  <%= link_to 'Add issue', new_project_issue_path(project) %>
-<% end %>
+    <ul class="list-unstyled">
+      <% @projects.each do |project| %>
+        <li class="media shadow-sm bg-white mb-2 p-2">
+          <%= image_tag "logo.png", class: "mr-3", alt: project.key %>
+          <div class="media-body">
+            <h5 class="mt-0 mb-1">
+              <%= project.key %>
+              <small class="text-muted"><%= project.name %></small>
+            </h5>
+            <%= link_to 'Add issue', new_project_issue_path(project), class: "btn btn-link" %>
+            |
+            <%= link_to 'Issues', new_project_issue_path(project), class: "btn btn-link" %>
+            |
+            <%= link_to 'Gantt Chart', new_project_issue_path(project), class: "btn btn-link" %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="d-flex align-items-end mt-5">
+      <h3 class="flex-grow-1">My Issues</h3>
+      <%= link_to 'Gantt Chart', root_path, class: "btn btn-link" %>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex">
+        <div class="d-flex flex-column justify-content-around mr-3">
+          <div class="h5">Filters:</div>
+          <div class="h5">Due date:</div>
+        </div>
+        <div>
+          <div class"">
+            <button type="button" class="btn btn-primary btn-sm my-1">Assigned to me (11)</button>
+            <button type="button" class="btn btn-light btn-sm my-1">Created by me (8)</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary btn-sm my-1">All (11)</button>
+            <button type="button" class="btn btn-light btn-sm my-1">4 Days (8)</button>
+            <button type="button" class="btn btn-light btn-sm my-1">Due Today (8)</button>
+            <button type="button" class="btn btn-light btn-sm my-1">Overdue (8)</button>
+          </div>
+        </div>
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Subject</th>
+            <th scope="col" class="text-right">Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @issues.each do |issue| %>
+            <tr>
+              <th scope="row"><%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %></th>
+              <td><%= issue.subject %></td>
+              <td class="text-right"><%= l issue.due_at, format: :short %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6">
+    <div class="d-flex align-items-end">
+      <h3 class="flex-grow-1">Recent Updates</h3>
+    </div>
+    <% 6.times do |index| %>
+      <div class="card mb-3">
+        <div class="card-header">
+          <%= l(index.days.ago.to_date, format: :long) %>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Cras justo odio <%= time_ago_in_words(3.hours.ago) %></li>
+          <li class="list-group-item">Dapibus ac facilisis in <%= time_ago_in_words(3.hours.ago) %></li>
+          <li class="list-group-item">Vestibulum at eros <%= time_ago_in_words(3.hours.ago) %></li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>
