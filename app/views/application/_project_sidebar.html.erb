@@ -1,0 +1,18 @@
+<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+  <%= sidebar_link_to project_path(current_project) do %>
+    <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/home.svg", class: "nav-icon" %>
+    <span class="sr-only-md">Home</span>
+  <% end %>
+  <%= sidebar_link_to new_project_issue_path(current_project) do %>
+    <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/plus.svg", class: "nav-icon" %>
+    <span class="sr-only-md">Add issue</span>
+  <% end %>
+  <%= sidebar_link_to project_path(current_project) do %>
+    <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/list.svg", class: "nav-icon" %>
+    <span class="sr-only-md">Issues</span>
+  <% end %>
+  <%= sidebar_link_to project_path(current_project) do %>
+    <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/stream.svg", class: "nav-icon" %>
+    <span class="sr-only-md">Gantt Chart</span>
+  <% end %>
+</div>

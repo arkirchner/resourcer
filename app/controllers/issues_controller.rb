@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   def new
-    @issue = Issue.new(project: Project.find(params[:project_id]))
+    @issue = Issue.new(project: current_project)
   end
 
   def show

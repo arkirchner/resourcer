@@ -1,0 +1,41 @@
+$sidebar-width: 4rem;
+$sidebar-width-expanded: 9.5rem;
+
+.sidebar__sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: $sidebar-width-expanded;
+  padding-top: $navbar-top-padding;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+.sidebar__sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - #{$navbar-top-padding});
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar__content {
+  padding-left: $sidebar-width-expanded;
+}
+
+@supports ((position: -webkit-sticky) or (position: sticky)) {
+  .sidebar__sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .sidebar__sidebar {
+    width: $sidebar-width;
+  }
+
+  .sidebar__content {
+    padding-left: $sidebar-width;
+  }
+}

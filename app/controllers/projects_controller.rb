@@ -22,4 +22,8 @@ class ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(:name, :key)
   end
+
+  def current_project_id
+    params[:id]
+  end
 end

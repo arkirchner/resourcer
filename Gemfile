@@ -11,6 +11,7 @@ gem "webpacker"
 gem "turbolinks"
 gem "jbuilder"
 gem "image_processing"
+gem "inline_svg"
 gem "bootsnap", require: false
 
 group :development, :test do

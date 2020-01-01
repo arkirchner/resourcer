@@ -1,0 +1,12 @@
+<% 6.times do |index| %>
+  <div class="card mb-3">
+    <div class="card-header">
+      <%= l(index.days.ago.to_date, format: :long) %>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Cras justo odio <%= time_ago_in_words(3.hours.ago) %></li>
+      <li class="list-group-item">Dapibus ac facilisis in <%= time_ago_in_words(3.hours.ago) %></li>
+      <li class="list-group-item">Vestibulum at eros <%= time_ago_in_words(3.hours.ago) %></li>
+    </ul>
+  </div>
+<% end %>

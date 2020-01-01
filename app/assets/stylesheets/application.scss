@@ -1,14 +1,12 @@
 @charset "utf-8";
 
+// variables
+$navbar-top-padding: 3.75rem;
+
 // base
 @import "bootstrap/scss/bootstrap-reboot";
 @import "bootstrap/scss/bootstrap-grid";
 @import "bootstrap/scss/root";
-
-// utilities
-@import "bootstrap/scss/utilities/background";
-@import "bootstrap/scss/utilities/text";
-@import "bootstrap/scss/utilities/shadows";
 
 // bootstrap components
 @import "bootstrap/scss/alert";
@@ -21,3 +19,29 @@
 @import "bootstrap/scss/nav";
 @import "bootstrap/scss/navbar";
 @import "bootstrap/scss/list-group";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/transitions";
+
+// utilities
+@import "bootstrap/scss/utilities/background";
+@import "bootstrap/scss/utilities/text";
+@import "bootstrap/scss/utilities/shadows";
+@import "bootstrap/scss/utilities/position";
+@import "bootstrap/scss/utilities/borders";
+
+@import "./components/*";
+
+.navbar-top-padding {
+  padding-top: $navbar-top-padding;
+}
+
+.nav-icon {
+  height: 1.8rem;
+  width: 1.8rem;
+}
+
+@include media-breakpoint-down(md) {
+  .sr-only-md {
+    @include sr-only();
+  }
+}

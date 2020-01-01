@@ -9,41 +9,64 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <body class="bg-light navbar-top-padding">
+    <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light border-bottom">
       <div class="navbar-brand">
         <%= image_tag "logo.png", width: 30, height: 30, alt: "Resourcer" %>
       </div>
-      <button class="navbar-toggler" type="button" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler collapsed" type="button" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse">
         <div class="navbar-nav">
-          <%= link_to "Dashboard", root_path, class: "nav-item nav-link" %>
-          <%= link_to "Projects", root_path, class: "nav-item nav-link" %>
+          <%= link_to "Dashboard", root_path, class: "nav-item nav-link#{current_project ? "" : " active"}" %>
+          <%= link_to "Projects", root_path, class: "nav-item nav-link#{current_project ? " active" : ""}" %>
           <%= link_to "Recently Viewed", root_path, class: "nav-item nav-link" %>
         </div>
       </div>
     </nav>
 
     <%= render "flashes" %>
-    <main class="container">
-      <%= yield %>
-    </main>
 
-    <footer class="my-5 pt-5 text-muted text-center text-small">
-      <p class="mb-1">© 2019-2020 Company Name</p>
-      <ul class="list-inline">
-        <li class="list-inline-item">
-          <a href="#">Privacy</a>
-        </li>
-        <li class="list-inline-item">
-          <a href="#">Terms</a>
-        </li>
-        <li class="list-inline-item">
-          <a href="#">Support</a>
-        </li>
-      </ul>
-    </footer>
+    <% if current_project %>
+      <aside class="sidebar__sidebar">
+        <div class="sidebar__sidebar-sticky">
+          <%= render "project_sidebar" %>
+        </div>
+      </aside>
+    <% end %>
+
+    <div class="<%= current_project ? "sidebar__content" : "" %>">
+      <main class="<%= current_project ? "container-fluid" : "container" %>">
+        <% if current_project %>
+          <div class="media mt-3">
+            <%= image_tag "logo.png", class: "mr-3", alt: current_project.key %>
+            <div class="media-body">
+              <h5 class="mt-0"><%= current_project.key %></h5>
+              <small class="text-muted"><%= current_project.name %></small>
+            </div>
+          </div>
+
+          <hr>
+        <% end %>
+
+        <%= yield %>
+      </main>
+
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">© 2019-2020 Company Name</p>
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="#">Privacy</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">Terms</a>
+          </li>
+          <li class="list-inline-item">
+            <a href="#">Support</a>
+          </li>
+        </ul>
+      </footer>
+    </div>
   </body>
 </html>
