@@ -16,6 +16,10 @@ class IssuesController < ApplicationController
     end
   end
 
+  def index
+    @issues = Issue.all
+  end
+
   private
 
   def issue_params

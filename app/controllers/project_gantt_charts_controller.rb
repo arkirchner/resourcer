@@ -1,0 +1,2 @@
+class ProjectGanttChartsController < ApplicationController
+end

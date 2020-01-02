@@ -17,9 +17,9 @@
               </h5>
               <%= link_to 'Add issue', new_project_issue_path(project), class: "btn btn-link" %>
               |
-              <%= link_to 'Issues', new_project_issue_path(project), class: "btn btn-link" %>
+              <%= link_to 'Issues', project_issues_path(project), class: "btn btn-link" %>
               |
-              <%= link_to 'Gantt Chart', new_project_issue_path(project), class: "btn btn-link" %>
+              <%= link_to 'Gantt Chart', project_project_gantt_chart_path(project), class: "btn btn-link" %>
             </div>
           <% end %>
         </li>
