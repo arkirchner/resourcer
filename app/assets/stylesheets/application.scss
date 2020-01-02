@@ -29,6 +29,7 @@ $navbar-top-padding: 3.75rem;
 @import "bootstrap/scss/utilities/position";
 @import "bootstrap/scss/utilities/borders";
 
+@import "flatpickr/dist/flatpickr";
 @import "./components/*";
 
 .navbar-top-padding {

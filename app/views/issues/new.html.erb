@@ -1,7 +1,11 @@
 <%= form_with model: @issue, url: project_issues_path(@issue.project) do |f| %>
-  <%= f.label :subject %>
-  <%= f.text_field :subject %>
-  <%= f.label :due_at %>
-  <%= f.date_select :due_at %>
-  <%= f.submit %>
+  <div class="form-group">
+    <%= f.label :subject %>
+    <%= f.text_field :subject, class: "form-control", placeholder: "My new issue." %>
+  </div>
+  <div class="form-group">
+    <%= f.label :due_at %>
+    <%= f.text_field :due_at, class: "form-control", placeholder: "Pick a date.", data: { controller: "flatpickr", flatpickr_min_date: Time.zone.now } %>
+  </div>
+  <%= f.submit class: "btn btn-primary" %>
 <% end %>

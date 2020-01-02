@@ -65,7 +65,7 @@
                 <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
               </th>
               <td><%= issue.subject %></td>
-              <td class="text-right"><%= l issue.due_at, format: :short %></td>
+              <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
             </tr>
           <% end %>
         </tbody>

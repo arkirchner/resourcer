@@ -10,6 +10,7 @@
     "bootstrap": "^4.4.1",
     "frappe-gantt": "^0.3.0",
     "stimulus": "^1.1.1",
+    "stimulus-flatpickr": "^1.2.1",
     "turbolinks": "^5.2.0"
   },
   "version": "0.1.0",
