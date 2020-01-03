@@ -8,6 +8,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Rubocop checks
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: gimenete/rubocop-action@1.0
   eslint:
     runs-on: ubuntu-latest
@@ -17,3 +19,4 @@ jobs:
       uses: stefanoeb/eslint-action@1.0.2
       with:
         files: app/javascript
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
