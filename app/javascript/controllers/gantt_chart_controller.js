@@ -10,55 +10,537 @@ export default class extends Controller {
 
   get data() {
     return {
-      resources: [
+      resas: [
         {
-          id: 'NURSES+Anne',
-          name: 'Anne',
+          activity: 'A-1.3',
+          resource: 'MS',
         },
         {
-          id: 'NURSES+Betsy',
-          name: 'Betsy',
+          activity: 'A-1.1.2',
+          resource: 'SK',
+        },
+        {
+          activity: 'A-6.1',
+          resource: 'SL',
+        },
+        {
+          activity: 'A-5.2',
+          resource: 'LD',
+        },
+        {
+          activity: 'A-4.1.2',
+          resource: 'GH',
+        },
+        {
+          activity: 'A-1.1.1',
+          resource: 'MS',
+        },
+        {
+          activity: 'A-4.4',
+          resource: 'GH',
+        },
+        {
+          activity: 'A-4.2.2',
+          resource: 'GH',
+        },
+        {
+          activity: 'A-6.1',
+          resource: 'BR',
+        },
+        {
+          activity: 'A-4.4',
+          resource: 'LP',
+        },
+        {
+          activity: 'A-2.2',
+          resource: 'LP',
+        },
+        {
+          activity: 'A-4',
+          resource: 'LD',
+        },
+        {
+          activity: 'A-4.2',
+          resource: 'JH',
+        },
+        {
+          activity: 'A-1.1.1',
+          resource: 'LP',
+        },
+        {
+          activity: 'A-6.3',
+          resource: 'GH',
+        },
+        {
+          activity: 'A-4.1.2',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-5',
+          resource: 'JH',
+        },
+        {
+          activity: 'A-1.3',
+          resource: 'BM',
+        },
+        {
+          activity: 'A-3',
+          resource: 'BM',
+        },
+        {
+          activity: 'A-3',
+          resource: 'JH',
+        },
+        {
+          activity: 'A-2.1',
+          resource: 'LP',
+        },
+        {
+          activity: 'A-6.2',
+          resource: 'LD',
+        },
+        {
+          activity: 'A-6.3',
+          resource: 'SL',
+        },
+        {
+          activity: 'A-5.2',
+          resource: 'SW',
+        },
+        {
+          activity: 'A-5.3',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-4.1',
+          resource: 'SW',
+        },
+        {
+          activity: 'A-1.1',
+          resource: 'BM',
+        },
+        {
+          activity: 'A-2.1',
+          resource: 'MS',
+        },
+        {
+          activity: 'A-4.4',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-1.1.1',
+          resource: 'SK',
+        },
+        {
+          activity: 'A-3',
+          resource: 'GH',
+        },
+        {
+          activity: 'A-1.1.2',
+          resource: 'LP',
+        },
+        {
+          activity: 'A-4.3',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-5.3',
+          resource: 'SW',
+        },
+        {
+          activity: 'A-6.2',
+          resource: 'BR',
+        },
+        {
+          activity: 'A-4.1.1',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-1.2',
+          resource: 'MS',
+        },
+        {
+          activity: 'A-6.3',
+          resource: 'MS',
+        },
+        {
+          activity: 'A-1.3',
+          resource: 'LD',
+        },
+        {
+          activity: 'A-4.2.1',
+          resource: 'TM',
+        },
+        {
+          activity: 'A-4.3',
+          resource: 'SW',
+        },
+        {
+          activity: 'A-5.1',
+          resource: 'LD',
         },
       ],
+      constraints: [
+        {
+          from: 'A-4.2.1',
+          to: 'A-4.2.2',
+          type: 1,
+        },
+        {
+          from: 'A-2',
+          to: 'A-3',
+          type: 1,
+        },
+        {
+          from: 'A-4.1.1',
+          to: 'A-4.1.2',
+          type: 1,
+        },
+        {
+          from: 'A-5.2',
+          to: 'A-6.1',
+          type: 0,
+        },
+        {
+          from: 'A-3',
+          to: 'A-4',
+          type: 1,
+        },
+        {
+          from: 'A-4.1.2',
+          to: 'A-4.2.1',
+          type: 0,
+        },
+        {
+          from: 'A-1.2',
+          to: 'A-1.3',
+          type: 1,
+        },
+        {
+          from: 'A-5.2',
+          to: 'A-5.3',
+          type: 1,
+        },
+        {
+          from: 'A-1.1.1',
+          to: 'A-1.1.2',
+          type: 1,
+        },
+        {
+          from: 'A-2.1',
+          to: 'A-2.2',
+          type: 1,
+        },
+        {
+          from: 'A-1.1',
+          to: 'A-1.2',
+          type: 1,
+        },
+        {
+          from: 'A-5.1',
+          to: 'A-5.2',
+          type: 1,
+        },
+        {
+          from: 'A-1',
+          to: 'A-2',
+          type: 1,
+        },
+        {
+          from: 'A-4',
+          to: 'A-5',
+          type: 1,
+        },
+      ],
+
       activities: [
         {
-          id: 'SHIFTS+Emergency+Monday+2+8',
-          name: 'Emergency',
-          start: 1474880400000,
-          end: 1474902000000,
+          id: 'A-Root',
+          name: 'Project Summary',
+          start: 1487750400000,
+          end: 1508310000000,
+          parent: null,
         },
         {
-          id: 'SHIFTS+Emergency+Wednesday+12+18',
-          name: 'Emergency',
-          start: 1475089200000,
-          end: 1475110800000,
+          id: 'A-1',
+          name: 'Gather Requirements',
+          start: 1487750400000,
+          end: 1489219200000,
+          parent: 'A-Root',
         },
         {
-          id: 'SHIFTS+Emergency+Saturday+12+20',
-          name: 'Emergency',
-          start: 1475348400000,
-          end: 1475377200000,
+          id: 'A-1.1',
+          name: 'Talk to customers',
+          start: 1487750400000,
+          end: 1488614400000,
+          parent: 'A-1',
         },
         {
-          id: 'SHIFTS+Consultation+Friday+8+12',
-          name: 'Consultation',
-          start: 1475247600000,
-          end: 1475262000000,
+          id: 'A-1.1.1',
+          name: 'Compile customer list',
+          start: 1487750400000,
+          end: 1487923200000,
+          parent: 'A-1.1',
+        },
+        {
+          id: 'A-1.1.2',
+          name: 'Contact customers',
+          start: 1487923200000,
+          end: 1488614400000,
+          parent: 'A-1.1',
+        },
+        {
+          id: 'A-1.2',
+          name: 'Write up requirements',
+          start: 1488614400000,
+          end: 1488873600000,
+          parent: 'A-1',
+        },
+        {
+          id: 'A-1.3',
+          name: 'Review requirements',
+          start: 1488787200000,
+          end: 1489219200000,
+          parent: 'A-1',
+        },
+        {
+          id: 'A-2',
+          name: 'Marketing Specification',
+          start: 1489219200000,
+          end: 1490252400000,
+          parent: 'A-Root',
+        },
+        {
+          id: 'A-2.1',
+          name: 'First Draft Specification',
+          start: 1489219200000,
+          end: 1489820400000,
+          parent: 'A-2',
+        },
+        {
+          id: 'A-2.2',
+          name: 'Second Draft Specification',
+          start: 1489820400000,
+          end: 1490252400000,
+          parent: 'A-2',
+        },
+        {
+          id: 'A-3',
+          name: 'Engineering Review',
+          start: 1490252400000,
+          end: 1491116400000,
+          parent: 'A-Root',
+        },
+        {
+          id: 'A-4',
+          name: 'Proof of Concept',
+          start: 1491116400000,
+          end: 1495609200000,
+          parent: 'A-Root',
+        },
+        {
+          id: 'A-4.1',
+          name: 'Rough Design',
+          start: 1491116400000,
+          end: 1492930800000,
+          parent: 'A-4',
+        },
+        {
+          id: 'A-4.1.1',
+          name: 'CAD Layout',
+          start: 1491116400000,
+          end: 1492326000000,
+          parent: 'A-4.1',
+        },
+        {
+          id: 'A-4.1.2',
+          name: 'Detailing',
+          start: 1492066800000,
+          end: 1492930800000,
+          parent: 'A-4.1',
+        },
+        {
+          id: 'A-4.2',
+          name: 'Fabricate Prototype',
+          start: 1492498800000,
+          end: 1494399600000,
+          parent: 'A-4',
+        },
+        {
+          id: 'A-4.2.1',
+          name: 'Order Materials',
+          start: 1492498800000,
+          end: 1493190000000,
+          parent: 'A-4.2',
+        },
+        {
+          id: 'A-4.2.2',
+          name: 'Machining',
+          start: 1493190000000,
+          end: 1494399600000,
+          parent: 'A-4.2',
+        },
+        {
+          id: 'A-4.3',
+          name: 'Burn-in Testing',
+          start: 1494399600000,
+          end: 1495004400000,
+          parent: 'A-4',
+        },
+        {
+          id: 'A-4.4',
+          name: 'Prepare Demo',
+          start: 1495004400000,
+          end: 1495609200000,
+          parent: 'A-4',
+        },
+        {
+          id: 'A-5',
+          name: 'Design and Development',
+          start: 1495609200000,
+          end: 1507100400000,
+          parent: 'A-Root',
+        },
+        {
+          id: 'A-5.1',
+          name: 'Phase I Development',
+          start: 1495609200000,
+          end: 1500447600000,
+          parent: 'A-5',
+        },
+        {
+          id: 'A-5.2',
+          name: 'Phase II Development',
+          start: 1500447600000,
+          end: 1504076400000,
+          parent: 'A-5',
+        },
+        {
+          id: 'A-5.3',
+          name: 'Phase III Development',
+          start: 1504076400000,
+          end: 1507100400000,
+          parent: 'A-5',
+        },
+        {
+          id: 'A-6',
+          name: 'Packaging',
+          start: 1500447600000,
+          end: 1508310000000,
+          parent: 'A-Root',
+        },
+        {
+          id: 'A-6.1',
+          name: 'User Manual',
+          start: 1500447600000,
+          end: 1507100400000,
+          parent: 'A-6',
+        },
+        {
+          id: 'A-6.2',
+          name: 'Installation Procedures',
+          start: 1505890800000,
+          end: 1508310000000,
+          parent: 'A-6',
+        },
+        {
+          id: 'A-6.3',
+          name: 'Update WebSite',
+          start: 1507100400000,
+          end: 1508310000000,
+          parent: 'A-6',
         },
       ],
-      reservations: [
-        { resource: 'NURSES+Anne', activity: 'SHIFTS+Emergency+Monday+2+8' },
+      resources: [
         {
-          resource: 'NURSES+Betsy',
-          activity: 'SHIFTS+Emergency+Wednesday+12+18',
+          id: 'JCOM',
+          name: 'JCompany Employees',
+          quantity: '1.0',
+          parent: null,
         },
         {
-          resource: 'NURSES+Betsy',
-          activity: 'SHIFTS+Emergency+Saturday+12+20',
+          id: 'MKT',
+          name: 'Marketing',
+          quantity: '1.0',
+          parent: 'JCOM',
         },
         {
-          resource: 'NURSES+Betsy',
-          activity: 'SHIFTS+Consultation+Friday+8+12',
+          id: 'BM',
+          name: 'Bill McDonald',
+          quantity: '1.0',
+          parent: 'MKT',
+        },
+        {
+          id: 'SK',
+          name: 'Steve Knoll',
+          quantity: '1.0',
+          parent: 'MKT',
+        },
+        {
+          id: 'MS',
+          name: 'Michael Smith',
+          quantity: '1.0',
+          parent: 'MKT',
+        },
+        {
+          id: 'LP',
+          name: 'Luc Dupont',
+          quantity: '1.0',
+          parent: 'MKT',
+        },
+        {
+          id: 'RND',
+          name: 'Research and Development',
+          quantity: '1.0',
+          parent: 'JCOM',
+        },
+        {
+          id: 'LD',
+          name: 'Linus Dane',
+          quantity: '1.0',
+          parent: 'RND',
+        },
+        {
+          id: 'JH',
+          name: 'James Hook',
+          quantity: '1.0',
+          parent: 'RND',
+        },
+        {
+          id: 'SW',
+          name: 'Scott Washington',
+          quantity: '1.0',
+          parent: 'RND',
+        },
+        {
+          id: 'GH',
+          name: 'Gill Hopper',
+          quantity: '1.0',
+          parent: 'RND',
+        },
+        {
+          id: 'TM',
+          name: 'Thomas Monahan',
+          quantity: '1.0',
+          parent: 'RND',
+        },
+        {
+          id: 'DOC',
+          name: 'Documentation',
+          quantity: '1.0',
+          parent: 'JCOM',
+        },
+        {
+          id: 'SL',
+          name: 'Sandy Ladd',
+          quantity: '1.0',
+          parent: 'DOC',
+        },
+        {
+          id: 'BR',
+          name: 'Bob Robertson',
+          quantity: '1.0',
+          parent: 'DOC',
         },
       ],
     };
@@ -68,6 +550,7 @@ export default class extends Controller {
     return {
       data: this.data,
       // Configure a toolbar associated with the Gantt
+      type: Gantt.type.ACTIVITY_CHART,
       toolbar: [
         'title',
         'search',
