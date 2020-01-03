@@ -1,6 +1,8 @@
 import { Controller } from 'stimulus';
 import Gantt from 'ibm-gantt-chart';
 
+const END_TO_START = Gantt.constraintTypes.END_TO_START;
+
 export default class extends Controller {
   connect() {
     this.chart = new Gantt(this.element, this.config);
@@ -14,22 +16,22 @@ export default class extends Controller {
         {
           from: 'A-4.2.1',
           to: 'A-4.2.2',
-          type: 1,
+          type: END_TO_START,
         },
         {
           from: 'A-2',
           to: 'A-3',
-          type: 1,
+          type: END_TO_START,
         },
         {
           from: 'A-4.1.1',
           to: 'A-4.1.2',
-          type: 1,
+          type: END_TO_START,
         },
         {
           from: 'A-5.2',
           to: 'A-6.1',
-          type: 0,
+          type: END_TO_START,
         },
         {
           from: 'A-3',
