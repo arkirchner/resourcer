@@ -27,13 +27,19 @@ jobs:
             - v1-dependencies-
 
       - run:
-          name: install dependencies
+          name: install Ruby dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      - run:
+          name: install JavaScript dependencies
+          command: |
+            yarn install
 
       - save_cache:
           paths:
             - ./vendor/bundle
+            - ~/repo/node_modules
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
 
       # Database setup
