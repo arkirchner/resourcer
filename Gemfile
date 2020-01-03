@@ -31,6 +31,7 @@ end
 
 group :test do
   gem "capybara"
+  gem "json-schema"
   gem "minitest-ci"
   gem "selenium-webdriver"
   gem "webdrivers"

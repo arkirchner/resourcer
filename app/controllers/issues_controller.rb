@@ -17,7 +17,7 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.all
+    @issues = Issue.with_project(current_project_id).all
   end
 
   private
