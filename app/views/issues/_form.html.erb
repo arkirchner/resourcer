@@ -1,0 +1,19 @@
+<%= form_with model: issue, url: if issue.persisted?
+                                   issue_path(issue)
+                                 else
+                                   project_issues_path(issue.project)
+                                 end do |f| %>
+  <div class="form-group">
+    <%= f.label :parent_id %>
+    <%= f.select(:parent_id, current_project.issues.collect {|issue| [ issue.subject, issue.id ] }, { include_blank: true, placeholder: "Select a parent issue." }) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :subject %>
+    <%= f.text_field :subject, class: "form-control", placeholder: "My new issue." %>
+  </div>
+  <div class="form-group">
+    <%= f.label :due_at %>
+    <%= f.text_field :due_at, class: "form-control", placeholder: "Pick a date.", data: { controller: "flatpickr", flatpickr_min_date: Time.zone.now } %>
+  </div>
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>

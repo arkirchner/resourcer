@@ -26,4 +26,18 @@ class IssuesTest < ApplicationSystemTestCase
     assert_text "Second child Issue"
     assert_text "First child Issue"
   end
+
+  test "edit issue from edit page" do
+    issue = FactoryBot.create :issue
+
+    visit issue_path(issue)
+
+    click_on "Edit"
+
+    fill_in "Subject", with: "Issue update subject"
+
+    click_on "Update"
+
+    assert_text "Issue was updated."
+  end
 end

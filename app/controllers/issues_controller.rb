@@ -4,7 +4,19 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @issue = Issue.find(params[:id])
+    @issue = issue
+  end
+
+  def edit
+    @issue = issue
+  end
+
+  def update
+    if issue.update(issue_params)
+      redirect_to issue_url(issue), notice: "Issue was updated."
+    else
+      @issue = issue
+    end
   end
 
   def create
