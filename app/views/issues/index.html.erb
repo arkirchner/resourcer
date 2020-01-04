@@ -12,7 +12,9 @@
         <th scope="row">
           <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
         </th>
-        <td><%= issue.subject %></td>
+        <td>
+          <%= link_to issue.subject, issue_path(issue) %>
+        </td>
         <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
       </tr>
     <% end %>

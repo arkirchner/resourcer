@@ -6,28 +6,29 @@ class IssuesTest < ApplicationSystemTestCase
 
     visit root_url
 
-    click_on "Add issue"
+    create_issue subject: "New issue subject"
 
-    fill_in "Subject", with: "New issue subject"
-
-    click_on "Create"
-
-    assert_text "New issue created."
     assert_text "New issue subject"
   end
 
-  test "issue page includes children" do
-    second_child_issue = FactoryBot.create :issue, subject: "Second child Issue"
-    child_issue = FactoryBot.create :issue, children: [second_child_issue], subject: "First child Issue"
-    issue = FactoryBot.create :issue, children: [child_issue]
+  test "issue with deeply nested children" do
+    FactoryBot.create(:project)
+    visit root_url
 
-    visit issue_path(issue)
+    create_issue subject: "Root issue"
+    create_issue subject: "Level 1 child issue", parent: "Root issue"
+    create_issue subject: "Level 2 child issue", parent: "Level 1 child issue"
 
-    assert_text "Second child Issue"
-    assert_text "First child Issue"
+    click_on "Issues"
+    click_on "Root issue"
+
+    within("#child-issues") do
+      assert_text "Level 1 child issue"
+      assert_text "Level 2 child issue"
+    end
   end
 
-  test "edit issue from edit page" do
+  test "edit issue from show page" do
     issue = FactoryBot.create :issue
 
     visit issue_path(issue)
@@ -39,5 +40,14 @@ class IssuesTest < ApplicationSystemTestCase
     click_on "Update"
 
     assert_text "Issue was updated."
+  end
+
+  def create_issue(subject:, parent: nil)
+    click_on "Add issue"
+    fill_in "Subject", with: subject
+    select parent, from: "Parent" if parent
+    click_on "Create"
+
+    assert_text "New issue created."
   end
 end
