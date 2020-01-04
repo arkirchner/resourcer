@@ -1,4 +1,5 @@
 class Issue < ApplicationRecord
+  extend ActsAsTree::TreeWalker
   acts_as_tree order: :subject
   belongs_to :project
   validates :subject, presence: true

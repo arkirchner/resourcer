@@ -1,0 +1,5 @@
+<h1><%= @issue.subject %></h1>
+
+<% @issue.walk_tree do |issue, level| %>
+  <%= link_to "#{'-'*level}#{issue.subject}", issue_path(issue) %><br />
+<% end %>

@@ -25,4 +25,15 @@ class IssuesController < ApplicationController
   def issue_params
     params.require(:issue).permit(:subject, :due_at)
   end
+
+  def issue
+    id  = params[:id]
+    return if id.blank?
+
+    Issue.includes(:project).find(id)
+  end
+
+  def current_project
+    super || issue&.project
+  end
 end

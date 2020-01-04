@@ -1,5 +1,9 @@
 <%= form_with model: @issue, url: project_issues_path(@issue.project) do |f| %>
   <div class="form-group">
+    <%= f.label :parent_id %>
+    <%= f.select(:parent_id, current_project.issues.collect {|issue| [ issue.subject, issue.id ] }, { include_blank: true, placeholder: "Select a parent issue." }) %>
+  </div>
+  <div class="form-group">
     <%= f.label :subject %>
     <%= f.text_field :subject, class: "form-control", placeholder: "My new issue." %>
   </div>

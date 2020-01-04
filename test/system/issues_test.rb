@@ -13,5 +13,17 @@ class IssuesTest < ApplicationSystemTestCase
     click_on "Create"
 
     assert_text "New issue created."
+    assert_text "New issue subject"
+  end
+
+  test "issue page includes children" do
+    second_child_issue = FactoryBot.create :issue, subject: "Second child Issue"
+    child_issue = FactoryBot.create :issue, children: [second_child_issue], subject: "First child Issue"
+    issue = FactoryBot.create :issue, children: [child_issue]
+
+    visit issue_path(issue)
+
+    assert_text "Second child Issue"
+    assert_text "First child Issue"
   end
 end
