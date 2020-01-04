@@ -14,4 +14,13 @@ class IssueTest < ActiveSupport::TestCase
     assert_includes Issue.with_project(project), included_issue
     assert_not_includes Issue.with_project(project), excluded_issue
   end
+
+  test "has parent and children" do
+    parent = FactoryBot.create :issue
+    children = FactoryBot.create_list :issue, 2
+    issue = FactoryBot.create :issue, parent: parent, children: children
+
+    assert_equal issue.parent, parent
+    assert_equal issue.children, children
+  end
 end
