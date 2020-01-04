@@ -1,13 +1,12 @@
 class ProjectGanttChartSerializer
+  END_TO_START = 1.freeze
+
   def initialize(project)
     @project = project
   end
 
   def to_h
-    {
-      constraints: [],
-      activities: activities,
-    }
+    { constraints: constraints, activities: activities }
   end
 
   def to_json
@@ -18,6 +17,12 @@ class ProjectGanttChartSerializer
 
   def issues
     project.issues
+  end
+
+  def constraints
+    issues.select(&:parent_id).map do |issue|
+      { from: issue.parent_id.to_s, to: issue.id.to_s, type: END_TO_START }
+    end
   end
 
   def activities

@@ -31,12 +31,21 @@ class ProjectGanttChartSerializerTest < ActiveSupport::TestCase
           },
         },
       },
-  }.freeze
+    }.freeze
 
   def project
-    FactoryBot.create(:project).tap do |project|
-      FactoryBot.create(:issue, subject: "Create a landing page.", project: project)
-      FactoryBot.create(:issue, subject: "Create a getting started guide.", project: project)
+    @project ||= FactoryBot.create(:project).tap do |project|
+      issue =
+        FactoryBot.create(
+          :issue,
+          subject: "Create a landing page.", project: project,
+        )
+      FactoryBot.create(
+        :issue,
+        subject: "Create a getting started guide.",
+        project: project,
+        parent: issue,
+      )
     end
   end
 
@@ -45,11 +54,25 @@ class ProjectGanttChartSerializerTest < ActiveSupport::TestCase
   end
 
   test "serialixes a project correctly" do
-    assert JSON::Validator.validate(schema, json), "JSON output dose not match the Schema."
+    assert JSON::Validator.validate(schema, json),
+           "JSON output dose not match the Schema."
   end
 
   test "Issue are serialized." do
-    assert_match "Create a landing page.", json, "JSON dose not include first issue"
-    assert_match "Create a getting started guide.", json, "JSON dose not include first issue"
+    assert_match "Create a landing page.",
+                 json,
+                 "JSON dose not include first issue"
+    assert_match "Create a getting started guide.",
+                 json,
+                 "JSON dose not include first issue"
+  end
+
+  test "includes constraint for activety arrow" do
+    child_issue = project.issues.last
+    constraint = "{\"from\":\"#{child_issue.parent_id}\",\"to\":\"#{child_issue.id}\",\"type\":1}"
+
+    assert_match constraint,
+                 json,
+                 "constraint is not included"
   end
 end
