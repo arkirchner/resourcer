@@ -45,7 +45,12 @@ class IssuesTest < ApplicationSystemTestCase
   def create_issue(subject:, parent: nil)
     click_on "Add issue"
     fill_in "Subject", with: subject
-    select parent, from: "Parent" if parent
+    if parent
+      label = find("label", text: "Parent")
+      label.click
+
+      within label.find(:xpath, "..").find(".choices__item", text: parent).click
+    end
     click_on "Create"
 
     assert_text "New issue created."
