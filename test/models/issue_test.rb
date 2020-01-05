@@ -24,18 +24,26 @@ class IssueTest < ActiveSupport::TestCase
   end
 
   test "has parent and children" do
-    parent = FactoryBot.create :issue
-    children = FactoryBot.create_list :issue, 2
-    issue = FactoryBot.create :issue, parent: parent, children: children
+    project = FactoryBot.create :project
+    parent = FactoryBot.create :issue, project: project
+    children = FactoryBot.create_list :issue, 2, project: project
+    issue = FactoryBot.create :issue, parent: parent, children: children, project: project
 
     assert_equal issue.parent, parent
     assert_equal issue.children, children
   end
 
-  test "can to have itself as an parent" do
+  test "can not have itself as an parent" do
     issue = FactoryBot.build :issue
     issue.parent = issue
 
     assert_not issue.save, "Saved issue with itself as parent"
+  end
+
+  test "can only have issues from that same project as parent" do
+    invalid_parent = FactoryBot.create :issue, project: FactoryBot.create(:project)
+    issue = FactoryBot.build :issue, parent: invalid_parent
+
+    assert_not issue.save, "Saved parent issue with from diffrent project."
   end
 end
