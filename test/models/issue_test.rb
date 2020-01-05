@@ -6,13 +6,21 @@ class IssueTest < ActiveSupport::TestCase
     assert_not issue.save, "Saved the issue without a subject"
   end
 
-  test "with_porject scope" do
+  test ".with_porject" do
     project = FactoryBot.create :project
     included_issue = FactoryBot.create :issue, project: project
     excluded_issue = FactoryBot.create :issue
 
     assert_includes Issue.with_project(project), included_issue
     assert_not_includes Issue.with_project(project), excluded_issue
+  end
+
+  test ".without_issue" do
+    issue = FactoryBot.create :issue
+    excluded_issue  = FactoryBot.create :issue
+
+    assert_includes Issue.without_issue(excluded_issue), issue
+    assert_not_includes Issue.without_issue(excluded_issue), excluded_issue
   end
 
   test "has parent and children" do
@@ -22,5 +30,12 @@ class IssueTest < ActiveSupport::TestCase
 
     assert_equal issue.parent, parent
     assert_equal issue.children, children
+  end
+
+  test "can to have itself as an parent" do
+    issue = FactoryBot.build :issue
+    issue.parent = issue
+
+    assert_not issue.save, "Saved issue with itself as parent"
   end
 end
