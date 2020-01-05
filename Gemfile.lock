@@ -56,6 +56,8 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
+    acts_as_tree (2.9.1)
+      activerecord (>= 3.0.0)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     bindex (0.8.1)
@@ -118,6 +120,8 @@ GEM
       nokogiri (>= 1.6)
     jbuilder (2.9.1)
       activesupport (>= 4.2.0)
+    json-schema (2.8.1)
+      addressable (>= 2.4)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -251,6 +255,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts_as_tree
   bootsnap
   byebug
   capybara
@@ -261,6 +266,7 @@ DEPENDENCIES
   image_processing
   inline_svg
   jbuilder
+  json-schema
   listen
   minitest-ci
   pg

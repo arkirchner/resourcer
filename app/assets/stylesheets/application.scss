@@ -30,6 +30,8 @@ $navbar-top-padding: 3.75rem;
 @import "bootstrap/scss/utilities/borders";
 @import "bootstrap/scss/utilities/sizing";
 
+@import "choices.js/src/styles/choices";
+@import "flatpickr/dist/flatpickr";
 @import "ibm-gantt-chart/dist/ibm-gantt-chart";
 @import "./components/*";
 

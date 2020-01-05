@@ -8,6 +8,9 @@
 *.swo
 *.swp
 
+# Ignore test reports
+/test/reports
+
 # Ignore bundler config.
 /.bundle
 

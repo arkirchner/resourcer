@@ -4,7 +4,19 @@ class IssuesController < ApplicationController
   end
 
   def show
-    @issue = Issue.find(params[:id])
+    @issue = issue
+  end
+
+  def edit
+    @issue = issue
+  end
+
+  def update
+    if issue.update(issue_params)
+      redirect_to issue_url(issue), notice: "Issue was updated."
+    else
+      @issue = issue
+    end
   end
 
   def create
@@ -17,12 +29,23 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.all
+    @issues = Issue.with_project(current_project_id).all
   end
 
   private
 
   def issue_params
-    params.require(:issue).permit(:subject, :due_at)
+    params.require(:issue).permit(:subject, :due_at, :parent_id)
+  end
+
+  def issue
+    id  = params[:id]
+    return if id.blank?
+
+    Issue.includes(:project).find(id)
+  end
+
+  def current_project
+    super || issue&.project
   end
 end
