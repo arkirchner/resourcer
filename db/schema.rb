@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_04_074235) do
+ActiveRecord::Schema.define(version: 2020_01_05_181332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,17 @@ ActiveRecord::Schema.define(version: 2020_01_04_074235) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["key"], name: "index_projects_on_key", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "provider_id", null: false
+    t.string "provider", null: false
+    t.string "name", null: false
+    t.string "email", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["provider_id", "provider"], name: "index_users_on_provider_id_and_provider", unique: true
   end
 
   add_foreign_key "issues", "issues", column: "parent_id"

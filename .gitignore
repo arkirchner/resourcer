@@ -8,6 +8,9 @@
 *.swo
 *.swp
 
+# Ignore local config with development keys
+/.env.local
+
 # Ignore test reports
 /test/reports
 
