@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 // variables
-$navbar-top-padding: 3.75rem;
+$navbar-top-padding: 4.7rem;
 
 // base
 @import "bootstrap/scss/bootstrap-reboot";
@@ -21,6 +21,7 @@ $navbar-top-padding: 3.75rem;
 @import "bootstrap/scss/list-group";
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
 
 // utilities
 @import "bootstrap/scss/utilities/background";
@@ -40,8 +41,8 @@ $navbar-top-padding: 3.75rem;
 }
 
 .nav-icon {
-  height: 1.8rem;
-  width: 1.8rem;
+  height: 1.0rem;
+  width: 1.0rem;
 }
 
 @include media-breakpoint-down(md) {

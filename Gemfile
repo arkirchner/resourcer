@@ -3,7 +3,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "~> 2.6.3"
 
+gem "dotenv-rails", require: "dotenv/rails-now"
+
+gem "activerecord-pg_enum"
 gem "acts_as_tree"
+gem "omniauth"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
 gem "rails", "~> 6.0.2"
 gem "pg"
 gem "puma"

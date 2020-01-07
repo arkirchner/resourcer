@@ -10,21 +10,7 @@
   </head>
 
   <body class="bg-light navbar-top-padding">
-    <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light border-bottom">
-      <div class="navbar-brand">
-        <%= image_tag "logo.png", width: 30, height: 30, alt: "Resourcer" %>
-      </div>
-      <button class="navbar-toggler collapsed" type="button" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse">
-        <div class="navbar-nav">
-          <%= link_to "Dashboard", root_path, class: "nav-item nav-link#{current_project ? "" : " active"}" %>
-          <%= link_to "Projects", root_path, class: "nav-item nav-link#{current_project ? " active" : ""}" %>
-          <%= link_to "Recently Viewed", root_path, class: "nav-item nav-link" %>
-        </div>
-      </div>
-    </nav>
+    <%= render "navigation" if current_user %>
 
     <%= render "flashes" %>
 

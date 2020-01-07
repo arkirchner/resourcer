@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class ProjectsTest < ApplicationSystemTestCase
   test "creating a projetc through the dashboard" do
-    visit root_url
+    sign_up_with_github
 
     click_on "Add project"
 

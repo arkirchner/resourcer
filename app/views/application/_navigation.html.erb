@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light border-bottom">
+  <div class="navbar-brand">
+    <%= image_tag "logo.png", width: 30, height: 30, alt: "Resourcer" %>
+  </div>
+  <button class="navbar-toggler collapsed" type="button" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse">
+    <div class="navbar-nav  mr-auto">
+      <%= link_to "Dashboard", dashboard_path, class: "nav-item nav-link#{current_project ? "" : " active"}" %>
+      <%= link_to "Projects", root_path, class: "nav-item nav-link#{current_project ? " active" : ""}" %>
+      <%= link_to "Recently Viewed", root_path, class: "nav-item nav-link" %>
+    </div>
+    <div class="navbar-nav">
+      <div class="nav-item dropdown" data-controller="dropdown">
+        <a class="nav-link dropdown-toggle"
+           href="#"
+           role="button"
+           data-action="dropdown#toggle"
+           aria-haspopup="true"
+           aria-expanded="false">
+          <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/user.svg", class: "nav-icon" %>
+          <span class="navbar-text">
+            <%= current_user.name %>
+          </span>
+        </a>
+        <div class="dropdown-menu"
+             aria-labelledby="navbarDropdownMenuLink"
+             data-target="dropdown.menu">
+          <%= button_to "Sign Out!", auth_path, class: "dropdown-item",
+                                                method: :delete,
+                                                data: { target: "dropdown.item" } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
