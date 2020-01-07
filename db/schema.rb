@@ -15,6 +15,9 @@ ActiveRecord::Schema.define(version: 2020_01_05_181332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  # These are custom enum types that must be created before they can be used in the schema definition
+  create_enum "user_providers", ["github", "google"]
+
   create_table "issues", force: :cascade do |t|
     t.string "subject", null: false
     t.date "due_at"
@@ -34,8 +37,8 @@ ActiveRecord::Schema.define(version: 2020_01_05_181332) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.enum "provider", null: false, as: "user_providers"
     t.string "provider_id", null: false
-    t.string "provider", null: false
     t.string "name", null: false
     t.string "email", default: "", null: false
     t.datetime "created_at", precision: 6, null: false

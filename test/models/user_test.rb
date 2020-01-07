@@ -32,12 +32,11 @@ module UserTest
 
     test "it requires a provider" do
       @user.provider = ""
-      assert_not @user.save
+      assert_raise(ActiveRecord::NotNullViolation) { @user.save }
     end
 
     test "it requires a valid provider" do
-      @user.provider = "line"
-      assert_not @user.save
+      assert_raise(ArgumentError) { @user.provider = "line" }
     end
 
     test "it requires a provider_id" do

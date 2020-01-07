@@ -5,6 +5,7 @@ ruby "~> 2.6.3"
 
 gem "dotenv-rails", require: "dotenv/rails-now"
 
+gem "activerecord-pg_enum"
 gem "acts_as_tree"
 gem "omniauth"
 gem "omniauth-github"

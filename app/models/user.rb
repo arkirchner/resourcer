@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  PROVIDER = %w[github].freeze
+  enum provider: { github: "github", google: "google" }
 
   def self.find_or_create_from_auth_hash(auth_hash)
     provider_id, provider = auth_hash.values_at :uid, :provider
@@ -14,5 +14,4 @@ class User < ApplicationRecord
 
   validates :provider_id, :name, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :provider, inclusion: { in: PROVIDER }
 end
