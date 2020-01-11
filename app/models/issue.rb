@@ -9,11 +9,6 @@ class Issue < ApplicationRecord
   scope :with_project, ->(project) { where(project_id: project) }
   scope :without_issue, ->(issue) { where.not(id: issue) }
 
-
-  def description_html
-    renderer.render(ApplicationController.helpers.sanitize(description)).html_safe
-  end
-
   private
 
   def parent_issue_must_have_same_project
@@ -24,13 +19,5 @@ class Issue < ApplicationRecord
 
   def cannot_have_itself_as_parent
     errors.add(:parent_id, "can't not be itself!") if self == parent
-  end
-
-  def renderer
-    @renderer ||=
-      Redcarpet::Markdown.new(
-        Redcarpet::Render::HTML,
-        autolink: true, tables: true,
-      )
   end
 end

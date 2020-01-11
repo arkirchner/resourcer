@@ -19,11 +19,10 @@ class IssuesTest < ApplicationSystemTestCase
     visit dashboard_url
 
     create_issue subject: "New issue subject",
-                 description: "# Heading\n---\n__Advertisement__\n"
+                 description: "# Heading\n__Advertisement__"
 
-    assert_equal find("#description")["innerHTML"].squish,
-                 "<h1>Heading</h1> <hr> <p><strong>Advertisement</strong></p>",
-                 "The markdown was not converted to HTML"
+    assert_selector "h1", text: "Heading"
+    assert_css "p > strong", text: "Advertisement"
   end
 
   test "issue with deeply nested children" do
