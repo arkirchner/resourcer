@@ -11,9 +11,13 @@
     <%= f.label :subject %>
     <%= f.text_field :subject, class: "form-control", placeholder: "My new issue." %>
   </div>
-  <div class="form-group">
+  <div class="form-group" data-controller="markdown">
     <%= f.label :description %>
-    <%= f.text_area :description, class: "form-control", rows: 18 %>
+    <%= f.text_area :description, class: "form-control", rows: 18,
+      data: {
+        target: "markdown.textArea",
+        action: "keyup->markdown#resize paste->markdown#resize"
+    } %>
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar for markdown editor.">
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Text styles">
