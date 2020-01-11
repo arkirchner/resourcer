@@ -4,20 +4,29 @@ class IssuesTest < ApplicationSystemTestCase
   def setup
     super
     sign_up_with_github
+    FactoryBot.create(:project)
   end
 
   test "creating a new issue form the top page" do
-    FactoryBot.create(:project)
-
-    visit root_url
+    visit dashboard_url
 
     create_issue subject: "New issue subject"
 
     assert_text "New issue subject"
   end
 
+  test "issue markdown description is convererted to HTML" do
+    visit dashboard_url
+
+    create_issue subject: "New issue subject",
+                 description: "# Heading\n---\n__Advertisement__\n"
+
+    assert_equal find("#description")["innerHTML"].squish,
+                 "<h1>Heading</h1> <hr> <p><strong>Advertisement</strong></p>",
+                 "The markdown was not converted to HTML"
+  end
+
   test "issue with deeply nested children" do
-    FactoryBot.create(:project)
     visit root_url
 
     create_issue subject: "Root issue"
@@ -47,15 +56,17 @@ class IssuesTest < ApplicationSystemTestCase
     assert_text "Issue was updated."
   end
 
-  def create_issue(subject:, parent: nil)
+  def create_issue(subject:, parent: nil, description: nil)
     click_on "Add issue"
     fill_in "Subject", with: subject
+    fill_in "Description", with: description if description
     if parent
       label = find("label", text: "Parent")
       label.click
 
       within label.find(:xpath, "..").find(".choices__item", text: parent).click
     end
+
     click_on "Create"
 
     assert_text "New issue created."

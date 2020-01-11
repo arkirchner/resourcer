@@ -225,6 +225,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redcarpet (3.5.0)
     regexp_parser (1.6.0)
     ruby-vips (2.0.16)
       ffi (~> 1.9)
@@ -309,6 +310,7 @@ DEPENDENCIES
   pg
   puma
   rails (~> 6.0.2)
+  redcarpet
   sass-rails
   selenium-webdriver
   spring
