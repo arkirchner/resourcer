@@ -21,15 +21,15 @@
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar for markdown editor.">
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Text styles">
-        <button type="button" class="btn btn-secondary">
+        <button type="button" class="btn btn-secondary" data-action="markdown#bold">
           <p class="sr-only sr-only-focusable">Bold</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/bold.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary">
+        <button type="button" class="btn btn-secondary" data-action="markdown#italic">
           <p class="sr-only sr-only-focusable">Italic</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/italic.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary">
+        <button type="button" class="btn btn-secondary" data-action="markdown#strike">
           <p class="sr-only sr-only-focusable">Strike through</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/strikethrough.svg", class: "nav-icon" %>
         </button>
