@@ -23,11 +23,11 @@ export default class extends Controller {
   }
 
   bold() {
-    this._surround(BOLD);
+    this.surround(BOLD);
   }
 
   italic() {
-    this._surround(ITALIC);
+    this.surround(ITALIC);
   }
 
   strike() {
@@ -61,13 +61,19 @@ export default class extends Controller {
   prepend(markdown) {
     const { text, start, end } = this.testStats;
 
-    const beforeNewLine = text.slice(0, start).lastIndexOf('\n');
-    const insertAt = beforeNewLine < 0 ? 0 : beforeNewLine + 1;
+    const beforeFirstNewLine = text.slice(0, start).lastIndexOf('\n');
+    const beforeLastNewLine = text.slice(0, end).lastIndexOf('\n');
 
-    const startText = text.slice(0, insertAt);
-    const endText = text.slice(insertAt);
+    const insertFirstAt = beforeFirstNewLine < 0 ? 0 : beforeFirstNewLine + 1;
+    const insertLastAt = beforeLastNewLine < 0 ? 0 : beforeLastNewLine + 1;
 
-    this.textAreaTarget.value = [startText, markdown, endText].join('');
+    const startText = text.slice(0, insertFirstAt);
+    const middleTexts = text.slice(insertFirstAt, insertLastAt).split('\n').filter(t => t.length !== 0).map(t => `${t}\n`);
+    const endText = text.slice(insertLastAt);
+
+    console.log(middleTexts);
+
+    this.textAreaTarget.value = [startText, ...middleTexts, endText].join(markdown);
   }
 
   get testStats() {
