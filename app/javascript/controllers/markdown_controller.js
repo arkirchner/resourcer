@@ -3,6 +3,8 @@ import { Controller } from 'stimulus';
 const BOLD = '**';
 const ITALIC = '_';
 const STRIKE = '~~';
+const ORDERED_LIST = '1. ';
+const UNORDERED_LIST = '- ';
 
 export default class extends Controller {
   static targets = ['textArea'];
@@ -32,6 +34,14 @@ export default class extends Controller {
     this.surround(STRIKE);
   }
 
+  ordered() {
+    this.prepend(ORDERED_LIST);
+  }
+
+  unordered() {
+    this.prepend(UNORDERED_LIST);
+  }
+
   surround(markdown) {
     const { text, start, end } = this.testStats;
 
@@ -46,6 +56,18 @@ export default class extends Controller {
       markdown,
       endText,
     ].join('');
+  }
+
+  prepend(markdown) {
+    const { text, start, end } = this.testStats;
+
+    const beforeNewLine = text.slice(0, start).lastIndexOf('\n');
+    const insertAt = beforeNewLine < 0 ? 0 : beforeNewLine + 1;
+
+    const startText = text.slice(0, insertAt);
+    const endText = text.slice(insertAt);
+
+    this.textAreaTarget.value = [startText, markdown, endText].join('');
   }
 
   get testStats() {
