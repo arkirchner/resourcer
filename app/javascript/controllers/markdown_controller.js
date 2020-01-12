@@ -3,8 +3,12 @@ import { Controller } from 'stimulus';
 const BOLD = '**';
 const ITALIC = '_';
 const STRIKE = '~~';
+const QUOTE = '> ';
+const CODE = '    ';
 const ORDERED_LIST = '1. ';
 const UNORDERED_LIST = '- ';
+const LINK = '[link text](https://example.com)';
+const TABLE = '\n| First | Second | Third |\n| First | Second | Third |\n\n';
 
 export default class extends Controller {
   static targets = ['textArea'];
@@ -34,6 +38,37 @@ export default class extends Controller {
     this.surround(STRIKE);
   }
 
+  quote() {
+    this.prepend(QUOTE);
+  }
+
+  code() {
+    this.prepend(CODE);
+  }
+
+  table() {
+    const { text, start } = this.textStats;
+    const beforeNewLine = text.slice(0, start).lastIndexOf('\n');
+
+    const insertAt = beforeNewLine < 0 ? 0 : beforeNewLine + 1;
+    const startText = text.slice(0, insertAt);
+    const endText = text.slice(insertAt);
+    this.textAreaTarget.value = `${startText}${TABLE}${endText}`;
+  }
+
+  link() {
+    const { text, start, end } = this.textStats;
+
+    const startText = text.slice(0, start);
+    const middleText = text.slice(start, end);
+    const endText = text.slice(end);
+
+    const linkText =
+      middleText.length === 0 ? LINK : LINK.replace('link text', middleText);
+
+    this.textAreaTarget.value = [startText, linkText, endText].join('');
+  }
+
   ordered() {
     this.prepend(ORDERED_LIST);
   }
@@ -43,23 +78,17 @@ export default class extends Controller {
   }
 
   surround(markdown) {
-    const { text, start, end } = this.testStats;
+    const { text, start, end } = this.textStats;
 
     const startText = text.slice(0, start);
     const middleText = text.slice(start, end);
     const endText = text.slice(end);
 
-    this.textAreaTarget.value = [
-      startText,
-      markdown,
-      middleText,
-      markdown,
-      endText,
-    ].join('');
+    this.textAreaTarget.value = [startText, middleText, endText].join(markdown);
   }
 
   prepend(markdown) {
-    const { text, start, end } = this.testStats;
+    const { text, start, end } = this.textStats;
 
     const beforeFirstNewLine = text.slice(0, start).lastIndexOf('\n');
     const beforeLastNewLine = text.slice(0, end).lastIndexOf('\n');
@@ -68,15 +97,21 @@ export default class extends Controller {
     const insertLastAt = beforeLastNewLine < 0 ? 0 : beforeLastNewLine + 1;
 
     const startText = text.slice(0, insertFirstAt);
-    const middleTexts = text.slice(insertFirstAt, insertLastAt).split('\n').filter(t => t.length !== 0).map(t => `${t}\n`);
+    const middleTexts = text
+      .slice(insertFirstAt, insertLastAt)
+      .split('\n')
+      .filter(t => t.length !== 0)
+      .map(t => `${t}\n`);
     const endText = text.slice(insertLastAt);
 
     console.log(middleTexts);
 
-    this.textAreaTarget.value = [startText, ...middleTexts, endText].join(markdown);
+    this.textAreaTarget.value = [startText, ...middleTexts, endText].join(
+      markdown
+    );
   }
 
-  get testStats() {
+  get textStats() {
     const text = this.textAreaTarget.value;
     const start = this.textAreaTarget.selectionStart;
     const end = this.textAreaTarget.selectionEnd;
