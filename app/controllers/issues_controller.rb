@@ -15,16 +15,17 @@ class IssuesController < ApplicationController
     if issue.update(issue_params)
       redirect_to issue_url(issue), notice: "Issue was updated."
     else
-      @issue = issue
+      render partial: "form", locals: { issue: issue }
     end
   end
 
   def create
-    @issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
-    if @issue.save
-      redirect_to issue_url(@issue), notice: "New issue created."
+    issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
+
+    if issue.save
+      redirect_to issue_url(issue), notice: "New issue created."
     else
-      render :new
+      render partial: "form", locals: { issue: issue }
     end
   end
 
