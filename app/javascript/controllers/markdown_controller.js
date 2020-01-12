@@ -54,6 +54,7 @@ export default class extends Controller {
     const startText = text.slice(0, insertAt);
     const endText = text.slice(insertAt);
     this.textAreaTarget.value = `${startText}${TABLE}${endText}`;
+    this.resize();
   }
 
   link() {
@@ -67,6 +68,7 @@ export default class extends Controller {
       middleText.length === 0 ? LINK : LINK.replace('link text', middleText);
 
     this.textAreaTarget.value = [startText, linkText, endText].join('');
+    this.resize();
   }
 
   ordered() {
@@ -85,6 +87,7 @@ export default class extends Controller {
     const endText = text.slice(end);
 
     this.textAreaTarget.value = [startText, middleText, endText].join(markdown);
+    this.resize();
   }
 
   prepend(markdown) {
@@ -109,6 +112,7 @@ export default class extends Controller {
     this.textAreaTarget.value = [startText, ...middleTexts, endText].join(
       markdown
     );
+    this.resize();
   }
 
   get textStats() {
