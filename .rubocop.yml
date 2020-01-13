@@ -13,4 +13,8 @@ Metrics/LineLength:
 AllCops:
   Exclude:
     - bin/*
-    - db/*
+    - db/**/*
+    - node_modules/*
+    - Guardfile
+Layout/DotPosition:
+  EnforcedStyle: leading

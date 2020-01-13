@@ -11,7 +11,8 @@ module UserTest
     test "it finds an exsiting user" do
       User.find_or_create_from_auth_hash(github_auth_hash)
 
-      assert_no_changes -> { User.count }, "the exsiting user was not returned" do
+      assert_no_changes -> { User.count },
+                        "the exsiting user was not returned" do
         User.find_or_create_from_auth_hash(github_auth_hash)
       end
     end
@@ -26,9 +27,7 @@ module UserTest
   end
 
   class Validations < ActiveSupport::TestCase
-    setup do
-      @user = FactoryBot.build :user
-    end
+    setup { @user = FactoryBot.build :user }
 
     test "it requires a provider" do
       @user.provider = ""

@@ -27,7 +27,9 @@ class IssueTest < ActiveSupport::TestCase
     project = FactoryBot.create :project
     parent = FactoryBot.create :issue, project: project
     children = FactoryBot.create_list :issue, 2, project: project
-    issue = FactoryBot.create :issue, parent: parent, children: children, project: project
+    issue =
+      FactoryBot.create :issue,
+                        parent: parent, children: children, project: project
 
     assert_equal issue.parent, parent
     assert_equal issue.children, children
@@ -41,7 +43,8 @@ class IssueTest < ActiveSupport::TestCase
   end
 
   test "can only have issues from that same project as parent" do
-    invalid_parent = FactoryBot.create :issue, project: FactoryBot.create(:project)
+    invalid_parent =
+      FactoryBot.create :issue, project: FactoryBot.create(:project)
     issue = FactoryBot.build :issue, parent: invalid_parent
 
     assert_not issue.save, "Saved parent issue with from diffrent project."
