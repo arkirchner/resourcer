@@ -12,8 +12,9 @@
     <%= f.text_field :subject, class: form_input_class(issue, :subject), placeholder: "My new issue." %>
     <%= form_input_errors issue, :subject  %>
   </div>
-  <div ass="form-group" data-controller="markdown">
+  <div ass="form-group" data-controller="markdown" data-markdown-preview-url="<%= markdown_previews_path %>">
     <%= f.label :description %>
+    <div data-target="markdown.preview"></div>
     <%= f.text_area :description, class: form_input_class(issue, :description), rows: 18,
       data: {
         target: "markdown.textArea",
@@ -23,52 +24,53 @@
 
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar for markdown editor.">
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Text styles">
-        <button type="button" class="btn btn-secondary" data-action="markdown#bold">
+        <button type="button" class="btn btn-secondary" data-action="markdown#bold" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Bold</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/bold.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#italic">
+        <button type="button" class="btn btn-secondary" data-action="markdown#italic" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Italic</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/italic.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#strike">
+        <button type="button" class="btn btn-secondary" data-action="markdown#strike" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Strike through</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/strikethrough.svg", class: "nav-icon" %>
         </button>
       </div>
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Lists">
-        <button type="button" class="btn btn-secondary" data-action="markdown#unordered">
+        <button type="button" class="btn btn-secondary" data-action="markdown#unordered" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Unordered  List</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/list-ul.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#ordered">
+        <button type="button" class="btn btn-secondary" data-action="markdown#ordered" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Ordered List</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/list-ol.svg", class: "nav-icon" %>
         </button>
       </div>
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Table, Code etc.">
-        <button type="button" class="btn btn-secondary" data-action="markdown#table">
+        <button type="button" class="btn btn-secondary" data-action="markdown#table" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Table</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/table.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#quote">
+        <button type="button" class="btn btn-secondary" data-action="markdown#quote" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Quote</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/quote-right.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#code">
+        <button type="button" class="btn btn-secondary" data-action="markdown#code" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Code</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/code.svg", class: "nav-icon" %>
         </button>
-        <button type="button" class="btn btn-secondary" data-action="markdown#link">
+        <button type="button" class="btn btn-secondary" data-action="markdown#link" data-target="markdown.toolButton">
           <p class="sr-only sr-only-focusable">Link</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/link.svg", class: "nav-icon" %>
         </button>
       </div>
       <div class="btn-group mr-2 mt-2" role="group" aria-label="Preview changes">
-        <button type="button" class="btn btn-secondary">
+        <%= link_to  markdown_previews_path, class: "btn btn-secondary", remote: true, method: :post,
+          data: { action: "markdown#preparePreview ajax:success->markdown#preview", target: "markdown.previewButton" } do %>
           <p class="sr-only sr-only-focusable">Preview</p>
           <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/eye.svg", class: "nav-icon" %>
-        </button>
+        <% end %>
       </div>
     </div>
   </div>

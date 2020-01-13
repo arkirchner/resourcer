@@ -4,6 +4,7 @@ Rails.application.routes.draw do
               only: %i[new create show index edit update], shallow: true
     resource :project_gantt_chart, only: :show
   end
+  resources :markdown_previews, only: :create
 
   resource :dashboard, only: :show
 

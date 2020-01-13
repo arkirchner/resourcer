@@ -2,22 +2,18 @@ require "application_system_test_case"
 
 class IssuesTest < ApplicationSystemTestCase
   def setup
+    FactoryBot.create(:project)
     super
     sign_up_with_github
-    FactoryBot.create(:project)
   end
 
   test "creating a new issue form the top page" do
-    visit dashboard_url
-
     create_issue subject: "New issue subject"
 
     assert_text "New issue subject"
   end
 
   test "issue markdown description is convererted to HTML" do
-    visit dashboard_url
-
     create_issue subject: "New issue subject",
                  description: "# Heading\n__Advertisement__"
 
@@ -25,9 +21,18 @@ class IssuesTest < ApplicationSystemTestCase
     assert_css "p > strong", text: "Advertisement"
   end
 
-  test "issue with deeply nested children" do
-    visit root_url
+  test "issue markdown can be previewed in form" do
+    click_on "Add issue"
 
+    fill_in "Description", with: "# Heading\n__Advertisement__"
+
+    click_on "Preview"
+
+    assert_selector "h1", text: "Heading"
+    assert_css "p > strong", text: "Advertisement"
+  end
+
+  test "issue with deeply nested children" do
     create_issue subject: "Root issue"
     create_issue subject: "Level 1 child issue", parent: "Root issue"
     create_issue subject: "Level 2 child issue", parent: "Level 1 child issue"

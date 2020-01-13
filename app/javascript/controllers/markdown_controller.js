@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus';
+import ajaxToHtml from '../utils/ajax_to_html';
 
 const BOLD = '**';
 const ITALIC = '_';
@@ -11,7 +12,7 @@ const LINK = '[link text](https://example.com)';
 const TABLE = '\n| First | Second | Third |\n| First | Second | Third |\n\n';
 
 export default class extends Controller {
-  static targets = ['textArea'];
+  static targets = ['textArea', 'preview', 'toolButton', 'previewButton'];
 
   connect() {
     this.minRows = this.textAreaTarget.rows;
@@ -24,6 +25,34 @@ export default class extends Controller {
     if (rows !== this.textAreaTarget.rows) {
       this.textAreaTarget.rows = this.minRows > rows ? this.minRows : rows;
     }
+  }
+
+  preparePreview(event) {
+    if (this.previewLoading || this.previewing) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      if (!this.previewLoading) {
+        this.previewTarget.innerHTML = '';
+        this.toolButtonTargets.forEach(b => b.disabled = false);
+        this.previewing = false;
+        this.textAreaTarget.classList.remove('d-none');
+      }
+
+    } else {
+      this.previewLoading = true;
+      this.textAreaTarget.classList.add('d-none');
+      this.toolButtonTargets.forEach(b => b.disabled = true);
+      this.previewButtonTarget.dataset.params = `markdown=${this.textAreaTarget.value}`;
+    }
+  }
+
+  preview(event) {
+    event.stopPropagation();
+
+    this.previewTarget.innerHTML = ajaxToHtml(event);
+    this.previewing = true;
+    this.previewLoading = false;
   }
 
   bold() {
@@ -121,5 +150,9 @@ export default class extends Controller {
     const end = this.textAreaTarget.selectionEnd;
 
     return { text, start, end };
+  }
+
+  get previewUrl() {
+    return this.data.get('preview-url');
   }
 }
