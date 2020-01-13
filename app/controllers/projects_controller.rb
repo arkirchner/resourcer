@@ -8,12 +8,11 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(project_params)
-    if @project.save
-      redirect_to project_url(@project),
-        notice: "New project was created."
+    project = Project.new(project_params)
+    if project.save
+      redirect_to project_url(project), notice: "New project was created."
     else
-      render :new
+      render partial: "form", locals: { project: project }
     end
   end
 

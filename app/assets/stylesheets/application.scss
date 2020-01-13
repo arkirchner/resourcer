@@ -12,6 +12,7 @@ $navbar-top-padding: 4.7rem;
 @import "bootstrap/scss/alert";
 @import "bootstrap/scss/type";
 @import "bootstrap/scss/buttons";
+@import "bootstrap/scss/button-group";
 @import "bootstrap/scss/media";
 @import "bootstrap/scss/card";
 @import "bootstrap/scss/close";
@@ -31,6 +32,7 @@ $navbar-top-padding: 4.7rem;
 @import "bootstrap/scss/utilities/borders";
 @import "bootstrap/scss/utilities/sizing";
 
+@import "github-markdown-css/github-markdown";
 @import "choices.js/src/styles/choices";
 @import "flatpickr/dist/flatpickr";
 @import "ibm-gantt-chart/dist/ibm-gantt-chart";

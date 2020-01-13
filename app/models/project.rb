@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   before_validation :upcase_key
 
-  has_many :issues
+  has_many :issues, dependent: :restrict_with_exception
 
   validates :name, presence: true
   validates :key,

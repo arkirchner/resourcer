@@ -2,24 +2,37 @@ require "application_system_test_case"
 
 class IssuesTest < ApplicationSystemTestCase
   def setup
+    FactoryBot.create(:project)
     super
     sign_up_with_github
   end
 
   test "creating a new issue form the top page" do
-    FactoryBot.create(:project)
-
-    visit root_url
-
     create_issue subject: "New issue subject"
 
     assert_text "New issue subject"
   end
 
-  test "issue with deeply nested children" do
-    FactoryBot.create(:project)
-    visit root_url
+  test "issue markdown description is convererted to HTML" do
+    create_issue subject: "New issue subject",
+                 description: "# Heading\n__Advertisement__"
 
+    assert_selector "h1", text: "Heading"
+    assert_css "p > strong", text: "Advertisement"
+  end
+
+  test "issue markdown can be previewed in form" do
+    click_on "Add issue"
+
+    fill_in "Description", with: "# Heading\n__Advertisement__"
+
+    click_on "Preview"
+
+    assert_selector "h1", text: "Heading"
+    assert_css "p > strong", text: "Advertisement"
+  end
+
+  test "issue with deeply nested children" do
     create_issue subject: "Root issue"
     create_issue subject: "Level 1 child issue", parent: "Root issue"
     create_issue subject: "Level 2 child issue", parent: "Level 1 child issue"
@@ -47,15 +60,17 @@ class IssuesTest < ApplicationSystemTestCase
     assert_text "Issue was updated."
   end
 
-  def create_issue(subject:, parent: nil)
+  def create_issue(subject:, parent: nil, description: nil)
     click_on "Add issue"
     fill_in "Subject", with: subject
+    fill_in "Description", with: description if description
     if parent
       label = find("label", text: "Parent")
       label.click
 
       within label.find(:xpath, "..").find(".choices__item", text: parent).click
     end
+
     click_on "Create"
 
     assert_text "New issue created."

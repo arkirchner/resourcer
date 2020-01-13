@@ -1,11 +1,13 @@
-<%= form_with model: project do |f| %>
+<%= form_with model: project, data: { controller: "form", action: "ajax:success->form#update" } do |f| %>
   <div class="form-group">
     <%= f.label :name %>
-    <%= f.text_field :name, class: "form-control", placeholder: "My new project." %>
+    <%= f.text_field :name, class: form_input_class(project, :name), placeholder: "My new project." %>
+    <%= form_input_errors project, :name  %>
   </div>
   <div class="form-group">
     <%= f.label :key %>
-    <%= f.text_field :key, class: "form-control", placeholder: "ABC", aria: { describedby: "projectKeyHelp" }, minlength: 3, maxlength: 3 %>
+    <%= f.text_field :key, class: form_input_class(project, :key), placeholder: "ABC", aria: { describedby: "projectKeyHelp" }, minlength: 3, maxlength: 3 %>
+    <%= form_input_errors project, :key  %>
     <small id="projectKeyHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
   </div>
   <%= f.submit class: "btn btn-primary" %>

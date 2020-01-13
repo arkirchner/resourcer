@@ -15,16 +15,17 @@ class IssuesController < ApplicationController
     if issue.update(issue_params)
       redirect_to issue_url(issue), notice: "Issue was updated."
     else
-      @issue = issue
+      render partial: "form", locals: { issue: issue }
     end
   end
 
   def create
-    @issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
-    if @issue.save
-      redirect_to issue_url(@issue), notice: "New issue created."
+    issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
+
+    if issue.save
+      redirect_to issue_url(issue), notice: "New issue created."
     else
-      render :new
+      render partial: "form", locals: { issue: issue }
     end
   end
 
@@ -35,11 +36,11 @@ class IssuesController < ApplicationController
   private
 
   def issue_params
-    params.require(:issue).permit(:subject, :due_at, :parent_id)
+    params.require(:issue).permit(:subject, :due_at, :parent_id, :description)
   end
 
   def issue
-    id  = params[:id]
+    id = params[:id]
     return if id.blank?
 
     Issue.includes(:project).find(id)

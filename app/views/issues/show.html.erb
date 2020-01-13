@@ -1,4 +1,13 @@
 <h1><%= @issue.subject %></h1>
+
+<div class="card">
+  <div class="card-body">
+    <div id="description" class="markdown-body">
+      <%= markdown_to_html @issue.description %>
+    </div>
+  </div>
+</div>
+
 <%= link_to "Edit", edit_issue_path(@issue) %>
 
 <%= render "childran", { issue: @issue } %>

@@ -1,5 +1,5 @@
 class ProjectGanttChartSerializer
-  END_TO_START = 1.freeze
+  END_TO_START = 1
 
   def initialize(project)
     @project = project
@@ -9,7 +9,7 @@ class ProjectGanttChartSerializer
     { constraints: constraints, activities: activities }
   end
 
-  def to_json
+  def to_json(*_args)
     to_h.to_json
   end
 

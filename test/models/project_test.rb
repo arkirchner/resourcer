@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class ProjectTest < ActiveSupport::TestCase
   test "should not save a project without subject" do
@@ -19,7 +19,8 @@ class ProjectTest < ActiveSupport::TestCase
     assert_not whitespace.save, "Saved the project with a whitespace"
 
     special_character = FactoryBot.build :project, key: "AA+"
-    assert_not special_character.save, "Saved the project with a special character"
+    assert_not special_character.save,
+               "Saved the project with a special character"
   end
 
   test "key with down case values are upcased" do

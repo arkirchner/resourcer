@@ -53,7 +53,7 @@ jobs:
           name: run tests
           command: |
             mkdir /tmp/test-results
-            bundle exec rails test:system test
+            PARALLEL_WORKERS=2 bundle exec rails test:system test
 
       # collect reports
       - store_test_results:

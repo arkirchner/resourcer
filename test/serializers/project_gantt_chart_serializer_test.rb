@@ -34,19 +34,20 @@ class ProjectGanttChartSerializerTest < ActiveSupport::TestCase
     }.freeze
 
   def project
-    @project ||= FactoryBot.create(:project).tap do |project|
-      issue =
+    @project ||=
+      FactoryBot.create(:project).tap do |project|
+        issue =
+          FactoryBot.create(
+            :issue,
+            subject: "Create a landing page.", project: project,
+          )
         FactoryBot.create(
           :issue,
-          subject: "Create a landing page.", project: project,
+          subject: "Create a getting started guide.",
+          project: project,
+          parent: issue,
         )
-      FactoryBot.create(
-        :issue,
-        subject: "Create a getting started guide.",
-        project: project,
-        parent: issue,
-      )
-    end
+      end
   end
 
   def json
@@ -69,10 +70,11 @@ class ProjectGanttChartSerializerTest < ActiveSupport::TestCase
 
   test "includes constraint for activety arrow" do
     child_issue = project.issues.last
-    constraint = "{\"from\":\"#{child_issue.parent_id}\",\"to\":\"#{child_issue.id}\",\"type\":1}"
+    constraint =
+      "{\"from\":\"#{child_issue.parent_id}\",\"to\":\"#{
+        child_issue.id
+      }\",\"type\":1}"
 
-    assert_match constraint,
-                 json,
-                 "constraint is not included"
+    assert_match constraint, json, "constraint is not included"
   end
 end

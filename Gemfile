@@ -7,19 +7,20 @@ gem "dotenv-rails", require: "dotenv/rails-now"
 
 gem "activerecord-pg_enum"
 gem "acts_as_tree"
+gem "bootsnap", require: false
+gem "image_processing"
+gem "inline_svg"
+gem "jbuilder"
+gem "kramdown"
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
-gem "rails", "~> 6.0.2"
 gem "pg"
 gem "puma"
+gem "rails", "~> 6.0.2"
 gem "sass-rails"
-gem "webpacker"
 gem "turbolinks"
-gem "jbuilder"
-gem "image_processing"
-gem "inline_svg"
-gem "bootsnap", require: false
+gem "webpacker"
 
 group :development, :test do
   gem "byebug", platforms: %i[mri mingw x64_mingw]
@@ -30,10 +31,10 @@ group :development, :test do
 end
 
 group :development do
-  gem "web-console"
   gem "listen"
   gem "spring"
   gem "spring-watcher-listen"
+  gem "web-console"
 end
 
 group :test do
