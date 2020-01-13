@@ -40,7 +40,7 @@ class IssuesController < ApplicationController
   end
 
   def issue
-    id  = params[:id]
+    id = params[:id]
     return if id.blank?
 
     Issue.includes(:project).find(id)

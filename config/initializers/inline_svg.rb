@@ -6,6 +6,6 @@ InlineSvg.configure do |config|
       "#{Rails.root}/app/assets/images",
       "#{Rails.root}/node_modules/@fortawesome/fontawesome-free/svgs",
     ],
-    filters: /\.svg/
+    filters: /\.svg/,
   )
 end

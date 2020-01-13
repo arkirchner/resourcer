@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class MarkdownTest < ActiveSupport::TestCase
   markdown = "# Heading\n---\n__Advertisement__\n"

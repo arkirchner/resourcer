@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class ProjectTest < ActiveSupport::TestCase
   test "should not save a project without subject" do

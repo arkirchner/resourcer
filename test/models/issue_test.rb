@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class IssueTest < ActiveSupport::TestCase
   test "should not save issue without subject" do
@@ -17,7 +17,7 @@ class IssueTest < ActiveSupport::TestCase
 
   test ".without_issue" do
     issue = FactoryBot.create :issue
-    excluded_issue  = FactoryBot.create :issue
+    excluded_issue = FactoryBot.create :issue
 
     assert_includes Issue.without_issue(excluded_issue), issue
     assert_not_includes Issue.without_issue(excluded_issue), excluded_issue
