@@ -10,3 +10,7 @@ require:
 Metrics/LineLength:
   Exclude:
     - config/routes.rb
+AllCops:
+  Exclude:
+    - bin/*
+    - db/*
