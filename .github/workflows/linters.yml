@@ -1,9 +1,9 @@
 name: Linters
 
-on: [push]
+on: [pull_request]
 
 jobs:
-  build:
+  rubocop:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -13,3 +13,27 @@ jobs:
         action_config_path: '.github/config/rubocop_linter_action.yml' # Note: this is the default location
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  eslint:
+    name: runner / eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: eslint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter.
+          eslint_flags: 'app/javascript/'
+
+  stylelint:
+    name: runner / stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: stylelint
+        uses: reviewdog/action-stylelint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Change reporter.
+          stylelint_input: '**/*.scss'
