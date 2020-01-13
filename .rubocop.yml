@@ -5,6 +5,7 @@ inherit_from:
 require:
   - rubocop-rspec
   - rubocop-rails
+  - rubocop-minitest
   - rubocop-performance
 Metrics/LineLength:
   Exclude:
