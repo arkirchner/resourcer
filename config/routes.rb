@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :projects, only: %i[new create show] do
-    resources :project_members, only: :index
+    resources :members, controller: :project_members, only: :index
     resources :issues,
               only: %i[new create show index edit update], shallow: true
     resource :project_gantt_chart, only: :show

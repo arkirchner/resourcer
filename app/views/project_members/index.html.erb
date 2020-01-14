@@ -1,0 +1,6 @@
+<div id="members">
+  <% @project_members.each do |project_member| %>
+    <%= project_member.member.name %>
+    Role: <%= project_member.owner? ? "Owner" : "Member" %>
+  <% end %>
+</div>

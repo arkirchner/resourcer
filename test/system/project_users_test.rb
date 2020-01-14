@@ -16,7 +16,7 @@ class IssuesTest < ApplicationSystemTestCase
 
     within find("#members") do
       assert_text "John Doe"
-      assert_text "Role: Admin"
+      assert_text "Role: Owner"
     end
   end
 end
