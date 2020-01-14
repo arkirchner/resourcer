@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2020_01_13_161917) do
   enable_extension "plpgsql"
 
   # These are custom enum types that must be created before they can be used in the schema definition
-  create_enum "user_providers", ["github", "google"]
+  create_enum "member_providers", ["github", "google"]
 
   create_table "issues", force: :cascade do |t|
     t.string "subject", null: false
@@ -29,13 +29,24 @@ ActiveRecord::Schema.define(version: 2020_01_13_161917) do
     t.index ["project_id"], name: "index_issues_on_project_id"
   end
 
-  create_table "project_users", force: :cascade do |t|
-    t.bigint "user_id", null: false
+  create_table "members", force: :cascade do |t|
+    t.enum "provider", null: false, as: "member_providers"
+    t.string "provider_id", null: false
+    t.string "name", null: false
+    t.string "email", default: "", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_members_on_email", unique: true
+    t.index ["provider_id", "provider"], name: "index_members_on_provider_id_and_provider", unique: true
+  end
+
+  create_table "project_members", force: :cascade do |t|
+    t.bigint "member_id", null: false
     t.bigint "project_id", null: false
     t.boolean "owner", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id", "project_id"], name: "index_project_users_on_user_id_and_project_id", unique: true
+    t.index ["member_id", "project_id"], name: "index_project_members_on_member_id_and_project_id", unique: true
   end
 
   create_table "projects", force: :cascade do |t|
@@ -46,19 +57,8 @@ ActiveRecord::Schema.define(version: 2020_01_13_161917) do
     t.index ["key"], name: "index_projects_on_key", unique: true
   end
 
-  create_table "users", force: :cascade do |t|
-    t.enum "provider", null: false, as: "user_providers"
-    t.string "provider_id", null: false
-    t.string "name", null: false
-    t.string "email", default: "", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["provider_id", "provider"], name: "index_users_on_provider_id_and_provider", unique: true
-  end
-
   add_foreign_key "issues", "issues", column: "parent_id"
   add_foreign_key "issues", "projects"
-  add_foreign_key "project_users", "projects"
-  add_foreign_key "project_users", "users"
+  add_foreign_key "project_members", "members"
+  add_foreign_key "project_members", "projects"
 end

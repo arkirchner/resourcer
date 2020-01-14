@@ -2,9 +2,9 @@ require "application_system_test_case"
 
 class IssuesTest < ApplicationSystemTestCase
   test "the project creator is listed as owner" do
-    user = FactoryBot.create :user, name: "John Doe"
+    member = FactoryBot.create :member, name: "John Doe"
 
-    sign_up_with_github(user)
+    sign_up_with_github(member)
 
     click_on "Add project"
 

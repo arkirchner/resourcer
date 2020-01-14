@@ -14,7 +14,7 @@ class ProjectsTest < ApplicationSystemTestCase
     assert_text "New project was created."
   end
 
-  test "only projects related to the a user are displayed" do
+  test "only projects related to the member are displayed" do
     sign_up_with_github
     FactoryBot.create :project, name: "This is not my project!"
 
