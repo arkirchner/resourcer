@@ -23,6 +23,38 @@ class IssueTest < ActiveSupport::TestCase
     assert_not_includes Issue.without_issue(excluded_issue), excluded_issue
   end
 
+  test ".assigned_to, returnes all issues assigned to a member" do
+    member = FactoryBot.create :issue
+
+    issue_1 = FactoryBot.create :issue, assignee: member
+    issue_2 = FactoryBot.create :issue
+    issue_3 = FactoryBot.create :issue, assignee: member
+
+    ProjectMember.create!(project: issue_1.project, member: member)
+    ProjectMember.create!(project: issue_3.project, member: member)
+
+
+    assert_includes Issue.assigned_to(member), issue_1
+    assert_not_includes Issue.assigned_to(member), issue_2
+    assert_includes Issue.assigned_to(member), issue_3
+  end
+
+  test "#assignee, members can be assigend to an issue" do
+    project_member = FactoryBot.create :project_member
+    project = project_member.project
+    member = project_member.member
+    issue = FactoryBot.create :issue, project: project
+
+    issue_assignees = IssueAssignee.where(parent: project, assignee: member)
+
+    assert_difference "issue_assignees.count", 1 do
+      issue.assignee = member
+      issue.save
+    end
+
+    assert issue.reload.assignee, member
+  end
+
   test "has parent and children" do
     project = FactoryBot.create :project
     parent = FactoryBot.create :issue, project: project
