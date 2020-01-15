@@ -36,6 +36,21 @@ class ProjectTest < ActiveSupport::TestCase
     assert_not project.save, "Saved the project with duplicate key"
   end
 
+  test ".with_member, return projects related to the member" do
+    member = FactoryBot.create :member
+
+    project_1 = FactoryBot.create :project
+    project_2 = FactoryBot.create :project
+    project_3 = FactoryBot.create :project
+
+    ProjectMember.create(project: project_1, member: member)
+    ProjectMember.create(project: project_2, member: member)
+
+    assert_includes Project.with_member(member), project_1
+    assert_includes Project.with_member(member), project_2
+    assert_not_includes Project.with_member(member), project_3
+  end
+
   class CreateWithInitalMember < ActiveSupport::TestCase
     test "creates the project with the inital member as owner" do
       member = FactoryBot.create :member

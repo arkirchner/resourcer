@@ -2,9 +2,8 @@ require "application_system_test_case"
 
 class IssuesTest < ApplicationSystemTestCase
   def setup
-    FactoryBot.create(:project)
     super
-    sign_up_with_github
+    sign_up_with_github(FactoryBot.create(:project_member).member)
   end
 
   test "creating a new issue form the top page" do

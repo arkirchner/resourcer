@@ -4,6 +4,11 @@ class Project < ApplicationRecord
   has_many :issues, dependent: :restrict_with_exception
   has_many :project_members, dependent: :restrict_with_exception
 
+  scope :with_member,
+        lambda { |member|
+          joins(:project_members).merge(ProjectMember.where(member: member))
+        }
+
   validates :name, presence: true
   validates :key,
             length: { is: 3 }, format: { with: /\A[A-Z]+\z/ }, uniqueness: true
