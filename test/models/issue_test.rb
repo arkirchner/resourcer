@@ -24,15 +24,13 @@ class IssueTest < ActiveSupport::TestCase
   end
 
   test ".assigned_to, returnes all issues assigned to a member" do
-    member = FactoryBot.create :issue
+    project_member = FactoryBot.create :project_member
+    project = project_member.project
+    member = project_member.member
 
-    issue_1 = FactoryBot.create :issue, assignee: member
-    issue_2 = FactoryBot.create :issue
-    issue_3 = FactoryBot.create :issue, assignee: member
-
-    ProjectMember.create!(project: issue_1.project, member: member)
-    ProjectMember.create!(project: issue_3.project, member: member)
-
+    issue_1 = FactoryBot.create :issue, project: project, assignee: member
+    issue_2 = FactoryBot.create :issue, project: project
+    issue_3 = FactoryBot.create :issue, project: project, assignee: member
 
     assert_includes Issue.assigned_to(member), issue_1
     assert_not_includes Issue.assigned_to(member), issue_2
@@ -45,14 +43,14 @@ class IssueTest < ActiveSupport::TestCase
     member = project_member.member
     issue = FactoryBot.create :issue, project: project
 
-    issue_assignees = IssueAssignee.where(parent: project, assignee: member)
+    issue_assignees = ProjectMemberIssue.where(issue: issue, project_member: project_member)
 
     assert_difference "issue_assignees.count", 1 do
       issue.assignee = member
       issue.save
     end
 
-    assert issue.reload.assignee, member
+    assert_equal issue.reload.assignee, member
   end
 
   test "has parent and children" do
