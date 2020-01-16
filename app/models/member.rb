@@ -1,6 +1,13 @@
 class Member < ApplicationRecord
   enum provider: { github: "github", google: "google" }
 
+  has_many :project_members
+
+  scope :with_project,
+        lambda { |project|
+          joins(:project_members).merge(ProjectMember.where(project: project))
+        }
+
   def self.find_or_create_from_auth_hash(auth_hash)
     provider_id, provider = auth_hash.values_at :uid, :provider
 

@@ -3,7 +3,7 @@ require "test_helper"
 module MemberTest
   class FindOrCreateFromAuthHash < ActiveSupport::TestCase
     test "it creates a new member" do
-      assert_changes -> { Member.count }, "no member was created", from: 0, to: 1 do
+      assert_changes "Member.count", "no member was created", from: 0, to: 1 do
         Member.find_or_create_from_auth_hash(github_auth_hash)
       end
     end
@@ -23,6 +23,20 @@ module MemberTest
         uid: "123456",
         info: { name: "Github User", email: "github_member@example.com" },
       )
+    end
+  end
+
+  class Assoziations < ActiveSupport::TestCase
+    test "members associated to a project" do
+      project = FactoryBot.create :project
+      members = FactoryBot.create_list :member, 2
+      other_member = FactoryBot.create :member
+
+      members.each do |member|
+        ProjectMember.create(project: project, member: member)
+      end
+
+      assert_equal Member.with_project(project), members
     end
   end
 
