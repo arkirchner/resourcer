@@ -3,11 +3,8 @@ class Issue < ApplicationRecord
   acts_as_tree order: :subject
   belongs_to :project
 
-  # Private associations
-  has_one :project_member_issue, dependent: :restrict_with_exception
+  has_one :project_member_issue, dependent: :restrict_with_exception, autosave: true
   has_one :project_member, through: :project_member_issue
-
-  # Public associations
   has_one :assignee, through: :project_member, source: :member
 
   validates :subject, presence: true
@@ -21,19 +18,15 @@ class Issue < ApplicationRecord
           joins(:project_member).merge(ProjectMember.where(member: member))
         }
 
-  def assignee=(member)
-    self.project_member_issue = nil if member.blank?
-
-    build_project_member_issue(
-      project_member:
-        ProjectMember.find_by!(member: member, project_id: project_id),
-    )
+  def project_member_id=(id)
+    if id.blank?
+      project_member_issue&.mark_for_destruction
+    elsif project_member_issue
+      project_member_issue.project_member_id = id
+    else
+      build_project_member_issue(project_member_id: id)
+    end
   end
-
-  private :project_member_issue,
-          :project_member_issue=,
-          :project_member,
-          :project_member=
 
   private
 

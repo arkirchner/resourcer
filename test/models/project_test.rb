@@ -51,6 +51,15 @@ class ProjectTest < ActiveSupport::TestCase
     assert_not_includes Project.with_member(member), project_3
   end
 
+  test "#members, lists all project members" do
+    project = FactoryBot.create :project
+    members = FactoryBot.create_list :member, 2
+
+    project.members << members
+
+    assert_equal project.reload.members, members
+  end
+
   class CreateWithInitalMember < ActiveSupport::TestCase
     test "creates the project with the inital member as owner" do
       member = FactoryBot.create :member

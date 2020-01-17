@@ -4,4 +4,10 @@ module IssuesHelper
       [issue.subject, issue.id]
     end
   end
+
+  def project_member_options(project)
+    project.project_members.map do |project_member|
+      [project_member.member.name, project_member.id]
+    end
+  end
 end

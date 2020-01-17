@@ -45,6 +45,35 @@ class IssuesTest < ApplicationSystemTestCase
     end
   end
 
+  test "issues can be assigend to a project member" do
+    assignee =
+      FactoryBot.create(:member, name: "Mike Miller", projects: [Project.last])
+
+    create_issue subject: "Root issue", assignee: "Mike Miller"
+
+    assert_text "Assignee Mike Miller"
+
+    assignee =
+      FactoryBot.create(:member, name: "John Doe", projects: [Project.last])
+
+    click_on "Edit"
+
+    select_option("Assignee", "John Doe")
+
+    click_on "Update"
+
+    assert_text "Assignee John Doe"
+
+    click_on "Edit"
+
+    find("label", text: "Assignee").click
+    first(".choices__placeholder", text: "Not assigned.").click
+
+    click_on "Update"
+
+    assert_text "Not assigned."
+  end
+
   test "edit issue from show page" do
     issue = FactoryBot.create :issue
 
@@ -59,19 +88,23 @@ class IssuesTest < ApplicationSystemTestCase
     assert_text "Issue was updated."
   end
 
-  def create_issue(subject:, parent: nil, description: nil)
+  def create_issue(subject:, parent: nil, description: nil, assignee: nil)
     click_on "Add issue"
     fill_in "Subject", with: subject
     fill_in "Description", with: description if description
-    if parent
-      label = find("label", text: "Parent")
-      label.click
 
-      within label.find(:xpath, "..").find(".choices__item", text: parent).click
-    end
+    select_option("Parent", parent) if parent
+    select_option("Assignee", assignee) if assignee
 
     click_on "Create"
 
     assert_text "New issue created."
+  end
+
+  def select_option(name, value)
+    label = find("label", text: name)
+    label.click
+
+    within label.find(:xpath, "..").find(".choices__item", text: value).click
   end
 end

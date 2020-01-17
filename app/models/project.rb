@@ -3,6 +3,7 @@ class Project < ApplicationRecord
 
   has_many :issues, dependent: :restrict_with_exception
   has_many :project_members, dependent: :restrict_with_exception
+  has_many :members, through: :project_members
 
   scope :with_member,
         lambda { |member|

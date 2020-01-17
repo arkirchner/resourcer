@@ -28,29 +28,40 @@ class IssueTest < ActiveSupport::TestCase
     project = project_member.project
     member = project_member.member
 
-    issue_1 = FactoryBot.create :issue, project: project, assignee: member
+    issue_1 =
+      FactoryBot.create :issue,
+                        project: project, project_member_id: project_member.id
     issue_2 = FactoryBot.create :issue, project: project
-    issue_3 = FactoryBot.create :issue, project: project, assignee: member
+    issue_3 =
+      FactoryBot.create :issue,
+                        project: project, project_member_id: project_member.id
 
     assert_includes Issue.assigned_to(member), issue_1
     assert_not_includes Issue.assigned_to(member), issue_2
     assert_includes Issue.assigned_to(member), issue_3
   end
 
-  test "#assignee, members can be assigend to an issue" do
-    project_member = FactoryBot.create :project_member
-    project = project_member.project
-    member = project_member.member
-    issue = FactoryBot.create :issue, project: project
+  test "#project_member_id=, project members can be assigend to an issue" do
+    project = FactoryBot.create :project
+    project_member_one = FactoryBot.create :project_member, project: project
+    project_member_two = FactoryBot.create :project_member, project: project
 
-    issue_assignees = ProjectMemberIssue.where(issue: issue, project_member: project_member)
+    params =
+      FactoryBot.attributes_for :issue,
+                                project_id: project.id,
+                                project_member_id: project_member_one.id
 
-    assert_difference "issue_assignees.count", 1 do
-      issue.assignee = member
-      issue.save
-    end
+    issue = Issue.create(params)
 
-    assert_equal issue.reload.assignee, member
+    assert_equal project_member_one.member, issue.assignee
+
+    issue.update(project_member_id: project_member_two.id)
+
+    assert_equal project_member_two.member, issue.reload.assignee
+
+    issue.update(project_member_id: "")
+
+    assert_nil issue.reload.assignee
   end
 
   test "has parent and children" do
