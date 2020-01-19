@@ -1,6 +1,10 @@
 class DashboardsController < ApplicationController
-  def show
-    @projects = Project.with_member(current_member)
-    @issues = Issue.all
+  private
+
+  def current_member
+    @current_member =
+      Member.includes(:assigned_issues, :projects).find_by(
+        id: session[:member_id],
+      )
   end
 end

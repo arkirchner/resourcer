@@ -46,15 +46,13 @@ class IssuesTest < ApplicationSystemTestCase
   end
 
   test "issues can be assigend to a project member" do
-    assignee =
-      FactoryBot.create(:member, name: "Mike Miller", projects: [Project.last])
+    FactoryBot.create(:member, name: "Mike Miller", projects: [Project.last])
 
     create_issue subject: "Root issue", assignee: "Mike Miller"
 
     assert_text "Assignee Mike Miller"
 
-    assignee =
-      FactoryBot.create(:member, name: "John Doe", projects: [Project.last])
+    FactoryBot.create(:member, name: "John Doe", projects: [Project.last])
 
     click_on "Edit"
 

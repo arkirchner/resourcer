@@ -3,8 +3,9 @@ class Issue < ApplicationRecord
   acts_as_tree order: :subject
   belongs_to :project
 
-  has_one :project_member_issue, dependent: :restrict_with_exception, autosave: true
-  has_one :project_member, through: :project_member_issue
+  has_one :project_member_issue_assignment,
+          dependent: :restrict_with_exception, autosave: true
+  has_one :project_member, through: :project_member_issue_assignment
   has_one :assignee, through: :project_member, source: :member
 
   validates :subject, presence: true
@@ -18,13 +19,13 @@ class Issue < ApplicationRecord
           joins(:project_member).merge(ProjectMember.where(member: member))
         }
 
-  def project_member_id=(id)
+  def project_member_assignment_id=(id)
     if id.blank?
-      project_member_issue&.mark_for_destruction
-    elsif project_member_issue
-      project_member_issue.project_member_id = id
+      project_member_issue_assignment&.mark_for_destruction
+    elsif project_member_issue_assignment
+      project_member_issue_assignment.project_member_id = id
     else
-      build_project_member_issue(project_member_id: id)
+      build_project_member_issue_assignment(project_member_id: id)
     end
   end
 

@@ -1,14 +1,18 @@
 require "test_helper"
 
-class ProjectMemberIssueTest < ActiveSupport::TestCase
+class ProjectMemberIssueAssignmentTest < ActiveSupport::TestCase
   test "issues can only once by assigend to a member" do
     project_member = FactoryBot.create :project_member
     issue = FactoryBot.create :issue, project: project_member.project
 
-    ProjectMemberIssue.create(project_member: project_member, issue: issue)
+    ProjectMemberIssueAssignment.create(
+      project_member: project_member, issue: issue,
+    )
 
     assert_raise ActiveRecord::RecordNotUnique do
-      ProjectMemberIssue.create(project_member: project_member, issue: issue)
+      ProjectMemberIssueAssignment.create(
+        project_member: project_member, issue: issue,
+      )
     end
   end
 
@@ -18,10 +22,14 @@ class ProjectMemberIssueTest < ActiveSupport::TestCase
 
     other_project_member = FactoryBot.create :project_member
 
-    ProjectMemberIssue.create(project_member: project_member, issue: issue)
+    ProjectMemberIssueAssignment.create(
+      project_member: project_member, issue: issue,
+    )
 
     assert_raise ActiveRecord::RecordNotUnique do
-      ProjectMemberIssue.create(project_member: other_project_member, issue: issue)
+      ProjectMemberIssueAssignment.create(
+        project_member: other_project_member, issue: issue,
+      )
     end
   end
 end

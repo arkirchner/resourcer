@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_16_055056) do
+ActiveRecord::Schema.define(version: 2020_01_19_121527) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,13 +40,13 @@ ActiveRecord::Schema.define(version: 2020_01_16_055056) do
     t.index ["provider_id", "provider"], name: "index_members_on_provider_id_and_provider", unique: true
   end
 
-  create_table "project_member_issues", force: :cascade do |t|
+  create_table "project_member_issue_assignments", force: :cascade do |t|
     t.bigint "project_member_id", null: false
     t.bigint "issue_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["issue_id"], name: "index_project_member_issues_on_issue_id", unique: true
-    t.index ["project_member_id"], name: "index_project_member_issues_on_project_member_id"
+    t.index ["issue_id"], name: "index_project_member_issue_assignments_on_issue_id", unique: true
+    t.index ["project_member_id"], name: "index_project_member_issue_assignments_on_project_member_id"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(version: 2020_01_16_055056) do
 
   add_foreign_key "issues", "issues", column: "parent_id"
   add_foreign_key "issues", "projects"
-  add_foreign_key "project_member_issues", "issues"
-  add_foreign_key "project_member_issues", "project_members"
+  add_foreign_key "project_member_issue_assignments", "issues"
+  add_foreign_key "project_member_issue_assignments", "project_members"
   add_foreign_key "project_members", "members"
   add_foreign_key "project_members", "projects"
 end

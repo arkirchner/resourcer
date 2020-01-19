@@ -2,6 +2,11 @@ class ProjectMember < ApplicationRecord
   belongs_to :member
   belongs_to :project
 
+  has_many :project_member_issue_assignments,
+           dependent: :restrict_with_exception
+  has_many :assigned_issues,
+           through: :project_member_issue_assignments, source: :issue
+
   before_destroy :check_for_last_owner
 
   private
@@ -9,7 +14,9 @@ class ProjectMember < ApplicationRecord
   def check_for_last_owner
     return unless owner?
 
-    unless ProjectMember.where.not(member_id: member_id).exists?(project_id: project_id, owner: true)
+    other_prject_members = ProjectMember.where.not(member_id: member_id)
+
+    unless other_prject_members.exists?(project_id: project_id, owner: true)
       raise "The last owner can not be removed!"
     end
   end

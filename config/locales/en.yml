@@ -34,4 +34,4 @@ en:
   helpers:
     label:
       issue:
-        project_member_id: Assignee
+        project_member_assignment_id: Assignee

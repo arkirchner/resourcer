@@ -27,6 +27,19 @@ module MemberTest
   end
 
   class Assoziations < ActiveSupport::TestCase
+    test "#assigned_issues, assigned to this users" do
+      project_member = FactoryBot.create :project_member
+      assigned_issues =
+        FactoryBot.create_list :issue,
+                               2,
+                               project: project_member.project,
+                               project_member_assignment_id: project_member.id
+      other_issue = FactoryBot.create :issue, project: project_member.project
+
+      assert_equal project_member.assigned_issues, assigned_issues
+      assert_not_includes project_member.assigned_issues, other_issue
+    end
+
     test "members associated to a project" do
       project = FactoryBot.create :project
       members = FactoryBot.create_list :member, 2
@@ -37,6 +50,7 @@ module MemberTest
       end
 
       assert_equal Member.with_project(project), members
+      assert_not_includes Member.with_project(project), other_member
     end
   end
 

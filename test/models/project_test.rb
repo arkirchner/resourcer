@@ -39,16 +39,16 @@ class ProjectTest < ActiveSupport::TestCase
   test ".with_member, return projects related to the member" do
     member = FactoryBot.create :member
 
-    project_1 = FactoryBot.create :project
-    project_2 = FactoryBot.create :project
-    project_3 = FactoryBot.create :project
+    first_assigned_project = FactoryBot.create :project
+    second_assigned_project = FactoryBot.create :project
+    unrelated_project = FactoryBot.create :project
 
-    ProjectMember.create(project: project_1, member: member)
-    ProjectMember.create(project: project_2, member: member)
+    ProjectMember.create(project: first_assigned_project, member: member)
+    ProjectMember.create(project: second_assigned_project, member: member)
 
-    assert_includes Project.with_member(member), project_1
-    assert_includes Project.with_member(member), project_2
-    assert_not_includes Project.with_member(member), project_3
+    assert_includes Project.with_member(member), first_assigned_project
+    assert_includes Project.with_member(member), second_assigned_project
+    assert_not_includes Project.with_member(member), unrelated_project
   end
 
   test "#members, lists all project members" do
@@ -67,7 +67,7 @@ class ProjectTest < ActiveSupport::TestCase
       project.save_with_inital_member(member)
       project_member = project.project_members.first
 
-      assert project_member.member == member
+      assert_equal project_member.member, member
       assert project_member.owner
     end
 

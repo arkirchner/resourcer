@@ -41,7 +41,7 @@ class IssuesController < ApplicationController
       :due_at,
       :parent_id,
       :description,
-      :project_member_id,
+      :project_member_assignment_id,
     )
   end
 

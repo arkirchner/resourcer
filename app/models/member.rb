@@ -1,8 +1,9 @@
 class Member < ApplicationRecord
   enum provider: { github: "github", google: "google" }
 
-  has_many :project_members
+  has_many :project_members, dependent: :restrict_with_exception
   has_many :projects, through: :project_members
+  has_many :assigned_issues, through: :project_members
 
   scope :with_project,
         lambda { |project|
