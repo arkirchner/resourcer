@@ -1,9 +1,9 @@
 module AuthSystemTestHelper
-  def mock_omin_auth_providers
+  def mock_omin_auth_providers(member)
     OmniAuth.config.test_mode = true
     OmniAuth.config.add_mock(
-      :github,
-      uid: "12345", info: { name: "Github User", email: "test@hoge.com" },
+      member.provider,
+      uid: member.provider_id, info: { name: member.name, email: member.email },
     )
   end
 
@@ -11,8 +11,9 @@ module AuthSystemTestHelper
     OmniAuth.config.mock_auth[:github] = nil
   end
 
-  def sign_up_with_github
+  def sign_up_with_github(member = FactoryBot.build(:member))
     visit root_path
+    mock_omin_auth_providers(member)
     click_button "Continue with Github"
   end
 end

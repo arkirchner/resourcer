@@ -1,15 +1,24 @@
-class User < ApplicationRecord
+class Member < ApplicationRecord
   enum provider: { github: "github", google: "google" }
+
+  has_many :project_members, dependent: :restrict_with_exception
+  has_many :projects, through: :project_members
+  has_many :assigned_issues, through: :project_members
+
+  scope :with_project,
+        lambda { |project|
+          joins(:project_members).merge(ProjectMember.where(project: project))
+        }
 
   def self.find_or_create_from_auth_hash(auth_hash)
     provider_id, provider = auth_hash.values_at :uid, :provider
 
     find_or_initialize_by(provider_id: provider_id, provider: provider)
-      .tap do |user|
+      .tap do |member|
       name, email = auth_hash.info.values_at :name, :email
-      user.email = email
-      user.name = name
-      user.save!
+      member.email = email
+      member.name = name
+      member.save!
     end
   end
 

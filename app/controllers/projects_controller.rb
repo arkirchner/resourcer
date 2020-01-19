@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
 
   def create
     project = Project.new(project_params)
-    if project.save
+    if project.save_with_inital_member(current_member)
       redirect_to project_url(project), notice: "New project was created."
     else
       render partial: "form", locals: { project: project }

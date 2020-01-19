@@ -6,7 +6,7 @@
     </div>
 
     <ul class="list-unstyled">
-      <% @projects.each do |project| %>
+      <% current_member.projects.each do |project| %>
         <li class="media shadow-sm bg-white mb-2 p-2">
           <%= link_to project_path(project), class: "text-body" do %>
             <%= image_tag "logo.png", class: "mr-3", alt: project.key %>
@@ -59,7 +59,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @issues.each do |issue| %>
+          <% current_member.assigned_issues.each do |issue| %>
             <tr>
               <th scope="row">
                 <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>

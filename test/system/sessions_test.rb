@@ -8,7 +8,7 @@ class SessionsTest < ApplicationSystemTestCase
     assert_text "My Issues"
   end
 
-  test "when the user logs out he will be redirected to the top page" do
+  test "when the member logs out he will be redirected to the top page" do
     sign_up_with_github
     click_on "Github User"
     click_on "Sign Out"

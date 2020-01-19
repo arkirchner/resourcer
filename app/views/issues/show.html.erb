@@ -1,4 +1,12 @@
 <h1><%= @issue.subject %></h1>
+<h2>
+  <% if @issue.assignee %>
+    Assignee <%= @issue.assignee.name  %>
+  <% else %>
+    Not assigned.
+  <% end %>
+</h2>
+
 
 <div class="card">
   <div class="card-body">

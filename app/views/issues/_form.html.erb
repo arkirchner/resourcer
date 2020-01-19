@@ -7,6 +7,12 @@
     <%= f.label :parent_id %>
     <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }, data: { controller: "select" }) %>
   </div>
+
+  <div class="form-group">
+    <%= f.label :project_member_assignment_id %>
+    <%= f.select(:project_member_assignment_id, project_member_options(current_project), { include_blank: "Not assigned." }, data: { controller: "select" }) %>
+  </div>
+
   <div class="form-group">
     <%= f.label :subject %>
     <%= f.text_field :subject, class: form_input_class(issue, :subject), placeholder: "My new issue." %>

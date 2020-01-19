@@ -3,15 +3,15 @@ class SessionsController < ApplicationController
   skip_before_action :redirect_unauthorized, only: :create
 
   def create
-    user = User.find_or_create_from_auth_hash(auth_hash)
-    session[:user_id] = user.id
+    member = Member.find_or_create_from_auth_hash(auth_hash)
+    session[:member_id] = member.id
 
-    redirect_to dashboard_path, notice: "Hello #{user.name}"
+    redirect_to dashboard_path, notice: "Hello #{member.name}"
   end
 
   def destroy
-    message = "Goodbye #{current_user.name}."
-    session[:user_id] = nil
+    message = "Goodbye #{current_member.name}."
+    session[:member_id] = nil
 
     redirect_to root_path, notice: message
   end

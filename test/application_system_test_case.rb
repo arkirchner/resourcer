@@ -9,11 +9,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     driver_options.add_argument("disable-dev-shm-usage")
   end
 
-  def setup
-    super
-    mock_omin_auth_providers
-  end
-
   def teardown
     super
     clear_omni_auth_mock
