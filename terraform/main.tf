@@ -1,5 +1,13 @@
 variable "location" {
-  default = "asia"
+  default = "us"
+}
+
+variable "region" {
+  default = "us-central1"
+}
+
+variable "zone" {
+  default = "us-central1-f"
 }
 
 provider "google" {
@@ -31,6 +39,20 @@ resource "google_project_service" "cloud_storage" {
 resource "google_project_service" "iam" {
   project = google_project.resourcer.project_id
   service = "iam.googleapis.com"
+
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "cloud_run" {
+  project = google_project.resourcer.project_id
+  service = "run.googleapis.com"
+
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "cloud_sql" {
+  project = google_project.resourcer.project_id
+  service = "sqladmin.googleapis.com"
 
   disable_dependent_services = true
 }
@@ -79,11 +101,121 @@ resource "google_storage_bucket_iam_member" "active_storage_admin" {
 resource "google_storage_bucket_acl" "storage_acl" {
   bucket = google_storage_bucket.storage.name
   role_entity = [
+    "OWNER:project-editors-${google_project.resourcer.number}",
     "OWNER:project-owners-${google_project.resourcer.number}",
+    "READER:project-viewers-${google_project.resourcer.number}",
     "READER:user-${google_service_account.active_storage_users.email}",
   ]
+
+  depends_on = [google_storage_bucket_iam_member.active_storage_admin]
 }
 
 resource "google_service_account_key" "active_storage_key" {
   service_account_id = google_service_account.active_storage_users.name
+}
+
+
+resource "random_id" "db_name_suffix" {
+  byte_length = 5
+}
+
+resource "google_sql_database_instance" "master" {
+  name = "instance-${random_id.db_name_suffix.hex}"
+  database_version = "POSTGRES_11"
+  region = var.region
+  project = google_project.resourcer.project_id
+
+  settings {
+    tier = "db-f1-micro"
+
+    location_preference {
+      zone = var.zone
+    }
+  }
+
+  depends_on = [google_project_service.cloud_sql]
+}
+
+resource "random_string" "secret_key_base" {
+  length = 128
+  special = false
+}
+
+resource "random_string" "db_password" {
+  length = 128
+  special = false
+}
+
+resource "google_cloud_run_service" "resourcer" {
+  name = "resourcer"
+  project = google_project.resourcer.project_id
+  location = var.region
+
+  template {
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale" = "1000"
+      }
+    }
+
+    spec {
+      container_concurrency = 80
+
+      containers {
+        image = "gcr.io/cloudrun/hello"
+
+        env {
+          name = "SECRET_KEY_BASE"
+          value = random_string.secret_key_base.result
+        }
+        env {
+          name = "DB_PASSWORD"
+          value = random_string.db_password.result
+        }
+        env {
+          name = "BUCKET_CREDENTIALS"
+          value = google_service_account_key.active_storage_key.private_key
+        }
+        env {
+          name = "BUCKET"
+          value = google_storage_bucket.storage.name
+        }
+        env {
+          name = "PROJECT_ID"
+          value = google_project.resourcer.project_id
+        }
+
+        resources {
+          limits   = {
+            "cpu"    = "1000m"
+            "memory" = "256M"
+          }
+          requests = {}
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+
+  depends_on = [google_project_service.cloud_run]
+}
+
+data "google_iam_policy" "public_invoke" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "public_invoke" {
+  location = var.region
+  project = google_project.resourcer.project_id
+  service = google_cloud_run_service.resourcer.name
+  policy_data = data.google_iam_policy.public_invoke.policy_data
 }
