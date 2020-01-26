@@ -155,6 +155,7 @@ resource "google_cloud_run_service" "resourcer" {
     metadata {
       annotations = {
         "autoscaling.knative.dev/maxScale" = "1000"
+        "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.master.connection_name
       }
     }
 
@@ -218,4 +219,17 @@ resource "google_cloud_run_service_iam_policy" "public_invoke" {
   project = google_project.resourcer.project_id
   service = google_cloud_run_service.resourcer.name
   policy_data = data.google_iam_policy.public_invoke.policy_data
+}
+
+resource "google_sql_user" "resourcer" {
+  project = google_project.resourcer.project_id
+  name     = "resourcer_production"
+  instance = google_sql_database_instance.master.name
+  password = random_string.db_password.result
+}
+
+resource "google_sql_database" "database" {
+  project = google_project.resourcer.project_id
+  name     = "resourcer_production"
+  instance = google_sql_database_instance.master.name
 }
