@@ -1,3 +1,5 @@
+variable "date" {}
+
 variable "location" {
   default = "us"
 }
@@ -53,6 +55,13 @@ resource "google_project_service" "cloud_run" {
 resource "google_project_service" "cloud_sql" {
   project = google_project.resourcer.project_id
   service = "sqladmin.googleapis.com"
+
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "kms" {
+  project = google_project.resourcer.project_id
+  service = "cloudkms.googleapis.com"
 
   disable_dependent_services = true
 }
@@ -146,6 +155,41 @@ resource "random_string" "db_password" {
   special = false
 }
 
+data "google_container_registry_image" "resourcer" {
+  project = google_project.resourcer.project_id
+  tag = "latest"
+  name = "resourcer"
+}
+
+resource "google_kms_key_ring" "resourcer" {
+  project = google_project.resourcer.project_id
+  name     = "resourcer-key-ring"
+  location = var.location
+
+  depends_on = [google_project_service.kms]
+}
+
+resource "google_kms_crypto_key" "resourcer" {
+  name     = "resourcer-crypto-key"
+  key_ring = google_kms_key_ring.resourcer.self_link
+}
+
+data "google_kms_secret" "secret_key_base" {
+  crypto_key = google_kms_crypto_key.resourcer.self_link
+  ciphertext = "CiQAS5YnWgrboIo8JTCBzDTiJxf4GiiiSYFRZ0pVfgja94NrXkASUQAwGg5LYTWvTRGVyLha9emUVGW1gE2Jh8VcOMlq3CU67BP36WpXe2kiwO2a64EY5KJfM4rEr4Vj9mCd4oiLSJg/RLHHGl8pogjiUQY8emERIw=="
+}
+
+resource "google_service_account" "resourcer" {
+  account_id   = "resourcer-app"
+  display_name = "Resourcer App Runner"
+}
+
+resource "google_project_iam_member" "resourcer" {
+  project = google_project.resourcer.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.resourcer.email}"
+}
+
 resource "google_cloud_run_service" "resourcer" {
   name = "resourcer"
   project = google_project.resourcer.project_id
@@ -157,13 +201,15 @@ resource "google_cloud_run_service" "resourcer" {
         "autoscaling.knative.dev/maxScale" = "1000"
         "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.master.connection_name
       }
+      name = "resourcer-${var.date}"
     }
 
     spec {
       container_concurrency = 80
+      service_account_name  = google_service_account.resourcer.email
 
       containers {
-        image = "gcr.io/cloudrun/hello"
+        image = data.google_container_registry_image.resourcer.image_url
 
         env {
           name = "SECRET_KEY_BASE"
@@ -172,6 +218,10 @@ resource "google_cloud_run_service" "resourcer" {
         env {
           name = "DB_PASSWORD"
           value = random_string.db_password.result
+        }
+        env {
+          name = "DB_SOCKET"
+          value = "/cloudsql/${google_sql_database_instance.master.connection_name}"
         }
         env {
           name = "BUCKET_CREDENTIALS"
@@ -185,11 +235,19 @@ resource "google_cloud_run_service" "resourcer" {
           name = "PROJECT_ID"
           value = google_project.resourcer.project_id
         }
+        env {
+          name  = "GITHUB_KEY"
+          value = "169d2b2e8d2ba15fcc10"
+        }
+        env {
+          name  = "GITHUB_SECRET"
+          value = data.google_kms_secret.secret_key_base.plaintext
+        }
 
         resources {
           limits   = {
             "cpu"    = "1000m"
-            "memory" = "256M"
+            "memory" = "512Mi"
           }
           requests = {}
         }
@@ -202,7 +260,10 @@ resource "google_cloud_run_service" "resourcer" {
     latest_revision = true
   }
 
-  depends_on = [google_project_service.cloud_run]
+  depends_on = [
+    google_project_service.cloud_run,
+    google_project_iam_member.resourcer,
+  ]
 }
 
 data "google_iam_policy" "public_invoke" {
@@ -223,13 +284,13 @@ resource "google_cloud_run_service_iam_policy" "public_invoke" {
 
 resource "google_sql_user" "resourcer" {
   project = google_project.resourcer.project_id
-  name     = "resourcer_production"
+  name = "resourcer_production"
   instance = google_sql_database_instance.master.name
   password = random_string.db_password.result
 }
 
 resource "google_sql_database" "database" {
   project = google_project.resourcer.project_id
-  name     = "resourcer_production"
+  name = "resourcer_production"
   instance = google_sql_database_instance.master.name
 }

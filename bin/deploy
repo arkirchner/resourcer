@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+gcloud --quiet config set project "resourcer"
+gcloud --quiet config set compute/zone "us-central1"
+gcloud --quiet auth configure-docker
+
+docker build -t gcr.io/resourcer/resourcer:latest .
+docker push gcr.io/resourcer/resourcer:latest
+
+cd terraform
+
+GOOGLE_APPLICATION_CREDENTIALS=$RESOURCER_GOOGLE_APPLICATION_CREDENTIALS \
+  TF_VAR_date="$(date +%y%m%d%I%M%S)" \
+  terraform apply -auto-approve

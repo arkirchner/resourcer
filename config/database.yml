@@ -13,9 +13,12 @@ test:
   database: resourcer_test
 
 production: &deploy
+  adapter: postgresql
   encoding: utf8
   min_messages: warning
   pool: <%= [Integer(ENV.fetch("MAX_THREADS", 5)), Integer(ENV.fetch("DB_POOL", 5))].max %>
   timeout: 5000
-  url:  <%= ENV.fetch("DATABASE_URL", "") %>
-
+  database: resourcer_production
+  username: resourcer_production
+  password: <%= ENV["DB_PASSWORD"] %>
+  host: <%= ENV["DB_SOCKET"] %>
