@@ -15,7 +15,9 @@ class IssuesController < ApplicationController
     if issue.update(issue_params)
       redirect_to issue_url(issue), notice: "Issue was updated."
     else
-      render partial: "form", locals: { issue: issue }
+      render partial: "form",
+             locals: { issue: issue },
+             status: :unprocessable_entity
     end
   end
 
@@ -25,7 +27,9 @@ class IssuesController < ApplicationController
     if issue.save
       redirect_to issue_url(issue), notice: "New issue created."
     else
-      render partial: "form", locals: { issue: issue }
+      render partial: "form",
+             locals: { issue: issue },
+             status: :unprocessable_entity
     end
   end
 

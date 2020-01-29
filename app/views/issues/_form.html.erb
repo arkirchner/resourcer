@@ -2,7 +2,7 @@
                                    issue_path(issue)
                                  else
                                    project_issues_path(issue.project)
-                                 end, data: { controller: "form", action: "ajax:success->form#update" } do |f| %>
+                                 end, data: { controller: "form", action: "ajax:error->form#update" } do |f| %>
   <div class="form-group">
     <%= f.label :parent_id %>
     <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }, data: { controller: "select" }) %>

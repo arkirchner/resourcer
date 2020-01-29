@@ -12,7 +12,9 @@ class ProjectsController < ApplicationController
     if project.save_with_inital_member(current_member)
       redirect_to project_url(project), notice: "New project was created."
     else
-      render partial: "form", locals: { project: project }
+      render partial: "form",
+             locals: { project: project },
+             status: :unprocessable_entity
     end
   end
 
