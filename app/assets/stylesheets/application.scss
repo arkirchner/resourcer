@@ -31,11 +31,10 @@ $navbar-top-padding: 4.7rem;
 @import "bootstrap/scss/utilities/position";
 @import "bootstrap/scss/utilities/borders";
 @import "bootstrap/scss/utilities/sizing";
+@import "bootstrap/scss/utilities/screenreaders";
 
 @import "github-markdown-css/github-markdown";
-@import "choices.js/src/styles/choices";
 @import "flatpickr/dist/flatpickr";
-@import "ibm-gantt-chart/dist/ibm-gantt-chart";
 @import "./components/*";
 
 .navbar-top-padding {

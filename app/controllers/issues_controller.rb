@@ -50,10 +50,7 @@ class IssuesController < ApplicationController
   end
 
   def issue
-    id = params[:id]
-    return if id.blank?
-
-    Issue.includes(:project).find(id)
+    @issue ||= Issue.includes(:project).find(params[:id]) if params[:id]
   end
 
   def current_project
