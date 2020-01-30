@@ -15,7 +15,9 @@ class IssuesController < ApplicationController
     if issue.update(issue_params)
       redirect_to issue_url(issue), notice: "Issue was updated."
     else
-      render partial: "form", locals: { issue: issue }
+      render partial: "form",
+             locals: { issue: issue },
+             status: :unprocessable_entity
     end
   end
 
@@ -25,7 +27,9 @@ class IssuesController < ApplicationController
     if issue.save
       redirect_to issue_url(issue), notice: "New issue created."
     else
-      render partial: "form", locals: { issue: issue }
+      render partial: "form",
+             locals: { issue: issue },
+             status: :unprocessable_entity
     end
   end
 
@@ -46,10 +50,7 @@ class IssuesController < ApplicationController
   end
 
   def issue
-    id = params[:id]
-    return if id.blank?
-
-    Issue.includes(:project).find(id)
+    @issue ||= Issue.includes(:project).find(params[:id]) if params[:id]
   end
 
   def current_project

@@ -2,15 +2,15 @@
                                    issue_path(issue)
                                  else
                                    project_issues_path(issue.project)
-                                 end, data: { controller: "form", action: "ajax:success->form#update" } do |f| %>
+                                 end, data: { controller: "form", action: "ajax:error->form#update" } do |f| %>
   <div class="form-group">
     <%= f.label :parent_id %>
-    <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }, data: { controller: "select" }) %>
+    <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }) %>
   </div>
 
   <div class="form-group">
     <%= f.label :project_member_assignment_id %>
-    <%= f.select(:project_member_assignment_id, project_member_options(current_project), { include_blank: "Not assigned." }, data: { controller: "select" }) %>
+    <%= f.select(:project_member_assignment_id, project_member_options(current_project), { include_blank: "Not assigned." }) %>
   </div>
 
   <div class="form-group">

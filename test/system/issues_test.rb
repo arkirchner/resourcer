@@ -7,14 +7,18 @@ class IssuesTest < ApplicationSystemTestCase
   end
 
   test "creating a new issue form the top page" do
-    create_issue subject: "New issue subject"
+    click_on "Add issue"
+    fill_in "Subject", with: "New issue subject"
+    click_on "Create Issue"
 
     assert_text "New issue subject"
   end
 
   test "issue markdown description is convererted to HTML" do
-    create_issue subject: "New issue subject",
-                 description: "# Heading\n__Advertisement__"
+    click_on "Add issue"
+    fill_in "Subject", with: "New issue subject"
+    fill_in "Description", with: "# Heading\n__Advertisement__"
+    click_on "Create Issue"
 
     assert_selector "h1", text: "Heading"
     assert_css "p > strong", text: "Advertisement"
@@ -32,9 +36,25 @@ class IssuesTest < ApplicationSystemTestCase
   end
 
   test "issue with deeply nested children" do
-    create_issue subject: "Root issue"
-    create_issue subject: "Level 1 child issue", parent: "Root issue"
-    create_issue subject: "Level 2 child issue", parent: "Level 1 child issue"
+    click_on "Add issue"
+    wait_for_turbolinks
+    fill_in "Subject", with: "Root issue"
+    click_on "Create Issue"
+    assert_text "New issue created."
+
+    click_on "Add issue"
+    wait_for_turbolinks
+    fill_in "Subject", with: "Level 1 child issue"
+    select "Root issue", from: "Parent"
+    click_on "Create Issue"
+    assert_text "New issue created."
+
+    click_on "Add issue"
+    wait_for_turbolinks
+    fill_in "Subject", with: "Level 2 child issue"
+    select "Level 1 child issue", from: "Parent"
+    click_on "Create Issue"
+    assert_text "New issue created."
 
     click_on "Issues"
     click_on "Root issue"
@@ -48,7 +68,10 @@ class IssuesTest < ApplicationSystemTestCase
   test "issues can be assigend to a project member" do
     FactoryBot.create(:member, name: "Mike Miller", projects: [Project.last])
 
-    create_issue subject: "Root issue", assignee: "Mike Miller"
+    click_on "Add issue"
+    fill_in "Subject", with: "New issue for an assigee"
+    select "Mike Miller", from: "Assignee"
+    click_on "Create Issue"
 
     assert_text "Assignee Mike Miller"
 
@@ -56,7 +79,7 @@ class IssuesTest < ApplicationSystemTestCase
 
     click_on "Edit"
 
-    select_option("Assignee", "John Doe")
+    select "John Doe", from: "Assignee"
 
     click_on "Update"
 
@@ -64,8 +87,7 @@ class IssuesTest < ApplicationSystemTestCase
 
     click_on "Edit"
 
-    find("label", text: "Assignee").click
-    first(".choices__placeholder", text: "Not assigned.").click
+    select "Not assigned.", from: "Assignee"
 
     click_on "Update"
 
@@ -84,25 +106,5 @@ class IssuesTest < ApplicationSystemTestCase
     click_on "Update"
 
     assert_text "Issue was updated."
-  end
-
-  def create_issue(subject:, parent: nil, description: nil, assignee: nil)
-    click_on "Add issue"
-    fill_in "Subject", with: subject
-    fill_in "Description", with: description if description
-
-    select_option("Parent", parent) if parent
-    select_option("Assignee", assignee) if assignee
-
-    click_on "Create"
-
-    assert_text "New issue created."
-  end
-
-  def select_option(name, value)
-    label = find("label", text: name)
-    label.click
-
-    within label.find(:xpath, "..").find(".choices__item", text: value).click
   end
 end
