@@ -47,4 +47,5 @@ end
 
 group :production do
   gem "google-cloud-storage", require: false
+  gem "stackdriver"
 end
