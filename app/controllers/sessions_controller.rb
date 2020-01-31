@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :create
-  skip_before_action :redirect_unauthorized, only: :create
+  skip_before_action :redirect_unauthorized, only: %i[create failure]
 
   def create
     member = Member.find_or_create_from_auth_hash(auth_hash)
@@ -14,6 +14,10 @@ class SessionsController < ApplicationController
     session[:member_id] = nil
 
     redirect_to root_path, notice: message
+  end
+
+  def failure
+    redirect_to root_url, alert: params["message"]
   end
 
   private

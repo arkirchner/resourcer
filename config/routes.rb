@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resource :dashboard, only: :show
 
   get "/auth/:provider/callback", to: "sessions#create"
+  get "/auth/failure", to: "sessions#failure"
   delete "/auth", to: "sessions#destroy"
 
   root to: "landing_pages#show"
