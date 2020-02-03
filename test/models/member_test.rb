@@ -17,11 +17,27 @@ module MemberTest
       end
     end
 
+    test "it saves optional oauth provider information" do
+      auth_hash =
+        OmniAuth::AuthHash.new(
+          provider: "github",
+          uid: "123456",
+          info: {
+            name: "Github User",
+            email: "mail@example.com",
+            image: "https://dummyimage.com/600x400/000/fff",
+          },
+        )
+
+      member = Member.find_or_create_from_auth_hash(auth_hash)
+
+      assert_equal member.email, "mail@example.com"
+      assert_equal member.image_url, "https://dummyimage.com/600x400/000/fff"
+    end
+
     def github_auth_hash
       OmniAuth::AuthHash.new(
-        provider: "github",
-        uid: "123456",
-        info: { name: "Github User" },
+        provider: "github", uid: "123456", info: { name: "Github User" },
       )
     end
   end
