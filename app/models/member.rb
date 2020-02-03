@@ -16,12 +16,11 @@ class Member < ApplicationRecord
     find_or_initialize_by(provider_id: provider_id, provider: provider)
       .tap do |member|
       name, email = auth_hash.info.values_at :name, :email
-      member.email = email
+      member.email = email || ""
       member.name = name
       member.save!
     end
   end
 
   validates :provider_id, :name, presence: true
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
 end

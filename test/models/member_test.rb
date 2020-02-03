@@ -21,7 +21,7 @@ module MemberTest
       OmniAuth::AuthHash.new(
         provider: "github",
         uid: "123456",
-        info: { name: "Github User", email: "github_member@example.com" },
+        info: { name: "Github User" },
       )
     end
   end
@@ -73,16 +73,6 @@ module MemberTest
 
     test "it requires a name" do
       @member.name = ""
-      assert_not @member.save
-    end
-
-    test "it requires an email" do
-      @member.email = ""
-      assert_not @member.save
-    end
-
-    test "the email format must be valid" do
-      @member.email = "@example.com"
       assert_not @member.save
     end
   end
