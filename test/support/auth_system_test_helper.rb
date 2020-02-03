@@ -3,7 +3,7 @@ module AuthSystemTestHelper
     OmniAuth.config.test_mode = true
     OmniAuth.config.add_mock(
       member.provider,
-      uid: member.provider_id, info: { name: member.name, email: member.email },
+      uid: member.provider_id, info: { name: member.name },
     )
   end
 
