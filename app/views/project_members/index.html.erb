@@ -1,6 +1,38 @@
-<div id="members">
+<h1>Project Members</h1>
+
+<div id="members" class="row row-cols-1 row-cols-md-2">
   <% @project_members.each do |project_member| %>
-    <%= project_member.member.name %>
-    Role: <%= project_member.owner? ? "Owner" : "Member" %>
+    <div class="col mb-3">
+      <div class="card">
+        <div class="card-body">
+          <%= image_tag "no_user.png", height: 50, width: 50, alt: project_member.member.name, class: "rounded-circle mr-2" %>
+          <%= project_member.member.name %>
+          <span class="badge badge-light">
+            Role: <%= project_member.owner? ? "Owner" : "Member" %>
+          </span>
+        </div>
+      </div>
+    </div>
   <% end %>
 </div>
+
+<h3 class="mt-3">Pending project member invitations.</h3>
+<div class="d-flex flex-row-reverse my-2">
+  <%= link_to new_project_invitation_path(current_project), class: "btn btn-light",
+    remote: true,
+    data: { controller: "modal-opener", action: "ajax:success->modal-opener#open"} do %>
+    <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/solid/plus.svg", class: "svg-icon" %>
+    Invite new member
+  <% end %>
+</div>
+
+<% if can_see_invitations?(@project_members, current_member) %>
+  <div class="list-group">
+    <% @invitations.each do |invitation| %>
+      <%= link_to invitation.note, project_invitation_path(current_project, invitation),
+        class: "list-group-item list-group-item-action list-group-item-#{invitation.invalid? ? "warning" : "info"} text-truncate",
+        data: { controller: "modal-opener open-invitation", action: "ajax:success->modal-opener#open", open_invitation_open: new_invitation?(invitation) },
+        remote: true %>
+    <% end %>
+  </div>
+<% end %>

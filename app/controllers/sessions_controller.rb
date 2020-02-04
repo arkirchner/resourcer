@@ -5,8 +5,13 @@ class SessionsController < ApplicationController
   def create
     member = Member.find_or_create_from_auth_hash(auth_hash)
     session[:member_id] = member.id
+    flash[:notice] = "Hello #{member.name}"
 
-    redirect_to dashboard_path, notice: "Hello #{member.name}"
+    if invitation_token
+      redirect_to join_project_url(invitation_token)
+    else
+      redirect_to dashboard_url
+    end
   end
 
   def destroy
@@ -24,5 +29,9 @@ class SessionsController < ApplicationController
 
   def auth_hash
     request.env["omniauth.auth"]
+  end
+
+  def invitation_token
+    session[:invitation_token]
   end
 end

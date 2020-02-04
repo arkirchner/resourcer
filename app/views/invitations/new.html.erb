@@ -1,0 +1,18 @@
+<%= form_with model: @invitation, url: project_invitations_path(current_project), data: { controller: "modal-opener", action: "ajax:error->modal-opener#open" } do |f| %>
+  <div class="modal-header">
+    <h5 class="modal-title">Invite new member to <%= current_project.key %><small><%= current_project.name %></small></h5>
+    <button type="button" class="close" aria-label="Close" data-controller="modal-closer" data-action="modal-closer#close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <%= f.label :note %>
+      <%= f.text_field :note, class: form_input_class(@invitation, :note), placeholder: "Who is this inviation for." %>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-controller="modal-closer" data-action="modal-closer#close">Close</button>
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

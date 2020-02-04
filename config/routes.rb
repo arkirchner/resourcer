@@ -4,8 +4,10 @@ Rails.application.routes.draw do
     resources :issues,
               only: %i[new create show index edit update], shallow: true
     resource :project_gantt_chart, only: :show
+    resources :invitations, only: %i[new show create show]
   end
   resources :markdown_previews, only: :create
+  resources :join_projects, only: :show
 
   resource :dashboard, only: :show
 

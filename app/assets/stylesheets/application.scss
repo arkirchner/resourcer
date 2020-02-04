@@ -23,6 +23,9 @@ $navbar-top-padding: 4.7rem;
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/transitions";
 @import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/input-group";
 
 // utilities
 @import "bootstrap/scss/utilities/background";
@@ -36,18 +39,9 @@ $navbar-top-padding: 4.7rem;
 @import "github-markdown-css/github-markdown";
 @import "flatpickr/dist/flatpickr";
 @import "./components/*";
-
-.navbar-top-padding {
-  padding-top: $navbar-top-padding;
-}
+@import "./utilities/*";
 
 .nav-icon {
-  height: 1.0rem;
-  width: 1.0rem;
-}
-
-@include media-breakpoint-down(md) {
-  .sr-only-md {
-    @include sr-only();
-  }
+  height: 1rem;
+  width: 1rem;
 }
