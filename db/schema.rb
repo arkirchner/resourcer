@@ -10,13 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_03_064839) do
+ActiveRecord::Schema.define(version: 2020_02_05_075338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   # These are custom enum types that must be created before they can be used in the schema definition
   create_enum "member_providers", ["github", "google"]
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "note", default: "", null: false
+    t.string "token", default: "", null: false
+    t.bigint "project_member_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_member_id"], name: "index_invitations_on_project_member_id"
+  end
 
   create_table "issues", force: :cascade do |t|
     t.string "subject", null: false
@@ -38,6 +47,15 @@ ActiveRecord::Schema.define(version: 2020_02_03_064839) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "image_url", default: "", null: false
     t.index ["provider_id", "provider"], name: "index_members_on_provider_id_and_provider", unique: true
+  end
+
+  create_table "project_member_invitations", force: :cascade do |t|
+    t.bigint "project_member_id", null: false
+    t.bigint "invitation_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["invitation_id"], name: "index_project_member_invitations_on_invitation_id", unique: true
+    t.index ["project_member_id"], name: "index_project_member_invitations_on_project_member_id"
   end
 
   create_table "project_member_issue_assignments", force: :cascade do |t|
@@ -66,8 +84,11 @@ ActiveRecord::Schema.define(version: 2020_02_03_064839) do
     t.index ["key"], name: "index_projects_on_key", unique: true
   end
 
+  add_foreign_key "invitations", "project_members"
   add_foreign_key "issues", "issues", column: "parent_id"
   add_foreign_key "issues", "projects"
+  add_foreign_key "project_member_invitations", "invitations"
+  add_foreign_key "project_member_invitations", "project_members"
   add_foreign_key "project_member_issue_assignments", "issues"
   add_foreign_key "project_member_issue_assignments", "project_members"
   add_foreign_key "project_members", "members"

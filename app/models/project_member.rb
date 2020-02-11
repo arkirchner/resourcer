@@ -6,6 +6,7 @@ class ProjectMember < ApplicationRecord
            dependent: :restrict_with_exception
   has_many :assigned_issues,
            through: :project_member_issue_assignments, source: :issue
+  has_many :invitations, dependent: :restrict_with_exception
 
   before_destroy :check_for_last_owner
 
