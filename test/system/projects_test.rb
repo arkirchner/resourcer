@@ -30,4 +30,31 @@ class ProjectsTest < ApplicationSystemTestCase
     assert_text "This is a my new project."
     assert_no_text "This is not my project!"
   end
+
+  test "list change history relate to the project" do
+    member = FactoryBot.create :member
+    project = FactoryBot.create :project, members: [member]
+    other_project = FactoryBot.create :project, members: [member]
+
+    related_issue =
+      paper_trail_request(
+        member: member, request_id: "f3fb4826-843c-4144-bd6a-8e579523b01d",
+      ) { FactoryBot.create :issue, project: project }
+
+    History.create_for_request("f3fb4826-843c-4144-bd6a-8e579523b01d")
+
+    unrelated_issue =
+      paper_trail_request(
+        member: member, request_id: "825e128e-7fb9-4d4a-a447-ce33f8276f63",
+      ) { FactoryBot.create :issue, project: other_project }
+
+    History.create_for_request("825e128e-7fb9-4d4a-a447-ce33f8276f63")
+
+    sign_up_with_github(member)
+
+    click_on project.name
+
+    assert_text "#{related_issue.subject}\n#{member.name} create"
+    assert_no_text "#{unrelated_issue.subject}\n#{member.name} create"
+  end
 end

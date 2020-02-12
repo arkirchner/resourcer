@@ -1,8 +1,10 @@
 class Issue < ApplicationRecord
   extend ActsAsTree::TreeWalker
   acts_as_tree order: :subject
+  has_paper_trail
   belongs_to :project
 
+  has_many :histories, dependent: :restrict_with_exception
   has_one :project_member_issue_assignment,
           dependent: :restrict_with_exception, autosave: true
   has_one :project_member, through: :project_member_issue_assignment
@@ -27,6 +29,10 @@ class Issue < ApplicationRecord
     else
       build_project_member_issue_assignment(project_member_id: id)
     end
+  end
+
+  def project_member_assignment_id
+    project_member_issue_assignment&.project_member_id
   end
 
   private

@@ -37,4 +37,56 @@ class DashboardTest < ApplicationSystemTestCase
     assert_no_text unassigned_issue.subject
     assert_no_text unrelated_issue.subject
   end
+
+  test "list change history relate to the user" do
+    project_member = FactoryBot.create :project_member
+    unrelated_project_member = FactoryBot.create :project_member
+    other_project_member =
+      FactoryBot.create :project_member,
+                        member: unrelated_project_member.member,
+                        project: project_member.project
+
+    own_issue =
+      paper_trail_request(
+        member: project_member.member,
+        request_id: "825e128e-7fb9-4d4a-a447-ce33f8276f63",
+      ) do
+        FactoryBot.create :issue,
+                          project: project_member.project
+      end
+
+    History.create_for_request("825e128e-7fb9-4d4a-a447-ce33f8276f63")
+
+    related_issue =
+      paper_trail_request(
+        member: other_project_member.member,
+        request_id: "f3fb4826-843c-4144-bd6a-8e579523b01d",
+      ) do
+        FactoryBot.create :issue,
+                          project: project_member.project,
+                          project_member: other_project_member,
+                          project_member_assignment_id: project_member.id
+      end
+
+    History.create_for_request("f3fb4826-843c-4144-bd6a-8e579523b01d")
+
+    unrelated_issue =
+      paper_trail_request(
+        member: unrelated_project_member.member,
+        request_id: "c2a5bf0e-9a71-4095-b217-b64317e10f33",
+      ) do
+        FactoryBot.create :issue,
+                          project: unrelated_project_member.project,
+                          project_member: unrelated_project_member
+      end
+
+    History.create_for_request("c2a5bf0e-9a71-4095-b217-b64317e10f33")
+
+
+    sign_up_with_github(project_member.member)
+
+    assert_text "#{own_issue.subject}\n#{project_member.member.name} create"
+    assert_text "#{related_issue.subject}\n#{other_project_member.member.name} create"
+    assert_no_text "#{unrelated_issue.subject}\n#{unrelated_project_member.member.name} create"
+  end
 end

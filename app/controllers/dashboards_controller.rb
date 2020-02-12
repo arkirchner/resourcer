@@ -1,4 +1,9 @@
 class DashboardsController < ApplicationController
+  def show
+    @histories =
+      History.related_to_member(@current_member).order(changed_at: :desc)
+  end
+
   private
 
   def current_member

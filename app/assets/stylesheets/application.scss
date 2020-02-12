@@ -3,39 +3,7 @@
 // variables
 $navbar-top-padding: 4.7rem;
 
-// base
-@import "bootstrap/scss/bootstrap-reboot";
-@import "bootstrap/scss/bootstrap-grid";
-@import "bootstrap/scss/root";
-
-// bootstrap components
-@import "bootstrap/scss/alert";
-@import "bootstrap/scss/type";
-@import "bootstrap/scss/buttons";
-@import "bootstrap/scss/button-group";
-@import "bootstrap/scss/media";
-@import "bootstrap/scss/card";
-@import "bootstrap/scss/close";
-@import "bootstrap/scss/tables";
-@import "bootstrap/scss/nav";
-@import "bootstrap/scss/navbar";
-@import "bootstrap/scss/list-group";
-@import "bootstrap/scss/forms";
-@import "bootstrap/scss/transitions";
-@import "bootstrap/scss/dropdown";
-@import "bootstrap/scss/badge";
-@import "bootstrap/scss/modal";
-@import "bootstrap/scss/input-group";
-
-// utilities
-@import "bootstrap/scss/utilities/background";
-@import "bootstrap/scss/utilities/text";
-@import "bootstrap/scss/utilities/shadows";
-@import "bootstrap/scss/utilities/position";
-@import "bootstrap/scss/utilities/borders";
-@import "bootstrap/scss/utilities/sizing";
-@import "bootstrap/scss/utilities/screenreaders";
-
+@import "./bootstrap";
 @import "github-markdown-css/github-markdown";
 @import "flatpickr/dist/flatpickr";
 @import "./components/*";

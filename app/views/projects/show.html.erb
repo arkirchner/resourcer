@@ -3,4 +3,6 @@
   <small>Recent Updates</small>
 </h4>
 
-<%= render "updates/updates" %>
+<div class="card-columns">
+  <%= render @project.histories %>
+</div>

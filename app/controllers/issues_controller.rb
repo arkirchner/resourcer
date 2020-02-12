@@ -1,4 +1,6 @@
 class IssuesController < ApplicationController
+  prepend_after_action :create_change_history, only: [:create, :update]
+
   def new
     @issue = Issue.new(project: current_project)
   end
@@ -38,6 +40,10 @@ class IssuesController < ApplicationController
   end
 
   private
+
+  def create_change_history
+    CreateHistoryJob.perform_later(request.request_id)
+  end
 
   def issue_params
     params.require(:issue).permit(

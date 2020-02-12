@@ -1,0 +1,19 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">
+      <%= history.associated_issue.subject %>
+    </h5>
+    <h6 class="card-subtitle text-muted">
+      <%= history.member.name %>
+      <span class="badge badge-pill badge-primary">
+        <%= history.event %>
+        <small><%= l(history.changed_at, format: :short) %></small>
+      </span>
+    </h6>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    <%= render history.issue if history.issue %>
+    <%= render history.project_member_issue_assignment if history.project_member_issue_assignment %>
+  </ul>
+</div>

@@ -11,5 +11,10 @@ class ActiveSupport::TestCase # rubocop:disable Style/ClassAndModuleChildren
   # order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  # Set @member and @require_id for paper_trail request scope
+  def paper_trail_request(member:, request_id:)
+    PaperTrail.request(
+      { whodunnit: member.id, controller_info: { request_id: request_id } },
+    ) { yield }
+  end
 end

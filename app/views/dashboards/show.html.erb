@@ -77,6 +77,10 @@
       <h3 class="flex-grow-1">Recent Updates</h3>
     </div>
 
-    <%= render "updates/updates" %>
+    <% @histories.each do |history| %>
+      <div class="mb-4">
+        <%= render history %>
+      </div>
+    <% end %>
   </div>
 </div>

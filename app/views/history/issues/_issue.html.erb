@@ -1,0 +1,27 @@
+<% if issue.subject? %>
+  <li class="list-group-item">
+    <%= label(:issue, :subject) %>
+    <%= diff_attribute(issue, :subject) %>
+  </li>
+<% end %>
+
+<% if issue.description? %>
+  <li class="list-group-item">
+    <%= label(:issue, :description) %>
+    <%= diff_attribute(issue, :description) %>
+  </li>
+<% end %>
+
+<% if issue.due_at? %>
+  <li class="list-group-item">
+    <%= label(:issue, :due_at) %>
+    <%= diff_date_attribute(issue, :due_at) %>
+  </li>
+<% end %>
+
+<% if issue.parent? %>
+  <li class="list-group-item">
+    <%= label(:issue, :parent_id) %>
+    <%= diff(issue.from_parent&.subject, issue.to_parent&.subject) %>
+  </li>
+<% end %>
