@@ -38,6 +38,16 @@ class Issue < ApplicationRecord
   end
 
   def cannot_have_itself_as_parent
-    errors.add(:parent_id, "can't not be itself!") if self == parent
+    if parent_is_a_child_or_itself?
+      errors.add(:parent_id, "can't not be itself or a child of this Issue!")
+    end
+  end
+
+  def parent_is_a_child_or_itself?
+    if persisted?
+      self_and_descendants.include?(parent)
+    else
+      self == parent
+    end
   end
 end
