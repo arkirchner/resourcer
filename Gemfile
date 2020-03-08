@@ -6,7 +6,7 @@ ruby "~> 2.6.3"
 gem "dotenv-rails", require: "dotenv/rails-now"
 
 gem "activerecord-pg_enum"
-gem "acts_as_tree"
+gem "ancestry"
 gem "bootsnap", require: false
 gem "delayed_job_active_record"
 gem "diffy"

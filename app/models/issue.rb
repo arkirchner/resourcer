@@ -1,10 +1,11 @@
 class Issue < ApplicationRecord
-  extend ActsAsTree::TreeWalker
-  acts_as_tree order: :subject
+  has_ancestry
   has_paper_trail
   belongs_to :project
 
   has_many :histories, dependent: :restrict_with_exception
+
+  has_many :parentable_issues, -> { all }, through: :project, source: :issues
   has_one :project_member_issue_assignment,
           dependent: :restrict_with_exception, autosave: true
   has_one :project_member, through: :project_member_issue_assignment
@@ -15,7 +16,12 @@ class Issue < ApplicationRecord
   validate :parent_issue_must_have_same_project
 
   scope :with_project, ->(project) { where(project_id: project) }
-  scope :without_issue, ->(issue) { where.not(id: issue) }
+  scope :parentable_issues,
+        lambda { |issue|
+          with_project(issue.project_id).where.not(id: issue).where.not(
+            id: self.ancestors_of(issue),
+          )
+        }
   scope :assigned_to,
         lambda { |member|
           joins(:project_member).merge(ProjectMember.where(member: member))
@@ -50,10 +56,8 @@ class Issue < ApplicationRecord
   end
 
   def parent_is_a_child_or_itself?
-    if persisted?
-      self_and_descendants.include?(parent)
-    else
-      self == parent
-    end
+    return true if self == parent
+
+    persisted? && parent && ancestor_of?(parent)
   end
 end

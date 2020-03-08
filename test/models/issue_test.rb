@@ -15,12 +15,23 @@ class IssueTest < ActiveSupport::TestCase
     assert_not_includes Issue.with_project(project), excluded_issue
   end
 
-  test ".without_issue" do
+  test ".parentable_issues" do
     issue = FactoryBot.create :issue
-    excluded_issue = FactoryBot.create :issue
+    assert_empty Issue.parentable_issues(issue), "Can not be parent if itself."
 
-    assert_includes Issue.without_issue(excluded_issue), issue
-    assert_not_includes Issue.without_issue(excluded_issue), excluded_issue
+    grandparent = FactoryBot.create(:issue, project: issue.project)
+    parent =
+      FactoryBot.create(:issue, project: issue.project, parent: grandparent)
+    issue.update!(parent: parent)
+    assert_empty Issue.parentable_issues(issue),
+                 "Ancestors can not be a ancestor of them self."
+
+    issue_of_other_project = FactoryBot.create :issue
+    assert_empty Issue.parentable_issues(issue),
+                 "Issues of other projects can not be parents."
+
+    parentable_issue = FactoryBot.create :issue, project: issue.project
+    assert_equal Issue.parentable_issues(issue), [parentable_issue]
   end
 
   test ".assigned_to, returnes all issues assigned to a member" do
@@ -70,17 +81,15 @@ class IssueTest < ActiveSupport::TestCase
   test "has parent and children" do
     project = FactoryBot.create :project
     parent = FactoryBot.create :issue, project: project
-    children = FactoryBot.create_list :issue, 2, project: project
-    issue =
-      FactoryBot.create :issue,
-                        parent: parent, children: children, project: project
+    issue = FactoryBot.create :issue, parent: parent, project: project
+    children = FactoryBot.create_list :issue, 2, project: project, parent: issue
 
     assert_equal issue.parent, parent
     assert_equal issue.children, children
   end
 
   test "can not have itself as an parent" do
-    issue = FactoryBot.build :issue
+    issue = FactoryBot.create :issue
     issue.parent = issue
 
     assert_not issue.save, "Saved issue with itself as parent"
@@ -91,7 +100,8 @@ class IssueTest < ActiveSupport::TestCase
     issue = FactoryBot.create :issue, project: project
     child_issue = FactoryBot.create :issue, project: project, parent: issue
 
-    assert_not issue.update(parent: child_issue), "Saved issue with child as parent"
+    assert_not issue.update(parent: child_issue),
+               "Saved issue with child as parent"
   end
 
   test "can only have issues from that same project as parent" do
