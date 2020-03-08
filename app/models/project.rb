@@ -2,6 +2,7 @@ class Project < ApplicationRecord
   before_validation :upcase_key
 
   has_many :issues, dependent: :restrict_with_exception
+  has_many :histories, -> { order(changed_at: :desc) }, through: :issues
   has_many :project_members, dependent: :restrict_with_exception
   has_many :members, through: :project_members
   has_many :invitations, through: :project_members

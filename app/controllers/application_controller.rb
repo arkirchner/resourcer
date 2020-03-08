@@ -23,4 +23,11 @@ class ApplicationController < ActionController::Base
   def current_project_id
     params[:project_id]
   end
+
+  def info_for_paper_trail
+    {
+      whodunnit: current_member&.id,
+      request_id: request.request_id
+    }
+  end
 end
