@@ -857,10 +857,10 @@
   resolved "https://registry.yarnpkg.com/@thoughtbot/eslint-config/-/eslint-config-0.1.0.tgz#1da782c601692ad185c4bceaa253e703e0797b6a"
   integrity sha512-Dajw2tWO5RZ/95mskOCQnGJZbNKQPNAQV4tkdx+T29194I6cvzUZ6HsRQayWrAL+nPvMIkXerC8pSNimn5JHTA==
 
-"@thoughtbot/stylelint-config@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@thoughtbot/stylelint-config/-/stylelint-config-1.2.0.tgz#14e6ac218592a75ea906c16150e816441a134259"
-  integrity sha512-L28BtRiA1wLMR9uJucywv6Idu+gVm0fbsRLOuLbMefbxTBMuRay/Tv8TbsLoeYrBw17Al4fFiYHtzT6tTthvYw==
+"@thoughtbot/stylelint-config@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@thoughtbot/stylelint-config/-/stylelint-config-2.0.0.tgz#3d3559bd404e8a0a80915c07f136be19793012c6"
+  integrity sha512-mE4NkPjdXUS57R4akrETX+gW8pUoljOa+4ZdDdif+CBDy3LnA4SfuO1fagvzOsWkLVTZPAaOSHiJRWK0DeMrmQ==
   dependencies:
     stylelint-config-recommended "^3.0.0"
     stylelint-declaration-block-no-ignored-properties "^2.2.0"
