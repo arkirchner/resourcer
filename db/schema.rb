@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_16_044819) do
+ActiveRecord::Schema.define(version: 2020_03_08_082505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -89,8 +89,9 @@ ActiveRecord::Schema.define(version: 2020_02_16_044819) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "project_id", null: false
-    t.bigint "parent_id"
     t.text "description", default: "", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_issues_on_ancestry"
     t.index ["project_id"], name: "index_issues_on_project_id"
   end
 
@@ -164,7 +165,6 @@ ActiveRecord::Schema.define(version: 2020_02_16_044819) do
   add_foreign_key "history_project_member_issue_assignments", "project_members", column: "from_project_member_id"
   add_foreign_key "history_project_member_issue_assignments", "project_members", column: "to_project_member_id"
   add_foreign_key "invitations", "project_members"
-  add_foreign_key "issues", "issues", column: "parent_id"
   add_foreign_key "issues", "projects"
   add_foreign_key "project_member_invitations", "invitations"
   add_foreign_key "project_member_invitations", "project_members"

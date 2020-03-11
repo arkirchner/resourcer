@@ -1,0 +1,8 @@
+<% if issues.present? %>
+  <div class="list-group">
+    <% issues.each do |issue, children| %>
+      <%= link_to issue.subject, issue_path(issue), class: "list-group-item" %>
+      <%= render "children", issues: children %>
+    <% end %>
+  </div>
+<% end %>

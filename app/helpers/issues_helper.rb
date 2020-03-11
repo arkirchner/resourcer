@@ -1,8 +1,6 @@
 module IssuesHelper
   def parent_issue_options(current_issue)
-    issues = current_project.issues.without_issue(current_issue.self_and_descendants)
-
-    issues.map do |issue|
+    Issue.parentable_issues(current_issue).map do |issue|
       [issue.subject, issue.id]
     end
   end
