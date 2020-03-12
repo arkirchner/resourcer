@@ -1,7 +1,10 @@
 FactoryBot.define do
   factory :issue do
     project
-    sequence(:subject) { |n| "Issue #{n}" }
+    subject { Faker::Lorem.sentence }
+    description do
+      Array.new(rand(2..50)).map { Faker::Markdown.random }.join("\n\n\n")
+    end
     due_at { 3.days.from_now }
   end
 end

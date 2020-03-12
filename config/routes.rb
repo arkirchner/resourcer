@@ -11,7 +11,12 @@ Rails.application.routes.draw do
 
   resource :dashboard, only: :show
 
-  get "/auth/:provider/callback", to: "sessions#create"
+  if Rails.env.development?
+    match "/auth/:provider/callback", to: "sessions#create", via: %i[get post]
+  else
+    get "/auth/:provider/callback", to: "sessions#create"
+  end
+
   get "/auth/failure", to: "sessions#failure"
   delete "/auth", to: "sessions#destroy"
 

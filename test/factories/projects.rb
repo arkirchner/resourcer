@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :project do
-    sequence(:name) { |n| "Project #{n}" }
+    name { Faker::Lorem.words }
     sequence(:key) { |n| ("AAA"..."ZZZ").to_a[n] }
   end
 end
