@@ -19,19 +19,19 @@ class IssueTest < ActiveSupport::TestCase
     issue = FactoryBot.create :issue
     assert_empty Issue.parentable_issues(issue), "Can not be parent if itself."
 
-    grandparent = FactoryBot.create(:issue, project: issue.project)
-    parent =
-      FactoryBot.create(:issue, project: issue.project, parent: grandparent)
-    issue.update!(parent: parent)
-    assert_empty Issue.parentable_issues(issue),
-                 "Ancestors can not be a ancestor of them self."
-
     issue_of_other_project = FactoryBot.create :issue
     assert_empty Issue.parentable_issues(issue),
                  "Issues of other projects can not be parents."
 
+    grandparent = FactoryBot.create(:issue, project: issue.project)
+    parent =
+      FactoryBot.create(:issue, project: issue.project, parent: grandparent)
+    issue.update!(parent: parent)
+    assert_equal Issue.parentable_issues(issue), [parent]
+                 "Grand ancestors can not be a ancestor of them self."
+
     parentable_issue = FactoryBot.create :issue, project: issue.project
-    assert_equal Issue.parentable_issues(issue), [parentable_issue]
+    assert_equal Issue.parentable_issues(issue), [parent, parentable_issue]
   end
 
   test ".assigned_to, returnes all issues assigned to a member" do

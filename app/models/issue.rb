@@ -18,10 +18,13 @@ class Issue < ApplicationRecord
   scope :with_project, ->(project) { where(project_id: project) }
   scope :parentable_issues,
         lambda { |issue|
-          with_project(issue.project_id).where.not(id: issue).where.not(
-            id: self.ancestors_of(issue),
-          )
+          with_project(issue.project_id).where.not(id: issue).then do |relation|
+            return relation unless issue.parent_id
+
+            relation.where.not(id: self.ancestors_of(issue.parent_id))
+          end
         }
+
   scope :assigned_to,
         lambda { |member|
           joins(:project_member).merge(ProjectMember.where(member: member))
