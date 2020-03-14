@@ -10,10 +10,8 @@
         <small><%= l(history.changed_at, format: :short) %></small>
       </span>
     </h6>
-  </div>
-
-  <ul class="list-group list-group-flush">
+    <hr>
     <%= render history.issue if history.issue %>
     <%= render history.project_member_issue_assignment if history.project_member_issue_assignment %>
-  </ul>
+  </div>
 </div>

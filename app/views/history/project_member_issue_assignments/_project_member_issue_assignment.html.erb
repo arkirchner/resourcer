@@ -1,4 +1,2 @@
-<li class="list-group-item">
-  <%= label(:issue, :project_member_assignment_id) %>
-  <%= diff(project_member_issue_assignment.from_member&.name, project_member_issue_assignment.to_member&.name) %>
-</li>
+<%= label(:issue, :project_member_assignment_id) %>
+<%= diff(project_member_issue_assignment.from_member&.name, project_member_issue_assignment.to_member&.name) %>
