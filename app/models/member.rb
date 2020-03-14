@@ -1,5 +1,10 @@
 class Member < ApplicationRecord
-  enum provider: { github: "github", google: "google" }
+  enum provider:
+         if Rails.env.development?
+           { github: "github", google: "google", developer: "developer" }
+         else
+           { github: "github", google: "google" }
+         end
 
   has_many :project_members, dependent: :restrict_with_exception
   has_many :projects, through: :project_members

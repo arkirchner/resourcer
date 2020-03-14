@@ -49,6 +49,11 @@ jobs:
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
 
+      # Lint factories
+      - run:
+          name: lint factories
+          command: bin/rails factory_bot:lint
+
       # run tests!
       - run:
           name: run tests
