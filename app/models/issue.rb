@@ -2,6 +2,7 @@ class Issue < ApplicationRecord
   has_ancestry
   has_paper_trail
   belongs_to :project
+  belongs_to :creator, class_name: "Member", optional: true
 
   has_many :histories, dependent: :restrict_with_exception
 

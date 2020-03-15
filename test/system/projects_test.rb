@@ -14,23 +14,6 @@ class ProjectsTest < ApplicationSystemTestCase
     assert_text "New project was created."
   end
 
-  test "only projects related to the member are displayed" do
-    sign_up_with_github
-    FactoryBot.create :project, name: "This is not my project!"
-
-    click_on "Add project"
-
-    fill_in "Name", with: "This is a my new project."
-    fill_in "Key", with: "MYP"
-
-    click_on "Create"
-
-    click_on "Dashboard"
-
-    assert_text "This is a my new project."
-    assert_no_text "This is not my project!"
-  end
-
   test "list change history relate to the project" do
     member = FactoryBot.create :member
     project = FactoryBot.create :project, members: [member]

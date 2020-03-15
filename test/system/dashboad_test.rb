@@ -1,7 +1,62 @@
 require "application_system_test_case"
 
 class DashboardTest < ApplicationSystemTestCase
-  test "lists the members projects" do
+  class MtIssuesTest < ApplicationSystemTestCase
+    test "lists affigned issues by default" do
+      project_member = FactoryBot.create(:project_member)
+
+      first_assigned_issue =
+        FactoryBot.create :issue,
+                          project: project_member.project,
+                          project_member: project_member
+      secound_assigned_issue =
+        FactoryBot.create :issue,
+                          project: project_member.project,
+                          project_member: project_member
+
+      unassigned_issue =
+        FactoryBot.create :issue, project: project_member.project
+      unrelated_issue = FactoryBot.create :issue
+
+      sign_up_with_github(project_member.member)
+
+      assert_text first_assigned_issue.subject
+      assert_text secound_assigned_issue.subject
+      assert_no_text unassigned_issue.subject
+      assert_no_text unrelated_issue.subject
+    end
+
+    test "a member can check issue he created" do
+      project_member = FactoryBot.create(:project_member)
+      project = project_member.project
+      member = project_member.member
+
+      FactoryBot.create :issue,
+                        project: project,
+                        creator: member,
+                        subject: "My first Issue."
+      FactoryBot.create :issue,
+                        project: project,
+                        creator: member,
+                        subject: "My second Issue."
+      FactoryBot.create :issue,
+                        project: project,
+                        project_member: project_member,
+                        subject: "Issue assigned to me."
+      FactoryBot.create :issue,
+                        project: project, subject: "Issue not related to me."
+
+      sign_up_with_github(project_member.member)
+      click_on "Created by me"
+
+      assert_text "My first Issue."
+      assert_text "My second Issue."
+      assert_no_text "Issue assigned to me."
+      assert_no_text "Issue not related to me."
+    end
+  end
+
+  test "projects related to the member are displayed" do
     member = FactoryBot.create :member
     other_member = FactoryBot.create :member
     first_project = FactoryBot.create :project, members: [member]
@@ -13,29 +68,6 @@ class DashboardTest < ApplicationSystemTestCase
     assert_text first_project.name
     assert_text second_project.name
     assert_no_text unrelated_project.name
-  end
-
-  test "lists assigned issues" do
-    project_member = FactoryBot.create(:project_member)
-
-    first_assigned_issue =
-      FactoryBot.create :issue,
-                        project: project_member.project,
-                        project_member: project_member
-    secound_assigned_issue =
-      FactoryBot.create :issue,
-                        project: project_member.project,
-                        project_member: project_member
-
-    unassigned_issue = FactoryBot.create :issue, project: project_member.project
-    unrelated_issue = FactoryBot.create :issue
-
-    sign_up_with_github(project_member.member)
-
-    assert_text first_assigned_issue.subject
-    assert_text secound_assigned_issue.subject
-    assert_no_text unassigned_issue.subject
-    assert_no_text unrelated_issue.subject
   end
 
   test "list change history relate to the user" do
@@ -50,10 +82,7 @@ class DashboardTest < ApplicationSystemTestCase
       paper_trail_request(
         member: project_member.member,
         request_id: "825e128e-7fb9-4d4a-a447-ce33f8276f63",
-      ) do
-        FactoryBot.create :issue,
-                          project: project_member.project
-      end
+      ) { FactoryBot.create :issue, project: project_member.project }
 
     History.create_for_request("825e128e-7fb9-4d4a-a447-ce33f8276f63")
 
@@ -82,11 +111,14 @@ class DashboardTest < ApplicationSystemTestCase
 
     History.create_for_request("c2a5bf0e-9a71-4095-b217-b64317e10f33")
 
-
     sign_up_with_github(project_member.member)
 
     assert_text "#{own_issue.subject}\n#{project_member.member.name} create"
-    assert_text "#{related_issue.subject}\n#{other_project_member.member.name} create"
-    assert_no_text "#{unrelated_issue.subject}\n#{unrelated_project_member.member.name} create"
+    assert_text "#{related_issue.subject}\n#{
+                  other_project_member.member.name
+                } create"
+    assert_no_text "#{unrelated_issue.subject}\n#{
+                     unrelated_project_member.member.name
+                   } create"
   end
 end

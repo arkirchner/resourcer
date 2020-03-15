@@ -40,7 +40,10 @@
         <div>
           <div class"">
             <button type="button" class="btn btn-primary btn-sm my-1">Assigned to me (11)</button>
-            <button type="button" class="btn btn-light btn-sm my-1">Created by me (8)</button>
+            <%= button_to dashboard_path, class: "btn btn-light btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= hidden_field_tag :issues_by_member, true %>
+              Created by me (8)
+            <% end %>
           </div>
           <div>
             <button type="button" class="btn btn-primary btn-sm my-1">All (11)</button>
@@ -59,7 +62,7 @@
           </tr>
         </thead>
         <tbody>
-          <% current_member.assigned_issues.each do |issue| %>
+          <% @issues.each do |issue| %>
             <tr>
               <th scope="row">
                 <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
