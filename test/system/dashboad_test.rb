@@ -5,25 +5,66 @@ class DashboardTest < ApplicationSystemTestCase
     test "lists affigned issues by default" do
       project_member = FactoryBot.create(:project_member)
 
-      first_assigned_issue =
-        FactoryBot.create :issue,
-                          project: project_member.project,
-                          project_member: project_member
-      secound_assigned_issue =
-        FactoryBot.create :issue,
-                          project: project_member.project,
-                          project_member: project_member
+      FactoryBot.create :issue,
+                        subject: "A issue due today!",
+                        project: project_member.project,
+                        project_member: project_member,
+                        due_at: Date.today
+      FactoryBot.create :issue,
+                        subject: "This issue is due tomorrow.",
+                        project: project_member.project,
+                        project_member: project_member,
+                        due_at: Date.tomorrow
 
-      unassigned_issue =
-        FactoryBot.create :issue, project: project_member.project
-      unrelated_issue = FactoryBot.create :issue
+      FactoryBot.create :issue,
+                        subject: "This issue is due in 4 days.",
+                        project: project_member.project,
+                        project_member: project_member,
+                        due_at: 4.days.from_now
+
+      FactoryBot.create :issue,
+                        subject: "This issue is overdue.",
+                        project: project_member.project,
+                        project_member: project_member,
+                        due_at: 1.day.ago
+
+      FactoryBot.create :issue,
+                        project: project_member.project,
+                        subject: "This issue is not assigned to the member."
+      FactoryBot.create :issue, subject: "This is a unrelated issue."
 
       sign_up_with_github(project_member.member)
 
-      assert_text first_assigned_issue.subject
-      assert_text secound_assigned_issue.subject
-      assert_no_text unassigned_issue.subject
-      assert_no_text unrelated_issue.subject
+      assert_text "A issue due today!"
+      assert_text "This issue is due tomorrow."
+      assert_text "This issue is due in 4 days."
+      assert_text "This issue is overdue."
+      assert_no_text "This issue is not assigned to the member."
+      assert_no_text "This is a unrelated issue."
+
+      click_on "4 Days"
+      assert_text "A issue due today!"
+      assert_text "This issue is due tomorrow."
+      assert_text "This issue is due in 4 days."
+      assert_no_text "This issue is overdue."
+      assert_no_text "This issue is not assigned to the member."
+      assert_no_text "This is a unrelated issue."
+
+      click_on "Due Today"
+      assert_text "A issue due today!"
+      assert_no_text "This issue is due tomorrow."
+      assert_no_text "This issue is due in 4 days."
+      assert_no_text "This issue is overdue."
+      assert_no_text "This issue is not assigned to the member."
+      assert_no_text "This is a unrelated issue."
+
+      click_on "Overdue"
+      assert_no_text "A issue due today!"
+      assert_no_text "This issue is due tomorrow."
+      assert_no_text "This issue is due in 4 days."
+      assert_text "This issue is overdue."
+      assert_no_text "This issue is not assigned to the member."
+      assert_no_text "This is a unrelated issue."
     end
 
     test "a member can check issue he created" do

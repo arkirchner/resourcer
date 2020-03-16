@@ -39,9 +39,13 @@
         </div>
         <div>
           <div class"">
-            <button type="button" class="btn btn-primary btn-sm my-1">Assigned to me (11)</button>
-            <%= button_to dashboard_path, class: "btn btn-light btn-sm my-1", form_class: "d-inline", method: :get do %>
-              <%= hidden_field_tag :issues_by_member, true %>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:assigned] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { assigned: true, created: false }) %>
+              Assigned to me (11)
+            <% end %>
+
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:created] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { assigned: false, created: true }) %>
               Created by me (8)
             <% end %>
           </div>
@@ -50,6 +54,24 @@
             <button type="button" class="btn btn-light btn-sm my-1">4 Days (8)</button>
             <button type="button" class="btn btn-light btn-sm my-1">Due Today (8)</button>
             <button type="button" class="btn btn-light btn-sm my-1">Overdue (8)</button>
+
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:all] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: true, four_day: false, today: false, overdue: false }) %>
+              All (11)
+            <% end %>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:four_day] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: true, today: false, overdue: false }) %>
+              4 Days (8)
+            <% end %>
+             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:today] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: true, today: true, overdue: false }) %>
+              Due Today (8)
+            <% end %>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:overdue] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: false, today: false, overdue: true }) %>
+              Overdue (3)
+            <% end %>
+
           </div>
         </div>
       </div>
