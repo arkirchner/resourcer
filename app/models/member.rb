@@ -9,7 +9,7 @@ class Member < ApplicationRecord
   has_many :project_members, dependent: :restrict_with_exception
   has_many :projects, through: :project_members
   has_many :assigned_issues, through: :project_members
-  has_many :created_issues, class_name: "Issue", foreign_key: :creator_id
+  has_many :created_issues, through: :project_members
 
   scope :with_project,
         lambda { |project|

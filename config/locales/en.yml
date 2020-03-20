@@ -31,7 +31,3 @@
 
 en:
   hello: "Hello world"
-  helpers:
-    label:
-      issue:
-        project_member_assignment_id: Assignee

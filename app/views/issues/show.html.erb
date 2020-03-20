@@ -1,7 +1,7 @@
 <h1><%= @issue.subject %></h1>
 <h2>
   <% if @issue.assignee %>
-    Assignee <%= @issue.assignee.name  %>
+    Assignee <%= @issue.assignee.member.name  %>
   <% else %>
     Not assigned.
   <% end %>

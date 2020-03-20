@@ -1,9 +1,11 @@
 class History::Issue < ApplicationRecord
-  CHANGES = %i[subject due_at ancestry description].freeze
+  CHANGES = %i[subject due_at ancestry description assignee_id].freeze
   belongs_to :history
   belongs_to :issue, foreign_key: :item_id, class_name: "::Issue"
   belongs_to :from_parent, class_name: "::Issue", optional: true
   belongs_to :to_parent, class_name: "::Issue", optional: true
+  belongs_to :from_assignee, class_name: "ProjectMember", optional: true
+  belongs_to :to_assignee, class_name: "ProjectMember", optional: true
 
   scope :with_project,
         ->(project) { joins(:issue).merge(::Issue.where(project_id: project)) }
@@ -38,5 +40,9 @@ class History::Issue < ApplicationRecord
 
   def description?
     from_description.present? || to_description.present?
+  end
+
+  def assignee?
+    from_assignee_id.present? || to_assignee_id.present?
   end
 end

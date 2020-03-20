@@ -17,3 +17,8 @@
   <%= label(:issue, :parent_id) %>
   <%= diff(issue.from_parent&.subject, issue.to_parent&.subject) %>
 <% end %>
+
+<% if issue.assignee? %>
+  <%= label(:issue, :assignee_id) %>
+  <%= diff(issue.from_assignee&.member&.name, issue.to_assignee&.member&.name) %>
+<% end %>

@@ -2,10 +2,8 @@ class ProjectMember < ApplicationRecord
   belongs_to :member
   belongs_to :project
 
-  has_many :project_member_issue_assignments,
-           dependent: :restrict_with_exception
-  has_many :assigned_issues,
-           through: :project_member_issue_assignments, source: :issue
+  has_many :assigned_issues, class_name: "Issue", foreign_key: :assignee_id
+  has_many :created_issues, class_name: "Issue", foreign_key: :creator_id
   has_many :invitations, dependent: :restrict_with_exception
 
   before_destroy :check_for_last_owner

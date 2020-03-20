@@ -8,24 +8,24 @@ class DashboardTest < ApplicationSystemTestCase
       FactoryBot.create :issue,
                         subject: "A issue due today!",
                         project: project_member.project,
-                        project_member: project_member,
+                        assignee: project_member,
                         due_at: Date.today
       FactoryBot.create :issue,
                         subject: "This issue is due tomorrow.",
                         project: project_member.project,
-                        project_member: project_member,
+                        assignee: project_member,
                         due_at: Date.tomorrow
 
       FactoryBot.create :issue,
                         subject: "This issue is due in 4 days.",
                         project: project_member.project,
-                        project_member: project_member,
+                        assignee: project_member,
                         due_at: 4.days.from_now
 
       FactoryBot.create :issue,
                         subject: "This issue is overdue.",
                         project: project_member.project,
-                        project_member: project_member,
+                        assignee: project_member,
                         due_at: 1.day.ago
 
       FactoryBot.create :issue,
@@ -74,15 +74,15 @@ class DashboardTest < ApplicationSystemTestCase
 
       FactoryBot.create :issue,
                         project: project,
-                        creator: member,
+                        creator: project_member,
                         subject: "My first Issue."
       FactoryBot.create :issue,
                         project: project,
-                        creator: member,
+                        creator: project_member,
                         subject: "My second Issue."
       FactoryBot.create :issue,
                         project: project,
-                        project_member: project_member,
+                        assignee: project_member,
                         subject: "Issue assigned to me."
       FactoryBot.create :issue,
                         project: project, subject: "Issue not related to me."
@@ -123,7 +123,11 @@ class DashboardTest < ApplicationSystemTestCase
       paper_trail_request(
         member: project_member.member,
         request_id: "825e128e-7fb9-4d4a-a447-ce33f8276f63",
-      ) { FactoryBot.create :issue, project: project_member.project }
+      ) do
+        FactoryBot.create :issue,
+                          project: project_member.project,
+                          creator: project_member
+      end
 
     History.create_for_request("825e128e-7fb9-4d4a-a447-ce33f8276f63")
 
@@ -134,8 +138,8 @@ class DashboardTest < ApplicationSystemTestCase
       ) do
         FactoryBot.create :issue,
                           project: project_member.project,
-                          project_member: other_project_member,
-                          project_member_assignment_id: project_member.id
+                          creator: other_project_member,
+                          assignee: project_member
       end
 
     History.create_for_request("f3fb4826-843c-4144-bd6a-8e579523b01d")
@@ -147,7 +151,7 @@ class DashboardTest < ApplicationSystemTestCase
       ) do
         FactoryBot.create :issue,
                           project: unrelated_project_member.project,
-                          project_member: unrelated_project_member
+                          creator: unrelated_project_member
       end
 
     History.create_for_request("c2a5bf0e-9a71-4095-b217-b64317e10f33")

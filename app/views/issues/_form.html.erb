@@ -9,8 +9,8 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :project_member_assignment_id %>
-    <%= f.select(:project_member_assignment_id, project_member_options(current_project), { include_blank: "Not assigned." }) %>
+    <%= f.label :assignee_id %>
+    <%= f.select(:assignee_id, project_member_options(current_project), { include_blank: "Not assigned." }) %>
   </div>
 
   <div class="form-group">

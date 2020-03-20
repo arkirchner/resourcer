@@ -2,16 +2,12 @@ class Issue < ApplicationRecord
   has_ancestry
   has_paper_trail
   belongs_to :project
-  belongs_to :creator, class_name: "Member", optional: true
+  belongs_to :creator, class_name: "ProjectMember", optional: true
+  belongs_to :assignee, class_name: "ProjectMember", optional: true
 
   has_many :histories, dependent: :restrict_with_exception
 
-  has_many :parentable_issues, -> { all }, through: :project, source: :issues
-  has_one :project_member_issue_assignment,
-          dependent: :restrict_with_exception, autosave: true
-  has_one :project_member, through: :project_member_issue_assignment
-  has_one :assignee, through: :project_member, source: :member
-
+  validates :creator_id, presence: true, if: :new_record?
   validates :subject, presence: true
   validate :cannot_have_itself_as_parent
   validate :parent_issue_must_have_same_project
@@ -28,22 +24,8 @@ class Issue < ApplicationRecord
 
   scope :assigned_to,
         lambda { |member|
-          joins(:project_member).merge(ProjectMember.where(member: member))
+          joins(:assignee).merge(ProjectMember.where(member: member))
         }
-
-  def project_member_assignment_id=(id)
-    if id.blank?
-      project_member_issue_assignment&.mark_for_destruction
-    elsif project_member_issue_assignment
-      project_member_issue_assignment.project_member_id = id
-    else
-      build_project_member_issue_assignment(project_member_id: id)
-    end
-  end
-
-  def project_member_assignment_id
-    project_member_issue_assignment&.project_member_id
-  end
 
   private
 

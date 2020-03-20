@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_15_110925) do
+ActiveRecord::Schema.define(version: 2020_03_20_014209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -59,19 +59,12 @@ ActiveRecord::Schema.define(version: 2020_03_15_110925) do
     t.text "to_description", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "from_assignee_id"
+    t.bigint "to_assignee_id"
+    t.bigint "from_creator_id"
+    t.bigint "to_creator_id"
     t.index ["id", "history_id"], name: "index_history_issues_on_id_and_history_id", unique: true
     t.index ["item_id"], name: "index_history_issues_on_item_id"
-  end
-
-  create_table "history_project_member_issue_assignments", force: :cascade do |t|
-    t.bigint "item_id"
-    t.uuid "history_id", null: false
-    t.bigint "from_project_member_id"
-    t.bigint "to_project_member_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["id", "history_id"], name: "index_history_issue_assignments_on_id_and_history_id", unique: true
-    t.index ["item_id"], name: "index_history_project_member_issue_assignments_on_item_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -92,6 +85,7 @@ ActiveRecord::Schema.define(version: 2020_03_15_110925) do
     t.text "description", default: "", null: false
     t.string "ancestry"
     t.bigint "creator_id"
+    t.bigint "assignee_id"
     t.index ["ancestry"], name: "index_issues_on_ancestry"
     t.index ["creator_id"], name: "index_issues_on_creator_id"
     t.index ["project_id"], name: "index_issues_on_project_id"
@@ -162,12 +156,13 @@ ActiveRecord::Schema.define(version: 2020_03_15_110925) do
   add_foreign_key "history_issues", "issues", column: "from_parent_id"
   add_foreign_key "history_issues", "issues", column: "item_id", on_delete: :nullify
   add_foreign_key "history_issues", "issues", column: "to_parent_id"
-  add_foreign_key "history_project_member_issue_assignments", "histories"
-  add_foreign_key "history_project_member_issue_assignments", "project_member_issue_assignments", column: "item_id", on_delete: :nullify
-  add_foreign_key "history_project_member_issue_assignments", "project_members", column: "from_project_member_id"
-  add_foreign_key "history_project_member_issue_assignments", "project_members", column: "to_project_member_id"
+  add_foreign_key "history_issues", "project_members", column: "from_assignee_id"
+  add_foreign_key "history_issues", "project_members", column: "from_creator_id"
+  add_foreign_key "history_issues", "project_members", column: "to_assignee_id"
+  add_foreign_key "history_issues", "project_members", column: "to_creator_id"
   add_foreign_key "invitations", "project_members"
-  add_foreign_key "issues", "members", column: "creator_id"
+  add_foreign_key "issues", "project_members", column: "assignee_id"
+  add_foreign_key "issues", "project_members", column: "creator_id"
   add_foreign_key "issues", "projects"
   add_foreign_key "project_member_invitations", "invitations"
   add_foreign_key "project_member_invitations", "project_members"
