@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_20_014209) do
+ActiveRecord::Schema.define(version: 2020_03_21_042544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -171,4 +171,63 @@ ActiveRecord::Schema.define(version: 2020_03_20_014209) do
   add_foreign_key "project_members", "members"
   add_foreign_key "project_members", "projects"
   add_foreign_key "versions", "members", column: "whodunnit", on_delete: :nullify
+
+  create_view "issue_counts", sql_definition: <<-SQL
+      SELECT members.id AS member_id,
+      COALESCE(assigned_counts.assigned_count, (0)::bigint) AS assigned_count,
+      COALESCE(four_days_assigned_counts.four_days_assigned_count, (0)::bigint) AS four_days_assigned_count,
+      COALESCE(today_assigned_counts.today_assigned_count, (0)::bigint) AS today_assigned_count,
+      COALESCE(overdue_assigned_counts.overdue_assigned_count, (0)::bigint) AS overdue_assigned_count,
+      COALESCE(creator_counts.created_count, (0)::bigint) AS created_count,
+      COALESCE(four_days_created_counts.four_days_created_count, (0)::bigint) AS four_days_created_count,
+      COALESCE(today_created_counts.today_created_count, (0)::bigint) AS today_created_count,
+      COALESCE(overdue_created_counts.overdue_created_count, (0)::bigint) AS overdue_created_count
+     FROM ((((((((members
+       LEFT JOIN ( SELECT count(*) AS assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            GROUP BY project_members.member_id) assigned_counts ON ((assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS four_days_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4)))
+            GROUP BY project_members.member_id) four_days_assigned_counts ON ((four_days_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS today_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE (issues.due_at = (timezone('JST'::text, now()))::date)
+            GROUP BY project_members.member_id) today_assigned_counts ON ((today_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS overdue_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE (issues.due_at < (timezone('JST'::text, now()))::date)
+            GROUP BY project_members.member_id) overdue_assigned_counts ON ((overdue_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            GROUP BY project_members.member_id) creator_counts ON ((creator_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS four_days_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4)))
+            GROUP BY project_members.member_id) four_days_created_counts ON ((four_days_created_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS today_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE (issues.due_at = (timezone('JST'::text, now()))::date)
+            GROUP BY project_members.member_id) today_created_counts ON ((today_created_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS overdue_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE (issues.due_at < (timezone('JST'::text, now()))::date)
+            GROUP BY project_members.member_id) overdue_created_counts ON ((overdue_created_counts.member_id = members.id)));
+  SQL
 end

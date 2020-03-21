@@ -10,6 +10,7 @@ class Member < ApplicationRecord
   has_many :projects, through: :project_members
   has_many :assigned_issues, through: :project_members
   has_many :created_issues, through: :project_members
+  has_one :issue_count
 
   scope :with_project,
         lambda { |project|

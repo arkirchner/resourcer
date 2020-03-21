@@ -38,32 +38,31 @@
           <div class"">
             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:assigned] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { assigned: true, created: false }) %>
-              Assigned to me (11)
+              Assigned to me (<%= current_member.issue_count.assigned_count %>)
             <% end %>
 
             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:created] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { assigned: false, created: true }) %>
-              Created by me (8)
+              Created by me (<%= current_member.issue_count.created_count %>)
             <% end %>
           </div>
           <div>
             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:all] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { all: true, four_day: false, today: false, overdue: false }) %>
-              All (11)
+              All (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.assigned_count : current_member.issue_count.created_count %>)
             <% end %>
             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:four_day] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { all: false, four_day: true, today: false, overdue: false }) %>
-              4 Days (8)
+              4 Days (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.four_days_assigned_count : current_member.issue_count.four_days_created_count %>)
             <% end %>
              <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:today] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { all: false, four_day: false, today: true, overdue: false }) %>
-              Due Today (8)
+              Due Today (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.today_assigned_count : current_member.issue_count.today_created_count %>)
             <% end %>
             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:overdue] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
               <%= my_issues_selection(@my_issues_params, { all: false, four_day: false, today: false, overdue: true }) %>
-              Overdue (3)
+              Overdue (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.overdue_assigned_count : current_member.issue_count.overdue_created_count %>)
             <% end %>
-
           </div>
         </div>
       </div>
@@ -94,7 +93,7 @@
       <h3 class="flex-grow-1">Recent Updates</h3>
     </div>
 
-    <% @histories.each do |history| %>
+    <% @histories.last(4).each do |history| %>
       <div class="mb-4">
         <%= render history %>
       </div>
