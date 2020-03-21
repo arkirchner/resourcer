@@ -22,3 +22,8 @@
   <%= label(:issue, :assignee_id) %>
   <%= diff(issue.from_assignee&.member&.name, issue.to_assignee&.member&.name) %>
 <% end %>
+
+<% if issue.status? %>
+  <%= label(:issue, :status) %>
+  <%= diff_attribute(issue, :status) %>
+<% end %>

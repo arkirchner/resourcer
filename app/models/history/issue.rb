@@ -1,5 +1,5 @@
 class History::Issue < ApplicationRecord
-  CHANGES = %i[subject due_at ancestry description assignee_id].freeze
+  CHANGES = %i[subject status due_at ancestry description assignee_id].freeze
   belongs_to :history
   belongs_to :issue, foreign_key: :item_id, class_name: "::Issue"
   belongs_to :from_parent, class_name: "::Issue", optional: true
@@ -24,6 +24,10 @@ class History::Issue < ApplicationRecord
 
   def to_ancestry=(ancestry)
     self.to_parent_id = ancestry.split("/").last
+  end
+
+  def status?
+    from_status.present? || to_status.present?
   end
 
   def parent?

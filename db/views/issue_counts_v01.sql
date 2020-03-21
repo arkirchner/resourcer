@@ -15,6 +15,7 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.assignee_id
+    WHERE issues.status IN ('open', 'in_progess')
     GROUP BY
       project_members.member_id
   ) AS assigned_counts ON assigned_counts.member_id = members.id
@@ -24,7 +25,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.assignee_id
-    WHERE issues.due_at
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at
       BETWEEN timezone('JST', now())::date AND timezone('JST', now())::date + 4
     GROUP BY
       project_members.member_id
@@ -35,7 +37,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.assignee_id
-    WHERE issues.due_at = timezone('JST', now())::date
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at = timezone('JST', now())::date
     GROUP BY
       project_members.member_id
   ) AS today_assigned_counts ON today_assigned_counts.member_id = members.id
@@ -45,7 +48,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.assignee_id
-    WHERE issues.due_at < timezone('JST', now())::date
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at < timezone('JST', now())::date
     GROUP BY
       project_members.member_id
   ) AS overdue_assigned_counts ON overdue_assigned_counts.member_id = members.id
@@ -55,6 +59,7 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.creator_id
+    WHERE issues.status IN ('open', 'in_progess')
     GROUP BY
       project_members.member_id
   ) AS creator_counts ON creator_counts.member_id = members.id
@@ -64,7 +69,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.creator_id
-    WHERE issues.due_at
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at
       BETWEEN timezone('JST', now())::date AND timezone('JST', now())::date + 4
     GROUP BY
       project_members.member_id
@@ -75,7 +81,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.creator_id
-    WHERE issues.due_at = timezone('JST', now())::date
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at = timezone('JST', now())::date
     GROUP BY
       project_members.member_id
   ) AS today_created_counts ON today_created_counts.member_id = members.id
@@ -85,7 +92,8 @@ FROM members
       project_members.member_id
     FROM issues
       JOIN project_members ON project_members.id = issues.creator_id
-    WHERE issues.due_at < timezone('JST', now())::date
+    WHERE issues.status IN ('open', 'in_progess')
+    AND issues.due_at < timezone('JST', now())::date
     GROUP BY
       project_members.member_id
   ) AS overdue_created_counts ON overdue_created_counts.member_id = members.id

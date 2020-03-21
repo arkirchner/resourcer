@@ -17,6 +17,6 @@ class LandingPagesTest < ApplicationSystemTestCase
     sign_up_with_github
     visit root_path
 
-    assert_text "My Issues"
+    assert_text "My issues"
   end
 end

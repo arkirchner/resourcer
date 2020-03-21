@@ -4,9 +4,9 @@ class DashboardsController < ApplicationController
       History.related_to_member(@current_member).order(changed_at: :desc)
     @issues =
       if my_issues_params[:created] == "true"
-        current_member.created_issues
+        current_member.created_issues.incomplete
       elsif my_issues_params[:assigned] == "true"
-        current_member.assigned_issues
+        current_member.assigned_issues.incomplete
       end.then do |relation|
         if my_issues_params[:all] == "true"
           relation

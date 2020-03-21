@@ -57,6 +57,7 @@ class IssuesController < ApplicationController
       :parent_id,
       :description,
       :assignee_id,
+      :status,
     )
   end
 

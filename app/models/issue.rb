@@ -1,6 +1,15 @@
 class Issue < ApplicationRecord
+  STATUSES = %w[open in_progess resolved closed].freeze
   has_ancestry
   has_paper_trail
+
+  enum status: {
+         open: "open",
+         in_progess: "in_progess",
+         resolved: "resolved",
+         closed: "closed",
+       }
+
   belongs_to :project
   belongs_to :creator, class_name: "ProjectMember", optional: true
   belongs_to :assignee, class_name: "ProjectMember", optional: true
@@ -12,14 +21,15 @@ class Issue < ApplicationRecord
   validate :cannot_have_itself_as_parent
   validate :parent_issue_must_have_same_project
 
+  scope :incomplete, ->{ where(status: %w[open in_progess]) }
   scope :with_project, ->(project) { where(project_id: project) }
   scope :parentable_issues,
         lambda { |issue|
-          with_project(issue.project_id).where.not(id: issue).then do |relation|
+          with_project(issue.project_id).where.not(id: issue).then { |relation|
             return relation unless issue.parent_id
 
             relation.where.not(id: self.ancestors_of(issue.parent_id))
-          end
+          }
         }
 
   scope :assigned_to,

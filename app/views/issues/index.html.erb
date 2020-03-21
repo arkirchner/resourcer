@@ -3,6 +3,7 @@
     <tr>
       <th scope="col">Key</th>
       <th scope="col">Subject</th>
+      <th scope="col">Status</th>
       <th scope="col" class="text-right">Due</th>
     </tr>
   </thead>
@@ -14,6 +15,9 @@
         </th>
         <td>
           <%= link_to issue.subject, issue_path(issue) %>
+        </td>
+        <td>
+          <%= issue.status %>
         </td>
         <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
       </tr>

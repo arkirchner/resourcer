@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_21_042544) do
+ActiveRecord::Schema.define(version: 2020_03_21_122210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2020_03_21_042544) do
 
   # These are custom enum types that must be created before they can be used in the schema definition
   create_enum "history_events", ["create", "destroy", "update"]
+  create_enum "issue_status", ["open", "in_progess", "resolved", "closed"]
   create_enum "member_providers", ["github", "google", "developer"]
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -63,6 +64,8 @@ ActiveRecord::Schema.define(version: 2020_03_21_042544) do
     t.bigint "to_assignee_id"
     t.bigint "from_creator_id"
     t.bigint "to_creator_id"
+    t.enum "from_status", as: "issue_status"
+    t.enum "to_status", as: "issue_status"
     t.index ["id", "history_id"], name: "index_history_issues_on_id_and_history_id", unique: true
     t.index ["item_id"], name: "index_history_issues_on_item_id"
   end
@@ -86,6 +89,7 @@ ActiveRecord::Schema.define(version: 2020_03_21_042544) do
     t.string "ancestry"
     t.bigint "creator_id"
     t.bigint "assignee_id"
+    t.enum "status", default: "open", null: false, as: "issue_status"
     t.index ["ancestry"], name: "index_issues_on_ancestry"
     t.index ["creator_id"], name: "index_issues_on_creator_id"
     t.index ["project_id"], name: "index_issues_on_project_id"
@@ -187,47 +191,49 @@ ActiveRecord::Schema.define(version: 2020_03_21_042544) do
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE (issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status]))
             GROUP BY project_members.member_id) assigned_counts ON ((assigned_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS four_days_assigned_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.assignee_id)))
-            WHERE ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4))))
             GROUP BY project_members.member_id) four_days_assigned_counts ON ((four_days_assigned_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS today_assigned_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.assignee_id)))
-            WHERE (issues.due_at = (timezone('JST'::text, now()))::date)
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at = (timezone('JST'::text, now()))::date))
             GROUP BY project_members.member_id) today_assigned_counts ON ((today_assigned_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS overdue_assigned_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.assignee_id)))
-            WHERE (issues.due_at < (timezone('JST'::text, now()))::date)
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at < (timezone('JST'::text, now()))::date))
             GROUP BY project_members.member_id) overdue_assigned_counts ON ((overdue_assigned_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS created_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE (issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status]))
             GROUP BY project_members.member_id) creator_counts ON ((creator_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS four_days_created_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.creator_id)))
-            WHERE ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4))))
             GROUP BY project_members.member_id) four_days_created_counts ON ((four_days_created_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS today_created_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.creator_id)))
-            WHERE (issues.due_at = (timezone('JST'::text, now()))::date)
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at = (timezone('JST'::text, now()))::date))
             GROUP BY project_members.member_id) today_created_counts ON ((today_created_counts.member_id = members.id)))
        LEFT JOIN ( SELECT count(*) AS overdue_created_count,
               project_members.member_id
              FROM (issues
                JOIN project_members ON ((project_members.id = issues.creator_id)))
-            WHERE (issues.due_at < (timezone('JST'::text, now()))::date)
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at < (timezone('JST'::text, now()))::date))
             GROUP BY project_members.member_id) overdue_created_counts ON ((overdue_created_counts.member_id = members.id)));
   SQL
 end
