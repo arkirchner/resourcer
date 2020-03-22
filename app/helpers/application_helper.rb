@@ -7,7 +7,7 @@ module ApplicationHelper
       tag.span "In Progress", class: "badge badge-info"
     when :resolved
       tag.span "Resolved", class: "badge badge-success"
-    when :in_progess
+    when :closed
       tag.span "Closed", class: "badge badge-secondary"
     end
   end

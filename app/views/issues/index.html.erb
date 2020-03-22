@@ -17,7 +17,7 @@
           <%= link_to issue.subject, issue_path(issue) %>
         </td>
         <td>
-          <%= issue.status %>
+          <%= status_badge issue.status %>
         </td>
         <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
       </tr>
