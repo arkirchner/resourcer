@@ -4,20 +4,11 @@
                                    project_issues_path(issue.project)
                                  end, data: { controller: "form", action: "ajax:error->form#update" } do |f| %>
   <div class="form-group">
-    <%= f.label :parent_id %>
-    <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }) %>
+    <%= f.label :subject, class: "sr-only" %>
+    <%= f.text_field :subject, class: "#{form_input_class(issue, :subject)}  form-control-lg", placeholder: "Subject" %>
+    <%= form_input_errors issue, :subject %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :assignee_id %>
-    <%= f.select(:assignee_id, project_member_options(current_project), { include_blank: "Not assigned." }) %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :subject %>
-    <%= f.text_field :subject, class: form_input_class(issue, :subject), placeholder: "My new issue." %>
-    <%= form_input_errors issue, :subject  %>
-  </div>
   <div ass="form-group" data-controller="markdown" data-markdown-preview-url="<%= markdown_previews_path %>">
     <%= f.label :description %>
     <div data-target="markdown.preview"></div>
@@ -81,15 +72,36 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :status %>
-    <%= f.select(:status, Issue::STATUSES) %>
+  <div class="row row-cols-1 row-cols-md-2 mt-3">
+    <div class="col">
+      <div class="form-group">
+        <%= f.label :parent_id %>
+        <%= f.select(:parent_id, parent_issue_options(issue), { include_blank: "No parent issue." }, { class: form_input_class(issue, :parent_id) }) %>
+        <%= form_input_errors issue, :parent_id %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <%= f.label :assignee_id %>
+        <%= f.select(:assignee_id, project_member_options(current_project), { include_blank: "Not assigned." }, { class: form_input_class(issue, :assignee_id) }) %>
+        <%= form_input_errors issue, :assignee_id %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <%= f.label :status %>
+        <%= f.select(:status, Issue::STATUSES, {}, { class: form_input_class(issue, :status) }) %>
+        <%= form_input_errors issue, :assignee_id %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <%= f.label :due_at %>
+        <%= f.text_field :due_at, class: form_input_class(issue, :due_at), placeholder: "Pick a date.", data: { controller: "flatpickr", flatpickr_min_date: Time.zone.now } %>
+        <%= form_input_errors issue, :due_at  %>
+      </div>
+    </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :due_at %>
-    <%= f.text_field :due_at, class: form_input_class(issue, :due_at), placeholder: "Pick a date.", data: { controller: "flatpickr", flatpickr_min_date: Time.zone.now } %>
-    <%= form_input_errors issue, :due_at  %>
-  </div>
   <%= f.submit class: "btn btn-primary" %>
 <% end %>

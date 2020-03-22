@@ -26,13 +26,11 @@
     <div class="<%= current_project ? "sidebar__content" : "" %>">
       <main class="<%= current_project ? "container-fluid" : "container" %>">
         <% if current_project %>
-          <div class="media mt-3">
-            <%= image_tag "logo.png", class: "mr-3", alt: current_project.key %>
-            <div class="media-body">
-              <h5 class="mt-0"><%= current_project.key %></h5>
-              <small class="text-muted"><%= current_project.name %></small>
-            </div>
-          </div>
+          <h5 class="mt-3">
+            <%= image_tag "logo.png", class: "align-self-center mr-1", alt: current_project.key %>
+            <%= current_project.key %>
+            <small class="text-muted"><%= current_project.name %></small>
+          </h5>
 
           <hr>
         <% end %>
