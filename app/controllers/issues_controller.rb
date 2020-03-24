@@ -15,7 +15,8 @@ class IssuesController < ApplicationController
 
   def update
     if issue.update(issue_params)
-      redirect_to issue_url(issue), notice: "Issue was updated."
+      redirect_to project_issue_url(current_project, issue),
+                  notice: "Issue was updated."
     else
       render partial: "form",
              locals: { issue: issue },
@@ -32,7 +33,8 @@ class IssuesController < ApplicationController
       )
 
     if issue.save
-      redirect_to issue_url(issue), notice: "New issue created."
+      redirect_to project_issue_url(current_project, issue),
+                  notice: "New issue created."
     else
       render partial: "form",
              locals: { issue: issue },
@@ -41,7 +43,7 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.with_project(current_project_id).all
+    @issues = Issue.with_project(params[:project_id]).all
   end
 
   private
@@ -69,9 +71,5 @@ class IssuesController < ApplicationController
     ProjectMember.find_by!(
       project_id: current_project.id, member_id: current_member.id,
     )
-  end
-
-  def current_project
-    super || issue&.project
   end
 end

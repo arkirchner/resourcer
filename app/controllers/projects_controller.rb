@@ -20,11 +20,15 @@ class ProjectsController < ApplicationController
 
   private
 
-  def project_params
-    params.require(:project).permit(:name, :key)
+  def project_id
+    params[:id]
   end
 
-  def current_project_id
-    params[:id]
+  def current_project
+    Project.find(project_id) if project_id
+  end
+
+  def project_params
+    params.require(:project).permit(:name, :key)
   end
 end

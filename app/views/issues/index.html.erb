@@ -11,10 +11,10 @@
     <% @issues.each do |issue| %>
       <tr>
         <th scope="row">
-          <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
+          <%= link_to "#{issue.project.key}-#{issue.id}", project_issue_path(current_project, issue) %>
         </th>
         <td>
-          <%= link_to issue.subject, issue_path(issue) %>
+          <%= link_to issue.subject, project_issue_path(current_project, issue) %>
         </td>
         <td>
           <%= status_badge issue.status %>

@@ -97,7 +97,7 @@ class IssuesTest < ApplicationSystemTestCase
   test "edit issue from show page" do
     issue = FactoryBot.create :issue
 
-    visit issue_path(issue)
+    visit project_issue_path(issue.project, issue)
 
     click_on "Edit"
 

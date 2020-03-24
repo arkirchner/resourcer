@@ -1,5 +1,5 @@
 <%= form_with model: issue, url: if issue.persisted?
-                                   issue_path(issue)
+                                   project_issue_path(current_project, issue)
                                  else
                                    project_issues_path(issue.project)
                                  end, data: { controller: "form", action: "ajax:error->form#update" } do |f| %>

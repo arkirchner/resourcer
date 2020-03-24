@@ -30,12 +30,6 @@ class ProjectTest < ActiveSupport::TestCase
     assert_equal project.key, "ABC", "Key values have not been upcased"
   end
 
-  test "key must be unique" do
-    FactoryBot.create :project, key: "ABC"
-    project = FactoryBot.build :project, key: "ABC"
-    assert_not project.save, "Saved the project with duplicate key"
-  end
-
   test ".with_member, return projects related to the member" do
     member = FactoryBot.create :member
 

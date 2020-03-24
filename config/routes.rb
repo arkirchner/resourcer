@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :projects, only: %i[new create show] do
     resources :members, controller: :project_members, only: :index
     resources :issues,
-              only: %i[new create show index edit update], shallow: true
+              only: %i[new create show index edit update]
     resource :project_gantt_chart, only: :show
     resources :invitations, only: %i[new show create show]
   end
