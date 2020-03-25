@@ -6,7 +6,7 @@ module IssuesHelper
   end
 
   def project_member_options(project)
-    project.project_members.map do |project_member|
+    project.project_members.includes(:member).map do |project_member|
       [project_member.member.name, project_member.id]
     end
   end

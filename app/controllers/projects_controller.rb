@@ -5,6 +5,12 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
+    @histories =
+      @project.histories.includes(
+        :associated_issue,
+        :member,
+        issue: %i[from_assignee to_assignee],
+      ).order(changed_at: :desc).limit(20)
   end
 
   def create

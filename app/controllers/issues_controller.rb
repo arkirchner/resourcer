@@ -43,7 +43,7 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.with_project(params[:project_id]).all
+    @issues = Issue.with_project(params[:project_id]).includes(:project)
   end
 
   private
@@ -64,7 +64,7 @@ class IssuesController < ApplicationController
   end
 
   def issue
-    @issue ||= Issue.includes(:project).find(params[:id]) if params[:id]
+    @issue ||= Issue.find(params[:id]) if params[:id]
   end
 
   def current_project_member

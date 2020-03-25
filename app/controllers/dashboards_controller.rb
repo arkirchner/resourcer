@@ -2,6 +2,11 @@ class DashboardsController < ApplicationController
   def show
     @histories =
       History.related_to_member(@current_member).order(changed_at: :desc)
+        .includes(
+          :associated_issue,
+          :member,
+          issue: %i[from_assignee to_assignee],
+        ).limit(20)
     @issues =
       if my_issues_params[:created] == "true"
         current_member.created_issues.incomplete
@@ -17,7 +22,7 @@ class DashboardsController < ApplicationController
         elsif my_issues_params[:overdue] == "true"
           relation.where(Issue.arel_table[:due_at].lt(Date.today))
         end
-      end
+      end.includes(:project)
 
     @my_issues_params = my_issues_params
   end
@@ -54,8 +59,6 @@ class DashboardsController < ApplicationController
 
   def current_member
     @current_member ||=
-      Member.includes(:assigned_issues, :projects).find_by(
-        id: session[:member_id],
-      )
+      Member.includes(:projects).find_by(id: session[:member_id])
   end
 end
