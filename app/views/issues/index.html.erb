@@ -3,6 +3,7 @@
     <tr>
       <th scope="col">Key</th>
       <th scope="col">Subject</th>
+      <th scope="col">Status</th>
       <th scope="col" class="text-right">Due</th>
     </tr>
   </thead>
@@ -10,10 +11,13 @@
     <% @issues.each do |issue| %>
       <tr>
         <th scope="row">
-          <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
+          <%= link_to "#{issue.project.key}-#{issue.id}", project_issue_path(current_project, issue) %>
         </th>
         <td>
-          <%= link_to issue.subject, issue_path(issue) %>
+          <%= link_to issue.subject, project_issue_path(current_project, issue) %>
+        </td>
+        <td>
+          <%= status_badge issue.status %>
         </td>
         <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
       </tr>

@@ -14,7 +14,7 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
   validates :key,
-            length: { is: 3 }, format: { with: /\A[A-Z]+\z/ }, uniqueness: true
+            length: { is: 3 }, format: { with: /\A[A-Z]+\z/ }
 
   def save_with_inital_member(member)
     return false if invalid?

@@ -50,7 +50,7 @@ if Rails.env.development? || Rails.env.test?
             if sometimes?
               issue.project.project_members.sample.id
             else
-              issue.project_member_assignment_id
+              issue.assignee_id
             end
 
           due_at = sometimes? ? rand(1..30).days.from_now : issue.due_at
@@ -59,7 +59,7 @@ if Rails.env.development? || Rails.env.test?
             parent_id: parent_id,
             description: description,
             subject: subject,
-            project_member_assignment_id: assignee_id,
+            assignee_id: assignee_id,
             due_at: due_at,
           )
         end

@@ -43,7 +43,9 @@ export default class extends Controller {
     }
   }
 
-  _escapeAndArrowKey = ({ key }) => {
+  _escapeAndArrowKey = (event) => {
+    const { key } = event;
+
     if (!this.state) {
       return;
     }
@@ -53,13 +55,15 @@ export default class extends Controller {
     }
 
     if (DOWN_KEYS.includes(key)) {
+      event.preventDefault();
       this._focusDown();
     }
 
     if (UP_KEYS.includes(key)) {
+      event.preventDefault();
       this._focusUp();
     }
-  }
+  };
 
   _tabKey = ({ key, target }) => {
     if (TAB_KEY === key) {

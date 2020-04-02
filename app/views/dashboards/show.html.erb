@@ -26,10 +26,7 @@
       <% end %>
     </ul>
 
-    <div class="d-flex align-items-end mt-5">
-      <h3 class="flex-grow-1">My Issues</h3>
-      <%= link_to 'Gantt Chart', root_path, class: "btn btn-link" %>
-    </div>
+    <h3 class="mt-5">My issues</h3>
 
     <div class="card">
       <div class="card-header d-flex">
@@ -39,14 +36,33 @@
         </div>
         <div>
           <div class"">
-            <button type="button" class="btn btn-primary btn-sm my-1">Assigned to me (11)</button>
-            <button type="button" class="btn btn-light btn-sm my-1">Created by me (8)</button>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:assigned] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { assigned: true, created: false }) %>
+              Assigned to me (<%= current_member.issue_count.assigned_count %>)
+            <% end %>
+
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:created] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { assigned: false, created: true }) %>
+              Created by me (<%= current_member.issue_count.created_count %>)
+            <% end %>
           </div>
           <div>
-            <button type="button" class="btn btn-primary btn-sm my-1">All (11)</button>
-            <button type="button" class="btn btn-light btn-sm my-1">4 Days (8)</button>
-            <button type="button" class="btn btn-light btn-sm my-1">Due Today (8)</button>
-            <button type="button" class="btn btn-light btn-sm my-1">Overdue (8)</button>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:all] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: true, four_day: false, today: false, overdue: false }) %>
+              All (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.assigned_count : current_member.issue_count.created_count %>)
+            <% end %>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:four_day] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: true, today: false, overdue: false }) %>
+              4 Days (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.four_days_assigned_count : current_member.issue_count.four_days_created_count %>)
+            <% end %>
+             <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:today] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: false, today: true, overdue: false }) %>
+              Due Today (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.today_assigned_count : current_member.issue_count.today_created_count %>)
+            <% end %>
+            <%= button_to dashboard_path, class: "btn #{ @my_issues_params[:overdue] == "true" ? "btn-primary" : "btn-light" } btn-sm my-1", form_class: "d-inline", method: :get do %>
+              <%= my_issues_selection(@my_issues_params, { all: false, four_day: false, today: false, overdue: true }) %>
+              Overdue (<%= @my_issues_params[:assigned] == "true" ? current_member.issue_count.overdue_assigned_count : current_member.issue_count.overdue_created_count %>)
+            <% end %>
           </div>
         </div>
       </div>
@@ -59,10 +75,10 @@
           </tr>
         </thead>
         <tbody>
-          <% current_member.assigned_issues.each do |issue| %>
+          <% @issues.each do |issue| %>
             <tr>
               <th scope="row">
-                <%= link_to "#{issue.project.key}-#{issue.id}", issue_path(issue) %>
+                <%= link_to "#{issue.project.key}-#{issue.id}", project_issue_path(issue.project, issue) %>
               </th>
               <td><%= issue.subject %></td>
               <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>

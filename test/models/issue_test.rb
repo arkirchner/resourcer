@@ -19,19 +19,19 @@ class IssueTest < ActiveSupport::TestCase
     issue = FactoryBot.create :issue
     assert_empty Issue.parentable_issues(issue), "Can not be parent if itself."
 
-    grandparent = FactoryBot.create(:issue, project: issue.project)
-    parent =
-      FactoryBot.create(:issue, project: issue.project, parent: grandparent)
-    issue.update!(parent: parent)
-    assert_empty Issue.parentable_issues(issue),
-                 "Ancestors can not be a ancestor of them self."
-
     issue_of_other_project = FactoryBot.create :issue
     assert_empty Issue.parentable_issues(issue),
                  "Issues of other projects can not be parents."
 
+    grandparent = FactoryBot.create(:issue, project: issue.project)
+    parent =
+      FactoryBot.create(:issue, project: issue.project, parent: grandparent)
+    issue.update!(parent: parent)
+    assert_equal Issue.parentable_issues(issue), [parent]
+                 "Grand ancestors can not be a ancestor of them self."
+
     parentable_issue = FactoryBot.create :issue, project: issue.project
-    assert_equal Issue.parentable_issues(issue), [parentable_issue]
+    assert_equal Issue.parentable_issues(issue), [parent, parentable_issue]
   end
 
   test ".assigned_to, returnes all issues assigned to a member" do
@@ -42,40 +42,16 @@ class IssueTest < ActiveSupport::TestCase
     issue_one =
       FactoryBot.create :issue,
                         project: project,
-                        project_member_assignment_id: project_member.id
+                        assignee: project_member
     issue_two = FactoryBot.create :issue, project: project
     issue_three =
       FactoryBot.create :issue,
                         project: project,
-                        project_member_assignment_id: project_member.id
+                        assignee: project_member
 
     assert_includes Issue.assigned_to(member), issue_one
     assert_not_includes Issue.assigned_to(member), issue_two
     assert_includes Issue.assigned_to(member), issue_three
-  end
-
-  test "#project_member_assignment_id=, members can be assigend to an issue" do
-    project = FactoryBot.create :project
-    project_member_one = FactoryBot.create :project_member, project: project
-    project_member_two = FactoryBot.create :project_member, project: project
-
-    params =
-      FactoryBot.attributes_for :issue,
-                                project_id: project.id,
-                                project_member_assignment_id:
-                                  project_member_one.id
-
-    issue = Issue.create(params)
-
-    assert_equal project_member_one.member, issue.assignee
-
-    issue.update(project_member_assignment_id: project_member_two.id)
-
-    assert_equal project_member_two.member, issue.reload.assignee
-
-    issue.update(project_member_assignment_id: "")
-
-    assert_nil issue.reload.assignee
   end
 
   test "has parent and children" do

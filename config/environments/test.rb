@@ -3,7 +3,8 @@
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
-Rails.application.configure do # rubocop:disable Metrics/BlockLength
+Rails.application.configure do
+  # rubocop:disable Metrics/BlockLength
   # Settings specified here will take precedence over those in
   # config/application.rb.
 
@@ -17,7 +18,7 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    "Cache-Control" => "public, max-age=#{1.hour.to_i}",
+    "Cache-Control" => "public, max-age=#{1.hour.to_i}"
   }
 
   # Show full error reports and disable caching.
@@ -46,4 +47,20 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # Raise errors if queries are not efficient.
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.raise = true
+    Bullet.add_whitelist(
+      type: :unused_eager_loading,
+      class_name: "History::Issue",
+      association: :from_assignee,
+    )
+    Bullet.add_whitelist(
+      type: :unused_eager_loading,
+      class_name: "History::Issue",
+      association: :to_assignee,
+    )
+  end
 end

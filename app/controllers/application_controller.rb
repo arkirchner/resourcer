@@ -15,13 +15,8 @@ class ApplicationController < ActionController::Base
   end
 
   def current_project
-    return unless current_project_id
-
-    Project.find_by(id: current_project_id)
-  end
-
-  def current_project_id
-    params[:project_id]
+    id = params[:project_id]
+    Project.find_by(id: id) if id
   end
 
   def info_for_paper_trail

@@ -1,5 +1,5 @@
 class IssuesController < ApplicationController
-  prepend_after_action :create_change_history, only: [:create, :update]
+  prepend_after_action :create_change_history, only: %i[create update]
 
   def new
     @issue = Issue.new(project: current_project)
@@ -15,7 +15,8 @@ class IssuesController < ApplicationController
 
   def update
     if issue.update(issue_params)
-      redirect_to issue_url(issue), notice: "Issue was updated."
+      redirect_to project_issue_url(current_project, issue),
+                  notice: "Issue was updated."
     else
       render partial: "form",
              locals: { issue: issue },
@@ -24,10 +25,16 @@ class IssuesController < ApplicationController
   end
 
   def create
-    issue = Issue.new(issue_params.merge(project_id: params[:project_id]))
+    issue =
+      Issue.new(
+        issue_params.merge(
+          project_id: params[:project_id], creator: current_project_member,
+        ),
+      )
 
     if issue.save
-      redirect_to issue_url(issue), notice: "New issue created."
+      redirect_to project_issue_url(current_project, issue),
+                  notice: "New issue created."
     else
       render partial: "form",
              locals: { issue: issue },
@@ -36,7 +43,7 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.with_project(current_project_id).all
+    @issues = Issue.with_project(params[:project_id]).includes(:project)
   end
 
   private
@@ -51,15 +58,18 @@ class IssuesController < ApplicationController
       :due_at,
       :parent_id,
       :description,
-      :project_member_assignment_id,
+      :assignee_id,
+      :status,
     )
   end
 
   def issue
-    @issue ||= Issue.includes(:project).find(params[:id]) if params[:id]
+    @issue ||= Issue.find(params[:id]) if params[:id]
   end
 
-  def current_project
-    super || issue&.project
+  def current_project_member
+    ProjectMember.find_by!(
+      project_id: current_project.id, member_id: current_member.id,
+    )
   end
 end

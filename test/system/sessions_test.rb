@@ -6,7 +6,7 @@ class SessionsTest < ApplicationSystemTestCase
     sign_up_with_github(member)
 
     assert_text "Hello John Doe"
-    assert_text "My Issues"
+    assert_text "My issues"
   end
 
   test "visitor can see an error if the authentication fails" do

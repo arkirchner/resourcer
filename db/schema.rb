@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_11_131754) do
+ActiveRecord::Schema.define(version: 2020_03_24_121738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
 
   # These are custom enum types that must be created before they can be used in the schema definition
   create_enum "history_events", ["create", "destroy", "update"]
+  create_enum "issue_status", ["open", "in_progess", "resolved", "closed"]
   create_enum "member_providers", ["github", "google", "developer"]
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -59,19 +60,14 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
     t.text "to_description", default: "", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "from_assignee_id"
+    t.bigint "to_assignee_id"
+    t.bigint "from_creator_id"
+    t.bigint "to_creator_id"
+    t.enum "from_status", as: "issue_status"
+    t.enum "to_status", as: "issue_status"
     t.index ["id", "history_id"], name: "index_history_issues_on_id_and_history_id", unique: true
     t.index ["item_id"], name: "index_history_issues_on_item_id"
-  end
-
-  create_table "history_project_member_issue_assignments", force: :cascade do |t|
-    t.bigint "item_id"
-    t.uuid "history_id", null: false
-    t.bigint "from_project_member_id"
-    t.bigint "to_project_member_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["id", "history_id"], name: "index_history_issue_assignments_on_id_and_history_id", unique: true
-    t.index ["item_id"], name: "index_history_project_member_issue_assignments_on_item_id"
   end
 
   create_table "invitations", force: :cascade do |t|
@@ -91,7 +87,11 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
     t.bigint "project_id", null: false
     t.text "description", default: "", null: false
     t.string "ancestry"
+    t.bigint "creator_id"
+    t.bigint "assignee_id"
+    t.enum "status", default: "open", null: false, as: "issue_status"
     t.index ["ancestry"], name: "index_issues_on_ancestry"
+    t.index ["creator_id"], name: "index_issues_on_creator_id"
     t.index ["project_id"], name: "index_issues_on_project_id"
   end
 
@@ -138,7 +138,6 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
     t.string "key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["key"], name: "index_projects_on_key", unique: true
   end
 
   create_table "versions", force: :cascade do |t|
@@ -160,11 +159,13 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
   add_foreign_key "history_issues", "issues", column: "from_parent_id"
   add_foreign_key "history_issues", "issues", column: "item_id", on_delete: :nullify
   add_foreign_key "history_issues", "issues", column: "to_parent_id"
-  add_foreign_key "history_project_member_issue_assignments", "histories"
-  add_foreign_key "history_project_member_issue_assignments", "project_member_issue_assignments", column: "item_id", on_delete: :nullify
-  add_foreign_key "history_project_member_issue_assignments", "project_members", column: "from_project_member_id"
-  add_foreign_key "history_project_member_issue_assignments", "project_members", column: "to_project_member_id"
+  add_foreign_key "history_issues", "project_members", column: "from_assignee_id"
+  add_foreign_key "history_issues", "project_members", column: "from_creator_id"
+  add_foreign_key "history_issues", "project_members", column: "to_assignee_id"
+  add_foreign_key "history_issues", "project_members", column: "to_creator_id"
   add_foreign_key "invitations", "project_members"
+  add_foreign_key "issues", "project_members", column: "assignee_id"
+  add_foreign_key "issues", "project_members", column: "creator_id"
   add_foreign_key "issues", "projects"
   add_foreign_key "project_member_invitations", "invitations"
   add_foreign_key "project_member_invitations", "project_members"
@@ -173,4 +174,65 @@ ActiveRecord::Schema.define(version: 2020_03_11_131754) do
   add_foreign_key "project_members", "members"
   add_foreign_key "project_members", "projects"
   add_foreign_key "versions", "members", column: "whodunnit", on_delete: :nullify
+
+  create_view "issue_counts", sql_definition: <<-SQL
+      SELECT members.id AS member_id,
+      COALESCE(assigned_counts.assigned_count, (0)::bigint) AS assigned_count,
+      COALESCE(four_days_assigned_counts.four_days_assigned_count, (0)::bigint) AS four_days_assigned_count,
+      COALESCE(today_assigned_counts.today_assigned_count, (0)::bigint) AS today_assigned_count,
+      COALESCE(overdue_assigned_counts.overdue_assigned_count, (0)::bigint) AS overdue_assigned_count,
+      COALESCE(creator_counts.created_count, (0)::bigint) AS created_count,
+      COALESCE(four_days_created_counts.four_days_created_count, (0)::bigint) AS four_days_created_count,
+      COALESCE(today_created_counts.today_created_count, (0)::bigint) AS today_created_count,
+      COALESCE(overdue_created_counts.overdue_created_count, (0)::bigint) AS overdue_created_count
+     FROM ((((((((members
+       LEFT JOIN ( SELECT count(*) AS assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE (issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status]))
+            GROUP BY project_members.member_id) assigned_counts ON ((assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS four_days_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4))))
+            GROUP BY project_members.member_id) four_days_assigned_counts ON ((four_days_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS today_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at = (timezone('JST'::text, now()))::date))
+            GROUP BY project_members.member_id) today_assigned_counts ON ((today_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS overdue_assigned_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.assignee_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at < (timezone('JST'::text, now()))::date))
+            GROUP BY project_members.member_id) overdue_assigned_counts ON ((overdue_assigned_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE (issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status]))
+            GROUP BY project_members.member_id) creator_counts ON ((creator_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS four_days_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND ((issues.due_at >= (timezone('JST'::text, now()))::date) AND (issues.due_at <= ((timezone('JST'::text, now()))::date + 4))))
+            GROUP BY project_members.member_id) four_days_created_counts ON ((four_days_created_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS today_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at = (timezone('JST'::text, now()))::date))
+            GROUP BY project_members.member_id) today_created_counts ON ((today_created_counts.member_id = members.id)))
+       LEFT JOIN ( SELECT count(*) AS overdue_created_count,
+              project_members.member_id
+             FROM (issues
+               JOIN project_members ON ((project_members.id = issues.creator_id)))
+            WHERE ((issues.status = ANY (ARRAY['open'::issue_status, 'in_progess'::issue_status])) AND (issues.due_at < (timezone('JST'::text, now()))::date))
+            GROUP BY project_members.member_id) overdue_created_counts ON ((overdue_created_counts.member_id = members.id)));
+  SQL
 end

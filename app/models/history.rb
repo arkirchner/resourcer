@@ -4,12 +4,10 @@ class History < ApplicationRecord
              class_name: "::Issue", foreign_key: :issue_id, optional: true
 
   has_one :issue, class_name: "History::Issue"
-  has_one :project_member_issue_assignment,
-          class_name: "History::ProjectMemberIssueAssignment"
 
   scope :related_to_member,
         lambda { |member|
-          relation = left_joins(associated_issue: :project_member)
+          relation = left_joins(associated_issue: :assignee)
           relation.where(member_id: member).or(
             relation.merge(ProjectMember.where(member: member)),
           )

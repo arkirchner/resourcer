@@ -23,10 +23,12 @@ gem "pg"
 gem "puma"
 gem "rails", "~> 6.0.2"
 gem "sass-rails"
+gem "scenic"
 gem "turbolinks"
 gem "webpacker"
 
 group :development, :test do
+  gem "bullet"
   gem "byebug", platforms: %i[mri mingw x64_mingw]
   gem "factory_bot_rails"
   gem "faker"
