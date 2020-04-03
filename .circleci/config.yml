@@ -7,7 +7,7 @@ jobs:
   test:
     docker:
       # specify the version you desire here
-      - image: circleci/ruby:2.6-node-browsers
+      - image: circleci/ruby:2.7-node-browsers
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -32,7 +32,9 @@ jobs:
       - run:
           name: install Ruby dependencies
           command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
+            gem install bundler
+            bundle config set path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
 
       - run:
           name: install JavaScript dependencies
