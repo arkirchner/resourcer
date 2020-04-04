@@ -10,13 +10,13 @@ Resourcer is a simple project planning tool. In Resourcer you can create project
 
 ## Goals
 
-Resourcer is intentionally kept minimalistic. The primary goal of this project is to create a responsive single page application without rendering HTML on the client. Instead, Turbolinks and Stimulus are updating the page with server-side rendered HTML.
+Resourcer is intentionally kept minimalistic. The primary goal of this project is to create a responsive single page application without rendering HTML on the client. Instead, [Turbolinks](https://github.com/turbolinks/turbolinks) and [Stimulus](https://github.com/stimulusjs/stimulus) are updating the page with server-side rendered HTML.
 
 Through the work on this project, I want to test the pros and cons of this development apogee.
 
 ## Rules of the road
 
-This project is following Thoughtbots exelent style guides.
+This project is following Thoughtbots excellent style guides.
 
 You can read a [description of the rules here](https://github.com/thoughtbot/guides/tree/master/style).
 
@@ -24,19 +24,19 @@ All code should follow these rules.
 
 ## Setup
 
-1. Get the code.
+1.  Get the code.
 
         % git clone git@github.com:arkirchner/resourcer.git
 
-2. Setup your environment.
+2.  Setup your environment.
 
         % bin/setup
 
-3. Start Rails.
+3.  Start Rails.
 
         % bin/rails server
 
-4. Verify that the app is up and running.
+4.  Verify that the app is up and running.
 
         % open http://localhost:3000
 
@@ -47,11 +47,11 @@ build is run automatically whenever any branch is updated on Github.
 
 ## Ongoing
 
-* Run test suite before committing to the master branch.
+- Run test suite before committing to the master branch.
 
         % rake
 
-* Reset development data as needed.
+- Reset development data as needed.
 
         % rake dev:prime
 
@@ -73,4 +73,3 @@ Manually deploy to production:
 # License
 
 See [LICENSE](LICENSE).
-
