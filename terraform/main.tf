@@ -1,5 +1,3 @@
-variable "date" {}
-
 variable "location" {
   default = "us"
 }
@@ -200,8 +198,9 @@ resource "google_cloud_run_service" "resourcer" {
       annotations = {
         "autoscaling.knative.dev/maxScale" = "1000"
         "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.master.connection_name
+        "client.knative.dev/user-image" = "gcr.io/resourcer/resourcer:latest"
       }
-      name = "resourcer-${var.date}"
+      name = "resourcer-${formatdate("YYYYMMDDhhmmss", timestamp())}"
     }
 
     spec {
@@ -264,6 +263,12 @@ resource "google_cloud_run_service" "resourcer" {
     google_project_service.cloud_run,
     google_project_iam_member.resourcer,
   ]
+
+  lifecycle {
+    ignore_changes = [
+      template[0].metadata[0].name,
+    ]
+  }
 }
 
 data "google_iam_policy" "public_invoke" {
@@ -293,4 +298,26 @@ resource "google_sql_database" "database" {
   project = google_project.resourcer.project_id
   name = "resourcer_production"
   instance = google_sql_database_instance.master.name
+}
+
+resource "google_service_account" "deployer" {
+  project = google_project.resourcer.project_id
+  account_id   = "resourcer-deployer"
+  display_name = "Application Deployer for Resourcer"
+
+  depends_on = [google_project_service.iam]
+}
+
+resource "google_project_iam_member" "deployer" {
+  project = google_project.resourcer.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.deployer.email}"
+}
+
+resource "google_service_account_key" "deployer" {
+  service_account_id = google_service_account.deployer.name
+}
+
+output "deploy_user_key" {
+  value = google_service_account_key.deployer.private_key
 }

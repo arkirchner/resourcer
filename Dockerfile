@@ -30,6 +30,7 @@ RUN bundle install --without development test \
       --retry 2 \
       --deployment
 
+COPY package.json yarn.lock Gemfile.lock /app/
 RUN yarn install
 
 COPY . /app/
@@ -37,4 +38,4 @@ COPY . /app/
 RUN SECRET_KEY_BASE=dummy bundle exec rake assets:precompile
 
 ENTRYPOINT ["/app/bin/entrypoint.sh"]
-CMD ["/app/bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["foreman", "start"]
