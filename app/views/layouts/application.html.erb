@@ -39,16 +39,16 @@
       </main>
 
       <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">© 2019-2020 Company Name</p>
+        <p class="mb-1">© 2019-<%= Date.today.year %> Armin Kirchner</p>
         <ul class="list-inline">
           <li class="list-inline-item">
-            <a href="#">Privacy</a>
+            <%= link_to "Privacy", page_path("privacy") %>
           </li>
           <li class="list-inline-item">
-            <a href="#">Terms</a>
+            <%= link_to "Terms", page_path("terms") %>
           </li>
           <li class="list-inline-item">
-            <a href="#">Support</a>
+            <a href="mailto:support@resourcer.work">Support</a>
           </li>
         </ul>
       </footer>

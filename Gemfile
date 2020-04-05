@@ -10,6 +10,7 @@ gem "ancestry"
 gem "bootsnap", require: false
 gem "delayed_job_active_record"
 gem "diffy"
+gem "high_voltage"
 gem "image_processing"
 gem "inline_svg"
 gem "jbuilder"
