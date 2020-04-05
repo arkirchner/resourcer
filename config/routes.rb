@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   resource :dashboard, only: :show
 
+  # OAuth based authentication
   if Rails.env.development?
     match "/auth/:provider/callback", to: "sessions#create", via: %i[get post]
   else
@@ -19,6 +20,9 @@ Rails.application.routes.draw do
 
   get "/auth/failure", to: "sessions#failure"
   delete "/auth", to: "sessions#destroy"
+
+  # Static pages
+  get "/pages/*id" => 'pages#show', as: :page, format: false
 
   root to: "landing_pages#show"
 end
