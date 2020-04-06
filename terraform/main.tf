@@ -172,9 +172,14 @@ resource "google_kms_crypto_key" "resourcer" {
   key_ring = google_kms_key_ring.resourcer.self_link
 }
 
-data "google_kms_secret" "secret_key_base" {
+data "google_kms_secret" "github_secret_key" {
   crypto_key = google_kms_crypto_key.resourcer.self_link
   ciphertext = "CiQAS5YnWgrboIo8JTCBzDTiJxf4GiiiSYFRZ0pVfgja94NrXkASUQAwGg5LYTWvTRGVyLha9emUVGW1gE2Jh8VcOMlq3CU67BP36WpXe2kiwO2a64EY5KJfM4rEr4Vj9mCd4oiLSJg/RLHHGl8pogjiUQY8emERIw=="
+}
+
+data "google_kms_secret" "google_secret_key" {
+  crypto_key = google_kms_crypto_key.resourcer.self_link
+  ciphertext = "CiQAS5YnWk0Ozt4vUwFG5F4rB6hmSprxi0halL1/GFfC8Weprh8SQQAwGg5LVSm1p9jP6S8EPF4kkIq71tgGmuttzZ89hzQ2SMjIPVwOTRCzlq/li2WzTyzm6Pcs8mLQDFil5iWiqnPD"
 }
 
 resource "google_service_account" "resourcer" {
@@ -240,7 +245,15 @@ resource "google_cloud_run_service" "resourcer" {
         }
         env {
           name  = "GITHUB_SECRET"
-          value = data.google_kms_secret.secret_key_base.plaintext
+          value = data.google_kms_secret.github_secret_key.plaintext
+        }
+        env {
+          name  = "GOOGLE_CLIENT_ID"
+          value = "253289455918-ndd60dbqpf5g2kspnkve59pc6eb5erpe.apps.googleusercontent.com"
+        }
+        env {
+          name = "GOOGLE_CLIENT_SECRET"
+          value = data.google_kms_secret.google_secret_key.plaintext
         }
 
         resources {
@@ -266,7 +279,7 @@ resource "google_cloud_run_service" "resourcer" {
 
   lifecycle {
     ignore_changes = [
-      template[0].metadata[0].name,
+#      template[0].metadata[0].name,
     ]
   }
 }
@@ -316,8 +329,4 @@ resource "google_project_iam_member" "deployer" {
 
 resource "google_service_account_key" "deployer" {
   service_account_id = google_service_account.deployer.name
-}
-
-output "deploy_user_key" {
-  value = google_service_account_key.deployer.private_key
 }

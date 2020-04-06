@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_24_121738) do
+ActiveRecord::Schema.define(version: 2020_04_06_072638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2020_03_24_121738) do
   # These are custom enum types that must be created before they can be used in the schema definition
   create_enum "history_events", ["create", "destroy", "update"]
   create_enum "issue_status", ["open", "in_progess", "resolved", "closed"]
-  create_enum "member_providers", ["github", "google", "developer"]
+  create_enum "member_providers", ["github", "google_oauth2", "developer"]
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
