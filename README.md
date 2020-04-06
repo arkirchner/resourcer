@@ -2,7 +2,8 @@
 
 # [Resourcer.work](https://resourcer.work)
 
-![`board`](https://dummyimage.com/1280x645/1c56e8/fff&text=Resourcer)
+![`dashboard`](https://raw.githubusercontent.com/arkirchner/resourcer/master/dashboard.png)
+![`issue_view`](https://raw.githubusercontent.com/arkirchner/resourcer/master/dashboard.png)
 
 Resourcer is a simple project planning tool. In Resourcer you can create projects and issues share them with coworkers or friends. Markdown is used for a simple issue formating. It is also possible to assign issues, set due dates and create hierarchical relationships between issues.
 
