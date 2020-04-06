@@ -9,6 +9,20 @@ class SessionsTest < ApplicationSystemTestCase
     assert_text "My issues"
   end
 
+  test "visitor can sign up with Google" do
+    OmniAuth.config.test_mode = true
+    OmniAuth.config.add_mock(
+      :google_oauth2,
+      uid: "123456", info: { name: "Indiana Jones" },
+    )
+
+    visit root_path
+    click_button "Continue with Google"
+
+    assert_text "Hello Indiana Jones"
+    assert_text "My issues"
+  end
+
   test "visitor can see an error if the authentication fails" do
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:github] = :invalid_credentials

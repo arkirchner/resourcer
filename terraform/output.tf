@@ -13,3 +13,7 @@ output "key_ring_name" {
 output "crypto_key_name" {
   value = google_kms_crypto_key.resourcer.name
 }
+
+output "deploy_user_key" {
+  value = google_service_account_key.deployer.private_key
+}

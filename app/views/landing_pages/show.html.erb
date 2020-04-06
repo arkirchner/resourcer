@@ -1,6 +1,7 @@
 <h1>Give Resourcer a try.</h1>
 
 <%= button_to "Continue with Github", "/auth/github" %>
+<%= button_to "Continue with Google", "/auth/google_oauth2" %>
 
 <% if Rails.env.development? %>
   <%= button_to "Developer", "/auth/developer" %>
