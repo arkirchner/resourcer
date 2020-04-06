@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  test:
     docker:
       # specify the version you desire here
       - image: circleci/ruby:2.6-node-browsers
@@ -67,3 +67,29 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+
+  deploy:
+    working_directory: ~/app
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Deploy Environment on Google Cloud Run.
+          command: |
+            echo $DEPLOY_SERVICE_USER_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
+            ./bin/deploy
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master

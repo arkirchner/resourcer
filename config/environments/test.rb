@@ -48,6 +48,9 @@ Rails.application.configure do
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
 
+  # Run tests inline when testing
+  config.active_job.queue_adapter = :inline
+
   # Raise errors if queries are not efficient.
   config.after_initialize do
     Bullet.enable = true
