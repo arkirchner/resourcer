@@ -4,13 +4,13 @@ class LandingPagesTest < ApplicationSystemTestCase
   test "a guest can see the langing page" do
     visit root_path
 
-    assert_text "Give Resourcer a try."
+    assert_text "Resourcer the project planner."
   end
 
   test "a guest visiting a unauthorised path will be redirected" do
     visit dashboard_path
 
-    assert_text "Give Resourcer a try."
+    assert_text "Resourcer the project planner."
   end
 
   test "member will be redirected to the dashboard" do

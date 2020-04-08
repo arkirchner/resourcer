@@ -44,6 +44,6 @@ class SessionsTest < ApplicationSystemTestCase
     click_on "Sign Out"
 
     assert_text "Goodbye John Doe"
-    assert_text "Give Resourcer a try."
+    assert_text "Resourcer the project planner."
   end
 end
