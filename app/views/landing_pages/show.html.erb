@@ -1,7 +1,21 @@
-<h1>Give Resourcer a try.</h1>
+<h1 class="text-center">Resourcer the project planner.</h1>
 
-<%= button_to "Continue with Github", "/auth/github" %>
-<%= button_to "Continue with Google", "/auth/google_oauth2" %>
+<p class="lead text-center">
+  Resourcer is a simple project planning tool. In Resourcer you can create projects and issues share them with coworkers or friends. Markdown is used for a simple issue formating. It is also possible to assign issues, set due dates and create hierarchical relationships between issues.
+</p>
+
+<div class="d-flex flex-column align-items-center mt-5">
+<%= button_to "/auth/github", class: "btn btn-primary btn-lg" do %>
+  <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/brands/github.svg", class: "svg-icon svg-icon--xl mr-2" %>
+  Continue with Github
+<% end %>
+
+
+<%= button_to "/auth/google_oauth2", class: "btn btn-primary btn-lg mt-3 mb-5" do %>
+  <%= inline_svg_tag "@fortawesome/fontawesome-free/svgs/brands/google.svg", class: "svg-icon svg-icon--xl mr-2" %>
+  Continue with Google
+<% end %>
+</div>
 
 <% if Rails.env.development? %>
   <%= button_to "Developer", "/auth/developer" %>
