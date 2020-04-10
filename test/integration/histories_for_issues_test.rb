@@ -1,6 +1,9 @@
 require "test_helper"
+require "integration_auth_helper"
 
 class HistoriesForIssuesTest < ActionDispatch::IntegrationTest
+  include IntegrationAuthHelper
+
   setup do
     @project = FactoryBot.create :project
     @member =
@@ -41,16 +44,5 @@ class HistoriesForIssuesTest < ActionDispatch::IntegrationTest
         assert_enqueued_with(job: CreateHistoryJob, args: [request_id])
       end
     end
-  end
-
-  def sign_in_as(member)
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.add_mock(
-      member.provider,
-      uid: member.provider_id, info: { name: member.name },
-    )
-    get "/auth/#{member.provider}/callback"
-    assert_response :redirect
-    OmniAuth.config.mock_auth[member.provider.to_sym] = nil
   end
 end

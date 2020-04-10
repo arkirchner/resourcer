@@ -3,7 +3,9 @@ require "application_system_test_case"
 class IssuesTest < ApplicationSystemTestCase
   def setup
     super
-    sign_up_with_github(FactoryBot.create(:project_member).member)
+    @project = FactoryBot.create :project
+    @project_member = FactoryBot.create(:project_member, project: @project)
+    sign_up_with_github(@project_member.member)
   end
 
   test "creating a new issue form the top page" do
@@ -95,9 +97,10 @@ class IssuesTest < ApplicationSystemTestCase
   end
 
   test "edit issue from show page" do
-    issue = FactoryBot.create :issue
+    issue =
+      FactoryBot.create :issue, project: @project, creator: @project_member
 
-    visit project_issue_path(issue.project, issue)
+    visit project_issue_path(@project, issue)
 
     click_on "Edit"
 
