@@ -1,4 +1,6 @@
 class IssuesController < ApplicationController
+  before_action :authorize
+
   prepend_after_action :create_change_history, only: %i[create update]
 
   def new
@@ -48,6 +50,10 @@ class IssuesController < ApplicationController
 
   private
 
+  def authorize
+    render plain: "Forbidden", status: :forbidden unless current_project_member
+  end
+
   def create_change_history
     CreateHistoryJob.perform_later(request.request_id)
   end
@@ -68,7 +74,7 @@ class IssuesController < ApplicationController
   end
 
   def current_project_member
-    ProjectMember.find_by!(
+    ProjectMember.find_by(
       project_id: current_project.id, member_id: current_member.id,
     )
   end
