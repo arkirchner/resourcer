@@ -43,6 +43,7 @@ class DashboardTest < ApplicationSystemTestCase
       assert_no_text "This is a unrelated issue."
 
       click_on "4 Days"
+      wait_for_turbolinks
       assert_text "A issue due today!"
       assert_text "This issue is due tomorrow."
       assert_text "This issue is due in 4 days."
@@ -51,6 +52,7 @@ class DashboardTest < ApplicationSystemTestCase
       assert_no_text "This is a unrelated issue."
 
       click_on "Due Today"
+      wait_for_turbolinks
       assert_text "A issue due today!"
       assert_no_text "This issue is due tomorrow."
       assert_no_text "This issue is due in 4 days."
@@ -59,6 +61,7 @@ class DashboardTest < ApplicationSystemTestCase
       assert_no_text "This is a unrelated issue."
 
       click_on "Overdue"
+      wait_for_turbolinks
       assert_no_text "A issue due today!"
       assert_no_text "This issue is due tomorrow."
       assert_no_text "This issue is due in 4 days."
@@ -89,6 +92,7 @@ class DashboardTest < ApplicationSystemTestCase
 
       sign_up_with_github(project_member.member)
       click_on "Created by me"
+      wait_for_turbolinks
 
       assert_text "My first Issue."
       assert_text "My second Issue."

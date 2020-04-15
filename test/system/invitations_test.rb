@@ -14,6 +14,7 @@ class InvitationsTest < ApplicationSystemTestCase
 
     fill_in "Note", with: "Invitation for Ace Ventura"
     click_on "Create Invitation"
+    wait_for_turbolinks
 
     @invitation_url = find("#invitation-url").value
 
@@ -35,6 +36,7 @@ class InvitationsTest < ApplicationSystemTestCase
 
     click_on "MYP"
     click_on "Members"
+    wait_for_turbolinks
 
     within find("#members") do
       assert_text "Ace Ventura"

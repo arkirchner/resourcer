@@ -10,6 +10,7 @@ class IssuesTest < ApplicationSystemTestCase
 
   test "creating a new issue form the top page" do
     click_on "Add issue"
+    wait_for_turbolinks
     fill_in "Subject", with: "New issue subject"
     click_on "Create Issue"
 
@@ -18,6 +19,7 @@ class IssuesTest < ApplicationSystemTestCase
 
   test "issue markdown description is convererted to HTML" do
     click_on "Add issue"
+    wait_for_turbolinks
     fill_in "Subject", with: "New issue subject"
     fill_in "Description", with: "# Heading\n__Advertisement__"
     click_on "Create Issue"
@@ -28,6 +30,7 @@ class IssuesTest < ApplicationSystemTestCase
 
   test "issue markdown can be previewed in form" do
     click_on "Add issue"
+    wait_for_turbolinks
 
     fill_in "Description", with: "# Heading\n__Advertisement__"
 
@@ -71,6 +74,7 @@ class IssuesTest < ApplicationSystemTestCase
     FactoryBot.create(:member, name: "Mike Miller", projects: [Project.last])
 
     click_on "Add issue"
+    wait_for_turbolinks
     fill_in "Subject", with: "New issue for an assigee"
     select "Mike Miller", from: "Assignee"
     click_on "Create Issue"

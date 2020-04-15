@@ -19,12 +19,14 @@ class NavigationTest < ApplicationSystemTestCase
       # Navigate to fist project
       navigation.click_on "Projects"
       navigation.click_on "First Project."
+      wait_for_turbolinks
       content.assert_text "First Project."
 
       # Navigate to second project
       navigation.click_on "Projects"
       navigation.click_on "Second Project."
-      content.assert_text "First Project."
+      wait_for_turbolinks
+      content.assert_text "Second Project."
     end
   end
 end
