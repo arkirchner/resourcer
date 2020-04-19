@@ -30,6 +30,12 @@ class IssueAuthorizationTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
   end
 
+  test "index" do
+    get project_issues_path(@project)
+
+    assert_response :forbidden
+  end
+
   test "edit" do
     issue = FactoryBot.create :issue, project: @project
     get edit_project_issue_path(@project, issue)

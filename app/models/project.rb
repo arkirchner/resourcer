@@ -9,7 +9,7 @@ class Project < ApplicationRecord
 
   scope :with_member,
         lambda { |member|
-          joins(:project_members).merge(ProjectMember.where(member: member))
+          joins(:project_members).merge(ProjectMember.where(member_id: member))
         }
 
   validates :name, presence: true

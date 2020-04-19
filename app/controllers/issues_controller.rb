@@ -1,6 +1,5 @@
 class IssuesController < ApplicationController
-  before_action :authorize
-
+  before_action :render_forbidden, unless: :current_project_member
   prepend_after_action :create_change_history, only: %i[create update]
 
   def new
@@ -17,7 +16,7 @@ class IssuesController < ApplicationController
 
   def update
     if issue.update(issue_params)
-      redirect_to project_issue_url(current_project, issue),
+      redirect_to project_issue_url(current_project_member.project_id, issue),
                   notice: "Issue was updated."
     else
       render partial: "form",
@@ -30,12 +29,13 @@ class IssuesController < ApplicationController
     issue =
       Issue.new(
         issue_params.merge(
-          project_id: params[:project_id], creator: current_project_member,
+          project_id: current_project_member.project_id,
+          creator: current_project_member,
         ),
       )
 
     if issue.save
-      redirect_to project_issue_url(current_project, issue),
+      redirect_to project_issue_url(current_project_member.project_id, issue),
                   notice: "New issue created."
     else
       render partial: "form",
@@ -45,14 +45,11 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues = Issue.with_project(params[:project_id]).includes(:project)
+    @issues =
+      Issue.with_project(current_project_member.project_id).includes(:project)
   end
 
   private
-
-  def authorize
-    render plain: "Forbidden", status: :forbidden unless current_project_member
-  end
 
   def create_change_history
     CreateHistoryJob.perform_later(request.request_id)
@@ -70,12 +67,9 @@ class IssuesController < ApplicationController
   end
 
   def issue
-    @issue ||= Issue.find(params[:id]) if params[:id]
-  end
-
-  def current_project_member
-    ProjectMember.find_by(
-      project_id: current_project.id, member_id: current_member.id,
-    )
+    if params[:id]
+      @issue ||=
+        Issue.with_project(current_project_member.project_id).find(params[:id])
+    end
   end
 end
