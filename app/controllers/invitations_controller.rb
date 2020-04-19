@@ -1,19 +1,20 @@
 class InvitationsController < ApplicationController
+  before_action :render_forbidden, if: :unauthorized?
   layout false
 
-  before_action :authorize_project_owner
-
   def new
-    @invitation = Invitation.new(project_member: project_member)
+    @invitation = Invitation.new(project_member: current_project_member)
   end
 
   def create
     @invitation =
-      Invitation.new(invitation_params.merge(project_member: project_member))
+      Invitation.new(
+        invitation_params.merge(project_member: current_project_member),
+      )
 
     if @invitation.save
       redirect_to project_members_path(
-                    project_member.project,
+                    current_project_member.project_id,
                     new_invitation_id: @invitation.id,
                   )
     else
@@ -23,23 +24,16 @@ class InvitationsController < ApplicationController
 
   def show
     @invitation =
-      Invitation.where(project_member: project_member).find(params[:id])
+      Invitation.where(project_member: current_project_member).find(params[:id])
   end
 
   private
 
-  def authorize_project_owner
-    unless project_member.owner?
-      render plain: "unauthorized", status: :unauthorized
-    end
+  def unauthorized?
+    !current_project_member&.owner
   end
 
   def invitation_params
     params.require(:invitation).permit(:note)
-  end
-
-  def project_member
-    @project_member ||=
-      ProjectMember.find_by!(project: current_project, member: current_member)
   end
 end
