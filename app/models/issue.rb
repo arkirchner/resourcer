@@ -14,6 +14,8 @@ class Issue < ApplicationRecord
   belongs_to :creator, class_name: "ProjectMember", optional: true
   belongs_to :assignee, class_name: "ProjectMember", optional: true
 
+  acts_as_sequenced scope: :project_id
+
   has_many :histories, dependent: :restrict_with_exception
 
   validates :creator_id, presence: true, if: :new_record?

@@ -104,7 +104,7 @@ class IssuesTest < ApplicationSystemTestCase
     issue =
       FactoryBot.create :issue, project: @project, creator: @project_member
 
-    visit project_issue_path(@project, issue)
+    visit project_issue_path(@project, issue.sequential_id)
 
     click_on "Edit"
 

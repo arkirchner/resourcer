@@ -36,7 +36,7 @@ class HistoriesForIssuesTest < ActionDispatch::IntegrationTest
 
     SecureRandom.stub :uuid, request_id do
       assert_changes "PaperTrail::Version.where(request_id: request_id).count", from: 0, to: 1 do
-        patch project_issue_path(issue.project, issue),
+        patch project_issue_path(issue.project, issue.sequential_id),
               params: {
                 issue: { subject: "A new issue" },
               }
