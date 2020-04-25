@@ -17,9 +17,11 @@ class IssueTest < ActiveSupport::TestCase
 
   test ".parentable_issues" do
     issue = FactoryBot.create :issue
+    sleep 1
     assert_empty Issue.parentable_issues(issue), "Can not be parent if itself."
 
     issue_of_other_project = FactoryBot.create :issue
+    sleep 1
     assert_empty Issue.parentable_issues(issue),
                  "Issues of other projects can not be parents."
 
@@ -27,10 +29,12 @@ class IssueTest < ActiveSupport::TestCase
     parent =
       FactoryBot.create(:issue, project: issue.project, parent: grandparent)
     issue.update!(parent: parent)
+    sleep 1
     assert_equal Issue.parentable_issues(issue), [parent]
                  "Grand ancestors can not be a ancestor of them self."
 
     parentable_issue = FactoryBot.create :issue, project: issue.project
+    sleep 1
     assert_equal Issue.parentable_issues(issue), [parent, parentable_issue]
   end
 
