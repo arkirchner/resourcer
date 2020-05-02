@@ -3,7 +3,7 @@
     <% issues_with_children.each do |issue, children| %>
       <li class="list-group-item">
         <div class="<%= children.present? ? "mb-2" : "" %>">
-          <%= link_to issue.subject, project_issue_path(current_project, issue) %>
+          <%= link_to issue.subject, project_issue_path(current_project, issue.sequential_id) %>
         </div>
         <%= render "children", issues_with_children: children %>
       </li>

@@ -26,6 +26,7 @@ gem "puma"
 gem "rails", "~> 6.0.2"
 gem "sass-rails"
 gem "scenic"
+gem "sequenced"
 gem "turbolinks"
 gem "webpacker"
 

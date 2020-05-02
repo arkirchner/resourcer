@@ -16,7 +16,10 @@ class IssuesController < ApplicationController
 
   def update
     if issue.update(issue_params)
-      redirect_to project_issue_url(current_project_member.project_id, issue),
+      redirect_to project_issue_url(
+                    current_project_member.project_id,
+                    issue.sequential_id,
+                  ),
                   notice: "Issue was updated."
     else
       render partial: "form",
@@ -35,7 +38,10 @@ class IssuesController < ApplicationController
       )
 
     if issue.save
-      redirect_to project_issue_url(current_project_member.project_id, issue),
+      redirect_to project_issue_url(
+                    current_project_member.project_id,
+                    issue.sequential_id,
+                  ),
                   notice: "New issue created."
     else
       render partial: "form",
@@ -69,7 +75,9 @@ class IssuesController < ApplicationController
   def issue
     if params[:id]
       @issue ||=
-        Issue.with_project(current_project_member.project_id).find(params[:id])
+        Issue.with_project(current_project_member.project_id).find_by!(
+          sequential_id: params[:id],
+        )
     end
   end
 end

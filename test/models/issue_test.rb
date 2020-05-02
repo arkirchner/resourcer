@@ -58,6 +58,21 @@ class IssueTest < ActiveSupport::TestCase
     assert_includes Issue.assigned_to(member), issue_three
   end
 
+  test "#sequential_id, created scoped by project" do
+    project_a = FactoryBot.create :project
+    project_b = FactoryBot.create :project
+
+    project_a_issue_one = FactoryBot.create :issue, project: project_a
+    project_a_issue_two = FactoryBot.create :issue, project: project_a
+    project_b_issue_one = FactoryBot.create :issue, project: project_b
+    project_b_issue_two = FactoryBot.create :issue, project: project_b
+
+    assert_equal project_a_issue_one.sequential_id, 1
+    assert_equal project_a_issue_two.sequential_id, 2
+    assert_equal project_b_issue_one.sequential_id, 1
+    assert_equal project_b_issue_two.sequential_id, 2
+  end
+
   test "has parent and children" do
     project = FactoryBot.create :project
     parent = FactoryBot.create :issue, project: project
