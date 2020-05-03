@@ -1,17 +1,16 @@
-FROM ruby:2.6
+FROM ruby:2.6-alpine
 LABEL maintainer="Armin Kirchner"
 
-# Sources for Node and Yarn packages
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
-      && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -  \
-      && echo "deb https://dl.yarnpkg.com/debian/ stable main" | \
-         tee /etc/apt/sources.list.d/yarn.list \
-      && apt-get update
-
 # Common Rails requirements
-RUN DEBCONF_NOWARNINGS=yes apt-get install -y -q --no-install-recommends \
-        nodejs \
-        yarn
+RUN apk add --no-cache \
+    nodejs-current \
+    nodejs-npm \
+    yarn \
+    gcompat \
+    libpq \
+    tzdata \
+    imagemagick \
+    && rm -rf /usr/share/man /tmp/* /var/cache/apk/*
 
 ENV PORT=8080 \
     RAILS_ENV=production \
@@ -24,11 +23,19 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock /app/
-RUN gem install bundler foreman
-RUN bundle install --without development test \
-      --jobs $(nproc) \
-      --retry 2 \
-      --deployment
+RUN set -x \
+    && apk add --no-cache --virtual build-dependencies \
+         build-base \
+         postgresql-dev \
+    && gem install bundler foreman \
+    && bundle install --without development test \
+         --jobs $(nproc) \
+         --retry 2 \
+         --deployment \
+    && apk del build-dependencies \
+         build-base \
+         postgresql-dev \
+    && rm -rf /usr/share/man /tmp/* /var/cache/apk/*
 
 COPY package.json yarn.lock Gemfile.lock /app/
 RUN yarn install
