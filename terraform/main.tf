@@ -182,6 +182,11 @@ data "google_kms_secret" "google_secret_key" {
   ciphertext = "CiQAS5YnWk0Ozt4vUwFG5F4rB6hmSprxi0halL1/GFfC8Weprh8SQQAwGg5LVSm1p9jP6S8EPF4kkIq71tgGmuttzZ89hzQ2SMjIPVwOTRCzlq/li2WzTyzm6Pcs8mLQDFil5iWiqnPD"
 }
 
+data "google_kms_secret" "sentry_dns" {
+  crypto_key = google_kms_crypto_key.resourcer.self_link
+  ciphertext = "CiQAS5YnWsCnoIrPG6A2NY1UzSZMFv9sLqFr/RalS4yghKNb5TcSkwEAMBoOS5QS+MLlmPX+tzqM+O42UvCCrqQE6yE0nglHEbkOCulaJ8cykPn2BJXKBR/tH97uOxwiAAbZ5oBRsFulO5swPCy35LpFcx+h/fCPiY7tg6SLmyjiAFNTNDrhSkbN/s6h4mowdC24JlW8CfWt+PzphE7DTLvLtiALlVQWCKBuy6V6OhHJ+8od9U+4YngZuqI="
+}
+
 resource "google_service_account" "resourcer" {
   account_id   = "resourcer-app"
   display_name = "Resourcer App Runner"
@@ -254,6 +259,10 @@ resource "google_cloud_run_service" "resourcer" {
         env {
           name = "GOOGLE_CLIENT_SECRET"
           value = data.google_kms_secret.google_secret_key.plaintext
+        }
+        env {
+          name = "SENTRY_DNS"
+          value = data.google_kms_secret.sentry_dns.plaintext
         }
 
         resources {
