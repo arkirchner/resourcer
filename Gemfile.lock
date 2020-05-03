@@ -64,6 +64,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ancestry (3.0.7)
       activerecord (>= 3.2.0)
+    appsignal (2.10.6)
+      rack
     bindex (0.8.1)
     bootsnap (1.4.6)
       msgpack (~> 1.0)
@@ -379,6 +381,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-pg_enum
   ancestry
+  appsignal
   bootsnap
   bullet
   byebug

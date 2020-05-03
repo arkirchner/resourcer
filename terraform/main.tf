@@ -187,6 +187,11 @@ data "google_kms_secret" "sentry_dns" {
   ciphertext = "CiQAS5YnWsCnoIrPG6A2NY1UzSZMFv9sLqFr/RalS4yghKNb5TcSkwEAMBoOS5QS+MLlmPX+tzqM+O42UvCCrqQE6yE0nglHEbkOCulaJ8cykPn2BJXKBR/tH97uOxwiAAbZ5oBRsFulO5swPCy35LpFcx+h/fCPiY7tg6SLmyjiAFNTNDrhSkbN/s6h4mowdC24JlW8CfWt+PzphE7DTLvLtiALlVQWCKBuy6V6OhHJ+8od9U+4YngZuqI="
 }
 
+data "google_kms_secret" "appsignal_api_key" {
+  crypto_key = google_kms_crypto_key.resourcer.self_link
+  ciphertext = "CiQAS5YnWgOOrNTmfGIV4LttmQTxhhaj8rRXGtYfS4PXIE+DTMsSTQAwGg5Lwebx5Yj1BPTf2sq2DHSkNR+peI7m4657nV7UCsq5ltbR0C77FKORnMZjfklPcPkIPzAp2fHJJXh4Ux2GrbZlFu5w0Dq8QZbz"
+}
+
 resource "google_service_account" "resourcer" {
   account_id   = "resourcer-app"
   display_name = "Resourcer App Runner"
@@ -263,6 +268,11 @@ resource "google_cloud_run_service" "resourcer" {
         env {
           name = "SENTRY_DNS"
           value = data.google_kms_secret.sentry_dns.plaintext
+        }
+
+        env {
+          name = "APPSIGNAL_PUSH_API_KEY"
+          value = data.google_kms_secret.appsignal_api_key.plaintext
         }
 
         resources {

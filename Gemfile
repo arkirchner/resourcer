@@ -57,5 +57,6 @@ group :test do
 end
 
 group :production do
+  gem "appsignal"
   gem "google-cloud-storage", require: false
 end
