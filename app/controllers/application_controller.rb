@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :raven_context
   before_action :redirect_unauthorized
 
   helper_method :current_project
@@ -48,5 +49,10 @@ class ApplicationController < ActionController::Base
 
   def info_for_paper_trail
     { whodunnit: current_member_id, request_id: request.request_id }
+  end
+
+  def raven_context
+    Raven.user_context(id: current_member_id)
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 end
