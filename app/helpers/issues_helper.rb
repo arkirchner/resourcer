@@ -1,13 +1,12 @@
 module IssuesHelper
   def parent_issue_options(current_issue)
-    Issue.parentable_issues(current_issue).map do |issue|
-      [issue.subject, issue.id]
-    end
+    Issue.parentable_issues(current_issue).pluck(:subject, :id)
   end
 
   def project_member_options(project)
-    project.project_members.includes(:member).map do |project_member|
-      [project_member.member.name, project_member.id]
-    end
+    ProjectMember.joins(:member).select(:id, "members.name AS name").pluck(
+      :name,
+      :id,
+    )
   end
 end
