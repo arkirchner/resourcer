@@ -10,10 +10,22 @@ variable "zone" {
   default = "us-central1-f"
 }
 
+variable "zones" {
+  type    = list(string)
+  default = ["us-central1-f"]
+}
+
+terraform {
+  backend "gcs" {
+    bucket  = "tf-state-ca5b66a4762b648f"
+    prefix  = "terraform/state"
+  }
+}
+
 provider "google" {
   project = "resourcer"
   region  = var.location
-  version = "3.4.0"
+  version = "3.30.0"
 }
 
 provider "random" {
@@ -43,13 +55,6 @@ resource "google_project_service" "iam" {
   disable_dependent_services = true
 }
 
-resource "google_project_service" "cloud_run" {
-  project = google_project.resourcer.project_id
-  service = "run.googleapis.com"
-
-  disable_dependent_services = true
-}
-
 resource "google_project_service" "cloud_sql" {
   project = google_project.resourcer.project_id
   service = "sqladmin.googleapis.com"
@@ -62,6 +67,25 @@ resource "google_project_service" "kms" {
   service = "cloudkms.googleapis.com"
 
   disable_dependent_services = true
+}
+
+resource "google_project_service" "servicenetworking" {
+  project = google_project.resourcer.project_id
+  service = "servicenetworking.googleapis.com"
+
+  disable_dependent_services = true
+}
+
+resource "google_storage_bucket" "tf_state" {
+  name          = "tf-state-${random_id.buckets_id.hex}"
+  project       = google_project.resourcer.project_id
+  location      = var.location
+
+  versioning {
+    enabled = true
+  }
+
+  depends_on = [google_project_service.cloud_storage]
 }
 
 resource "google_storage_bucket" "assets" {
@@ -121,9 +145,28 @@ resource "google_service_account_key" "active_storage_key" {
   service_account_id = google_service_account.active_storage_users.name
 }
 
-
 resource "random_id" "db_name_suffix" {
   byte_length = 5
+}
+
+data "google_compute_network" "default" {
+  name    = "default"
+}
+
+resource "google_compute_global_address" "private_ip_address" {
+  name          = "private-ip-address"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = data.google_compute_network.default.id
+
+  depends_on = [google_project_service.servicenetworking]
+}
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = data.google_compute_network.default.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 }
 
 resource "google_sql_database_instance" "master" {
@@ -138,9 +181,21 @@ resource "google_sql_database_instance" "master" {
     location_preference {
       zone = var.zone
     }
+
+    ip_configuration {
+      ipv4_enabled    = "true"
+      private_network = data.google_compute_network.default.id
+    }
   }
 
-  depends_on = [google_project_service.cloud_sql]
+  depends_on = [
+    google_project_service.cloud_sql,
+    google_service_networking_connection.private_vpc_connection
+  ]
+}
+
+output "db_private_ip" {
+  value = google_sql_database_instance.master.private_ip_address
 }
 
 resource "random_string" "secret_key_base" {
@@ -203,104 +258,9 @@ resource "google_project_iam_member" "resourcer" {
   member  = "serviceAccount:${google_service_account.resourcer.email}"
 }
 
-resource "google_cloud_run_service" "resourcer" {
-  name = "resourcer"
-  project = google_project.resourcer.project_id
-  location = var.region
-
-  template {
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/maxScale" = "1000"
-        "run.googleapis.com/cloudsql-instances" = google_sql_database_instance.master.connection_name
-        "client.knative.dev/user-image" = "gcr.io/resourcer/resourcer:latest"
-      }
-      name = "resourcer-${formatdate("YYYYMMDDhhmmss", timestamp())}"
-    }
-
-    spec {
-      container_concurrency = 80
-      service_account_name  = google_service_account.resourcer.email
-
-      containers {
-        image = data.google_container_registry_image.resourcer.image_url
-
-        env {
-          name = "SECRET_KEY_BASE"
-          value = random_string.secret_key_base.result
-        }
-        env {
-          name = "DB_PASSWORD"
-          value = random_string.db_password.result
-        }
-        env {
-          name = "DB_SOCKET"
-          value = "/cloudsql/${google_sql_database_instance.master.connection_name}"
-        }
-        env {
-          name = "BUCKET_CREDENTIALS"
-          value = google_service_account_key.active_storage_key.private_key
-        }
-        env {
-          name = "BUCKET"
-          value = google_storage_bucket.storage.name
-        }
-        env {
-          name = "PROJECT_ID"
-          value = google_project.resourcer.project_id
-        }
-        env {
-          name  = "GITHUB_KEY"
-          value = "169d2b2e8d2ba15fcc10"
-        }
-        env {
-          name  = "GITHUB_SECRET"
-          value = data.google_kms_secret.github_secret_key.plaintext
-        }
-        env {
-          name  = "GOOGLE_CLIENT_ID"
-          value = "253289455918-ndd60dbqpf5g2kspnkve59pc6eb5erpe.apps.googleusercontent.com"
-        }
-        env {
-          name = "GOOGLE_CLIENT_SECRET"
-          value = data.google_kms_secret.google_secret_key.plaintext
-        }
-        env {
-          name = "SENTRY_DNS"
-          value = data.google_kms_secret.sentry_dns.plaintext
-        }
-
-        env {
-          name = "APPSIGNAL_PUSH_API_KEY"
-          value = data.google_kms_secret.appsignal_api_key.plaintext
-        }
-
-        resources {
-          limits   = {
-            "cpu"    = "1000m"
-            "memory" = "512Mi"
-          }
-          requests = {}
-        }
-      }
-    }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-
-  depends_on = [
-    google_project_service.cloud_run,
-    google_project_iam_member.resourcer,
-  ]
-
-  lifecycle {
-    ignore_changes = [
-#      template[0].metadata[0].name,
-    ]
-  }
+data "google_compute_subnetwork" "default" {
+  name   = "default"
+  region = var.region
 }
 
 data "google_iam_policy" "public_invoke" {
@@ -310,13 +270,6 @@ data "google_iam_policy" "public_invoke" {
       "allUsers",
     ]
   }
-}
-
-resource "google_cloud_run_service_iam_policy" "public_invoke" {
-  location = var.region
-  project = google_project.resourcer.project_id
-  service = google_cloud_run_service.resourcer.name
-  policy_data = data.google_iam_policy.public_invoke.policy_data
 }
 
 resource "google_sql_user" "resourcer" {

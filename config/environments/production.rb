@@ -87,9 +87,10 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
   #   ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
+    require "lograge/formatters/stackdriver"
+    config.lograge.enabled = true
+    config.lograge.logger = ActiveSupport::Logger.new(STDOUT)
+    config.lograge.formatter = Lograge::Formatters::Stackdriver.new
   end
 
   # Do not dump schema after migrations.

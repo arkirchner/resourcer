@@ -3,12 +3,24 @@
 set -e
 
 gcloud --quiet config set project "resourcer"
-gcloud --quiet config set compute/zone "us-central1"
+gcloud --quiet config set compute/zone "us-central1-f"
 gcloud --quiet auth configure-docker
+gcloud --quiet container clusters get-credentials primary-gke-cluster
 
-docker build -t gcr.io/resourcer/resourcer:latest .
+export VERSION="$(git rev-parse --short HEAD)-$(date +%y%m%d%I%M%S)"
+
+docker build -t gcr.io/resourcer/resourcer:${VERSION} \
+             -t gcr.io/resourcer/resourcer:latest \
+             .
+
+docker push gcr.io/resourcer/resourcer:${VERSION}
 docker push gcr.io/resourcer/resourcer:latest
 
-gcloud run deploy resourcer --image gcr.io/resourcer/resourcer:latest \
-                            --platform managed  \
-                            --region us-central1
+envsubst < k8s/migration.yml.env | kubectl apply -f -
+kubectl wait --for=condition=complete --timeout=360s --namespace=resourcer job resourcer-db-migrate
+envsubst < k8s/migration.yml.env | kubectl delete -f -
+
+envsubst < k8s/worker.yml.env | kubectl apply -f -
+envsubst < k8s/app.yml.env | kubectl apply -f -
+kubectl apply -f k8s/service.yml
+kubectl apply -f k8s/ingress.yml
