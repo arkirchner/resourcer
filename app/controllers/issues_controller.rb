@@ -74,9 +74,9 @@ class IssuesController < ApplicationController
   def issue
     if params[:id]
       @issue ||=
-        Issue.with_project(current_project_member.project_id).find_by!(
-          sequential_id: params[:id],
-        )
+        Issue.with_project(current_project_member.project_id).eager_load(
+          creator: :member, assignee: :member,
+        ).find_by!(sequential_id: params[:id])
     end
   end
 end
