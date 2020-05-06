@@ -10,6 +10,7 @@ RUN apk add --no-cache \
     libpq \
     tzdata \
     imagemagick \
+    diffutils \
     && rm -rf /usr/share/man /tmp/* /var/cache/apk/*
 
 ENV PORT=8080 \
