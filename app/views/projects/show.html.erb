@@ -4,5 +4,5 @@
 </h4>
 
 <div class="card-columns">
-  <%= render @histories %>
+  <%= render partial: "histories/history", collection: @histories, cached: true %>
 </div>
