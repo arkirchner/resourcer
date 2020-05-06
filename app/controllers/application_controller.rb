@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
 
   def current_member
     return unless current_member_id
+    return current_project_member.member if current_project_member
 
     @current_member ||= Member.find(current_member_id)
   end
@@ -36,15 +37,14 @@ class ApplicationController < ActionController::Base
   def current_project_member
     return unless current_member_id && current_project_id
 
-    ProjectMember.find_by(
-      project_id: current_project_id, member_id: current_member_id,
-    )
+    @current_project_member ||=
+      ProjectMember.eager_load(:member, :project).find_by(
+        project_id: current_project_id, member_id: current_member_id,
+      )
   end
 
   def current_project
-    return unless current_member_id && current_project_id
-
-    Project.with_member(current_member_id).find_by(id: current_project_id)
+    current_project_member&.project
   end
 
   def info_for_paper_trail
