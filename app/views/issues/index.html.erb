@@ -11,7 +11,7 @@
     <% @issues.each do |issue| %>
       <tr>
         <th scope="row">
-          <%= link_to "#{issue.project.key}-#{issue.sequential_id}", project_issue_path(current_project, issue.sequential_id) %>
+          <%= link_to "#{current_project.key}-#{issue.sequential_id}", project_issue_path(current_project, issue.sequential_id) %>
         </th>
         <td>
           <%= link_to issue.subject, project_issue_path(current_project, issue.sequential_id) %>

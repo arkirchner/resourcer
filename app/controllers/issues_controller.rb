@@ -51,8 +51,7 @@ class IssuesController < ApplicationController
   end
 
   def index
-    @issues =
-      Issue.with_project(current_project_member.project_id).includes(:project)
+    @issues = Issue.with_project(current_project)
   end
 
   private
