@@ -1,4 +1,4 @@
-FROM ruby:2.6-alpine
+FROM ruby:2.7-alpine
 LABEL maintainer="Armin Kirchner"
 
 # Common Rails requirements
