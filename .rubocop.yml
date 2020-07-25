@@ -1,7 +1,7 @@
 ---
 
 inherit_from:
-  - https://raw.githubusercontent.com/thoughtbot/guides/master/style/ruby/.rubocop.yml
+  - https://raw.githubusercontent.com/thoughtbot/guides/4240c34185e8a9a31f5f735808516b52caa5c05e/style/ruby/.rubocop.yml
 require:
   - rubocop-rspec
   - rubocop-rails
