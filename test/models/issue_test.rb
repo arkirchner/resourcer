@@ -79,6 +79,8 @@ class IssueTest < ActiveSupport::TestCase
     issue = FactoryBot.create :issue, parent: parent, project: project
     children = FactoryBot.create_list :issue, 2, project: project, parent: issue
 
+    sleep 1
+
     assert_equal issue.parent, parent
     assert_equal issue.children, children
   end
