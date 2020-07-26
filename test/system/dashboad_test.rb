@@ -3,71 +3,73 @@ require "application_system_test_case"
 class DashboardTest < ApplicationSystemTestCase
   class MtIssuesTest < ApplicationSystemTestCase
     test "lists affigned issues by default" do
-      project_member = FactoryBot.create(:project_member)
+      travel_to Time.current.middle_of_day.to_datetime do
+        project_member = FactoryBot.create(:project_member)
 
-      FactoryBot.create :issue,
-                        subject: "A issue due today!",
-                        project: project_member.project,
-                        assignee: project_member,
-                        due_at: Date.today
-      FactoryBot.create :issue,
-                        subject: "This issue is due tomorrow.",
-                        project: project_member.project,
-                        assignee: project_member,
-                        due_at: Date.tomorrow
+        FactoryBot.create :issue,
+                          subject: "A issue due today!",
+                          project: project_member.project,
+                          assignee: project_member,
+                          due_at: Date.today
+        FactoryBot.create :issue,
+                          subject: "This issue is due tomorrow.",
+                          project: project_member.project,
+                          assignee: project_member,
+                          due_at: Date.tomorrow
 
-      FactoryBot.create :issue,
-                        subject: "This issue is due in 4 days.",
-                        project: project_member.project,
-                        assignee: project_member,
-                        due_at: 4.days.from_now
+        FactoryBot.create :issue,
+                          subject: "This issue is due in 4 days.",
+                          project: project_member.project,
+                          assignee: project_member,
+                          due_at: 4.days.from_now
 
-      FactoryBot.create :issue,
-                        subject: "This issue is overdue.",
-                        project: project_member.project,
-                        assignee: project_member,
-                        due_at: 1.day.ago
+        FactoryBot.create :issue,
+                          subject: "This issue is overdue.",
+                          project: project_member.project,
+                          assignee: project_member,
+                          due_at: 1.day.ago
 
-      FactoryBot.create :issue,
-                        project: project_member.project,
-                        subject: "This issue is not assigned to the member."
-      FactoryBot.create :issue, subject: "This is a unrelated issue."
+        FactoryBot.create :issue,
+                          project: project_member.project,
+                          subject: "This issue is not assigned to the member."
+        FactoryBot.create :issue, subject: "This is a unrelated issue."
 
-      sign_up_with_github(project_member.member)
+        sign_up_with_github(project_member.member)
 
-      assert_text "A issue due today!"
-      assert_text "This issue is due tomorrow."
-      assert_text "This issue is due in 4 days."
-      assert_text "This issue is overdue."
-      assert_no_text "This issue is not assigned to the member."
-      assert_no_text "This is a unrelated issue."
+        assert_text "A issue due today!"
+        assert_text "This issue is due tomorrow."
+        assert_text "This issue is due in 4 days."
+        assert_text "This issue is overdue."
+        assert_no_text "This issue is not assigned to the member."
+        assert_no_text "This is a unrelated issue."
 
-      click_on "4 Days"
-      wait_for_turbolinks
-      assert_text "A issue due today!"
-      assert_text "This issue is due tomorrow."
-      assert_text "This issue is due in 4 days."
-      assert_no_text "This issue is overdue."
-      assert_no_text "This issue is not assigned to the member."
-      assert_no_text "This is a unrelated issue."
+        click_on "4 Days"
+        wait_for_turbolinks
+        assert_text "A issue due today!"
+        assert_text "This issue is due tomorrow."
+        assert_text "This issue is due in 4 days."
+        assert_no_text "This issue is overdue."
+        assert_no_text "This issue is not assigned to the member."
+        assert_no_text "This is a unrelated issue."
 
-      click_on "Due Today"
-      wait_for_turbolinks
-      assert_text "A issue due today!"
-      assert_no_text "This issue is due tomorrow."
-      assert_no_text "This issue is due in 4 days."
-      assert_no_text "This issue is overdue."
-      assert_no_text "This issue is not assigned to the member."
-      assert_no_text "This is a unrelated issue."
+        click_on "Due Today"
+        wait_for_turbolinks
+        assert_text "A issue due today!"
+        assert_no_text "This issue is due tomorrow."
+        assert_no_text "This issue is due in 4 days."
+        assert_no_text "This issue is overdue."
+        assert_no_text "This issue is not assigned to the member."
+        assert_no_text "This is a unrelated issue."
 
-      click_on "Overdue"
-      wait_for_turbolinks
-      assert_no_text "A issue due today!"
-      assert_no_text "This issue is due tomorrow."
-      assert_no_text "This issue is due in 4 days."
-      assert_text "This issue is overdue."
-      assert_no_text "This issue is not assigned to the member."
-      assert_no_text "This is a unrelated issue."
+        click_on "Overdue"
+        wait_for_turbolinks
+        assert_no_text "A issue due today!"
+        assert_no_text "This issue is due tomorrow."
+        assert_no_text "This issue is due in 4 days."
+        assert_text "This issue is overdue."
+        assert_no_text "This issue is not assigned to the member."
+        assert_no_text "This is a unrelated issue."
+      end
     end
 
     test "a member can check issue he created" do
