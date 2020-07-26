@@ -30,12 +30,13 @@ class IssueTest < ActiveSupport::TestCase
       FactoryBot.create(:issue, project: issue.project, parent: grandparent)
     issue.update!(parent: parent)
     sleep 1
-    assert_equal Issue.parentable_issues(issue), [parent]
-                 "Grand ancestors can not be a ancestor of them self."
+    assert_equal Issue.parentable_issues(issue), [parent.reload]
+    "Grand ancestors can not be a ancestor of them self."
 
     parentable_issue = FactoryBot.create :issue, project: issue.project
     sleep 1
-    assert_equal Issue.parentable_issues(issue), [parent, parentable_issue]
+    assert_equal Issue.parentable_issues(issue),
+                 [parent.reload, parentable_issue.reload]
   end
 
   test ".assigned_to, returnes all issues assigned to a member" do
@@ -44,14 +45,10 @@ class IssueTest < ActiveSupport::TestCase
     member = project_member.member
 
     issue_one =
-      FactoryBot.create :issue,
-                        project: project,
-                        assignee: project_member
+      FactoryBot.create :issue, project: project, assignee: project_member
     issue_two = FactoryBot.create :issue, project: project
     issue_three =
-      FactoryBot.create :issue,
-                        project: project,
-                        assignee: project_member
+      FactoryBot.create :issue, project: project, assignee: project_member
 
     assert_includes Issue.assigned_to(member), issue_one
     assert_not_includes Issue.assigned_to(member), issue_two
