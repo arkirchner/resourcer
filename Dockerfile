@@ -20,12 +20,13 @@ ENV PORT=8080 \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true
 
-RUN mkdir -p /app
+RUN mkdir -p /app /app/tmp
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock /app/
+COPY Gemfile Gemfile.lock package.json yarn.lock /app/
 RUN set -x \
     && apk add --no-cache --virtual build-dependencies \
+         python2 \
          build-base \
          postgresql-dev \
     && gem install bundler foreman \
@@ -33,17 +34,14 @@ RUN set -x \
          --jobs $(nproc) \
          --retry 2 \
          --deployment \
+    && yarn install \
     && apk del build-dependencies \
+         python2 \
          build-base \
          postgresql-dev \
     && rm -rf /usr/share/man /tmp/* /var/cache/apk/*
 
-COPY package.json yarn.lock Gemfile.lock /app/
-RUN yarn install
-
+EXPOSE 8080
 COPY . /app/
-
 RUN SECRET_KEY_BASE=dummy bundle exec rake assets:precompile
-
-ENTRYPOINT ["/app/bin/entrypoint.sh"]
-CMD ["foreman", "start"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

@@ -80,6 +80,7 @@ jobs:
       - run:
           name: Deploy Environment on Google Cloud Run.
           command: |
+            apt-get install -y -q --no-install-recommends gettext
             echo $DEPLOY_SERVICE_USER_KEY | base64 --decode | gcloud auth activate-service-account --key-file=-
             ./bin/deploy
 
