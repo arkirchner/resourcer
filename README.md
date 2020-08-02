@@ -1,4 +1,5 @@
-[![<Resourcer>](https://circleci.com/gh/arkirchner/resourcer.svg?style=svg)](https://github.com/arkirchner/resourcer)
+[![CircleCI](https://circleci.com/gh/arkirchner/resourcer.svg?style=svg)](https://circleci.com/gh/arkirchner/resourcer)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e84c79526baa2df06f2a/maintainability)](https://codeclimate.com/github/arkirchner/resourcer/maintainability)
 
 # [Resourcer.work](https://resourcer.work)
 
