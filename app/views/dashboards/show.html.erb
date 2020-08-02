@@ -78,7 +78,7 @@
           <% @issues.each do |issue| %>
             <tr>
               <th scope="row">
-                <%= link_to "#{issue.project.key}-#{issue.sequential_id}", project_issue_path(issue.project, issue.sequential_id) %>
+                <%= link_to "#{issue.project_key}-#{issue.sequential_id}", project_issue_path(issue.project_id, issue.sequential_id) %>
               </th>
               <td><%= issue.subject %></td>
               <td class="text-right"><%= issue.due_at ? l(issue.due_at, format: :short) : "" %></td>
@@ -93,10 +93,6 @@
       <h3 class="flex-grow-1">Recent Updates</h3>
     </div>
 
-    <% @histories.each do |history| %>
-      <div class="mb-4">
-        <%= render history %>
-      </div>
-    <% end %>
+    <%= render partial: "history", collection: @histories, cached: true %>
   </div>
 </div>

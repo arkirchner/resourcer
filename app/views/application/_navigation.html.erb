@@ -22,8 +22,8 @@
         <div class="dropdown-menu"
              aria-labelledby="navbarDropdownMenuLink"
              data-target="dropdown.menu">
-          <% current_member.projects.each do |project| %>
-            <%= link_to project.name, project_path(project), class: "dropdown-item", data: { target: "dropdown.item" } %>
+          <% current_member.projects.pluck(:id, :name).each do |project_id, project_name| %>
+            <%= link_to project_name, project_path(project_id), class: "dropdown-item", data: { target: "dropdown.item" } %>
           <% end %>
         </div>
       </li>

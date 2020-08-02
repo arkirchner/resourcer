@@ -4,13 +4,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
     @histories =
-      @project.histories.includes(
-        :associated_issue,
-        :member,
-        issue: %i[from_assignee to_assignee],
-      ).order(changed_at: :desc).limit(20)
+      current_project.histories.order(changed_at: :desc).limit(20)
   end
 
   def create
@@ -26,12 +21,8 @@ class ProjectsController < ApplicationController
 
   private
 
-  def project_id
+  def current_project_id
     params[:id]
-  end
-
-  def current_project
-    Project.find(project_id) if project_id
   end
 
   def project_params

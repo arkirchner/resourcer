@@ -55,15 +55,22 @@ Rails.application.configure do
   config.after_initialize do
     Bullet.enable = true
     Bullet.raise = true
+
+    # Everything to do histories is cached.
     Bullet.add_whitelist(
-      type: :unused_eager_loading,
-      class_name: "History::Issue",
-      association: :from_assignee,
+      type: :n_plus_one_query,
+      class_name: "History",
+      association: :associated_issue,
     )
     Bullet.add_whitelist(
-      type: :unused_eager_loading,
-      class_name: "History::Issue",
-      association: :to_assignee,
+      type: :n_plus_one_query,
+      class_name: "History",
+      association: :member,
+    )
+    Bullet.add_whitelist(
+      type: :n_plus_one_query,
+      class_name: "History",
+      association: :issue,
     )
   end
 end

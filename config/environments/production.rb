@@ -118,4 +118,9 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
   #   ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context =
   #   ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+
+  config.cache_store = :redis_cache_store, {
+    url: ENV["REDIS_URL"],
+    password: ENV["REDIS_PASSWORD"]
+  }
 end
