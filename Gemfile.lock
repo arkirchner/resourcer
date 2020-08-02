@@ -166,6 +166,7 @@ GEM
       minitest (>= 3.0)
     hashie (4.1.0)
     high_voltage (3.1.2)
+    hiredis (0.6.3)
     http_parser.rb (0.6.0)
     httpclient (2.8.3)
     i18n (1.8.5)
@@ -299,6 +300,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.2.1)
     regexp_parser (1.7.1)
     representable (3.0.4)
       declarative (< 0.1.0)
@@ -402,6 +404,7 @@ DEPENDENCIES
   guard-livereload
   guard-minitest
   high_voltage
+  hiredis
   image_processing
   inline_svg
   jbuilder
@@ -419,6 +422,7 @@ DEPENDENCIES
   pg
   puma
   rails (~> 6.0.3)
+  redis
   sass-rails
   scenic
   selenium-webdriver
