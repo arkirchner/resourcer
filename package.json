@@ -16,7 +16,7 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "@prettier/plugin-ruby": "^0.19.0",
+    "@prettier/plugin-ruby": "^0.20.1",
     "@thoughtbot/eslint-config": "^0.1.0",
     "@thoughtbot/stylelint-config": "^2.0.0",
     "babel-eslint": "^10.1.0",
