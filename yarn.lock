@@ -7581,10 +7581,10 @@ stdout-stream@^1.4.0:
   dependencies:
     readable-stream "^2.0.1"
 
-stimulus-flatpickr@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/stimulus-flatpickr/-/stimulus-flatpickr-1.3.0.tgz#7e540d308b1c366e9ed24bec7230069e2db32af9"
-  integrity sha512-/1PQkrQ1FdZy9eQmBmhmkAj/6i8r/gKur0hhdF8vJakwoVSXhqsYRTOaeuRJD31Yx/TSkQPdoHf7l6aNTVuUug==
+stimulus-flatpickr@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/stimulus-flatpickr/-/stimulus-flatpickr-1.4.0.tgz#a41071a3e69cfc50b7eaaacf356fc0ab1ab0543c"
+  integrity sha512-rcC/c9+E+f5W2kOjaaLShtf3i+p95ACqt+oGzSAgeuZh2YeIN8gW4EWO7h0STBLzSVPl6BjIfPWP7upMPavIVQ==
 
 stimulus@^1.1.1:
   version "1.1.1"
