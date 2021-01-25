@@ -10,7 +10,7 @@
     "bootstrap": "^4.6.0",
     "flatpickr": "^4.6.3",
     "github-markdown-css": "^4.0.0",
-    "stimulus": "^1.1.1",
+    "stimulus": "^2.0.0",
     "stimulus-flatpickr": "^1.4.0",
     "turbolinks": "^5.2.0"
   },
