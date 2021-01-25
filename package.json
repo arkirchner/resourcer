@@ -8,7 +8,7 @@
     "@rails/ujs": "^6.0.3",
     "@rails/webpacker": "5.2.1",
     "bootstrap": "^4.6.0",
-    "flatpickr": "^4.6.3",
+    "flatpickr": "^4.6.9",
     "github-markdown-css": "^4.0.0",
     "stimulus": "^1.1.1",
     "stimulus-flatpickr": "^1.4.0",
