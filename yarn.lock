@@ -993,10 +993,10 @@
     mkdirp "^1.0.4"
     rimraf "^2.7.1"
 
-"@prettier/plugin-ruby@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@prettier/plugin-ruby/-/plugin-ruby-1.5.0.tgz#052b344d66c3b69c6277ac3b65bdab541d64ef2d"
-  integrity sha512-iyJG6VFOnJS1LCXgYQS4fGdwEHEktH/tXVm5wE0NIZ42VOwsEn+CMrh/oJTmEkezTRTH7RYatiU4M3a3lfds2A==
+"@prettier/plugin-ruby@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@prettier/plugin-ruby/-/plugin-ruby-1.5.1.tgz#0b78c71416c0b8e811c8a8df34c7350a437c1d85"
+  integrity sha512-bOFNRk1XK29PABZfX9oxnmMa2YeuDKb3Rwg6QK+FIZZOjqdUWn7F3wm3WRD05F+ALBzEJCC6Q62vxv917SHp0Q==
   dependencies:
     prettier ">=1.10"
 
