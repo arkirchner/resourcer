@@ -68,7 +68,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     ancestry (4.0.0)
       activerecord (>= 5.2.4.5)
-    appsignal (3.0.3)
+    appsignal (3.0.6)
       rack
     bindex (0.8.1)
     bootsnap (1.7.5)
